@@ -1,2 +1,2 @@
 # godwinausten.org
-Main repository of godwinausten.org
+Main website of godwinausten.org
