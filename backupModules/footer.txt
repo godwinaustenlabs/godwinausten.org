@@ -1,0 +1,78 @@
+	<footer id="site-footer" role="contentinfo">
+
+		<div id="footer-wave"></div>
+
+		<div class="footer-bg">
+
+			<div class="footer-inner container-xl">
+
+
+				<div class="footer-top">
+					<div class="row">
+
+						<div class="ft-col-1 col-sm-12 col-lg-4">
+							<div class="widget widget_text">
+								<div class="widget-content">
+									<div class="textwidget">
+										<h3>Godwin Austen Labs</h3>
+										<p>Get your business to the<br />
+											new heights.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="ft-col-2 col-sm-12 col-lg-4">
+							<div class="widget widget_text">
+								<div class="widget-content">
+									<div class="textwidget">
+										<a href="mailto: team@godwinausten.org"><h3 style="font-size: medium;">team@godwinausten.org</h3></a>
+										<p>MON–FRI 9AM–6PM</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="ft-col-3 col-lg-4">
+							<div class="widget widget_text">
+								<div class="widget-content">
+									<div class="textwidget">
+										<h3>(+92) 318 4458 194</h3>
+										<p>WhatsApp or Call</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+
+				<div class="footer-bottom">
+
+					<div class="footer-credits">
+
+						<p class="footer-copyright">Copyright &copy;2024 Godwin Austen Labs. All rights reserved.
+						</p><!-- .footer-copyright -->
+
+					</div><!-- .footer-credits -->
+
+					<nav class="footer-menu-wrapper" aria-label="Footer" role="navigation">
+						<ul class="footer-menu">
+							<li id="menu-item-2007"
+								class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-2007">
+								<a href="/index.html" aria-current="page">Home</a>
+							</li>
+							<li id="menu-item-2005"
+								class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2005"><a
+									href="about-us/index.html">About Us</a></li>
+						</ul>
+					</nav>
+
+				</div><!-- .footer-bottom  -->
+
+			</div><!-- .footer-inner -->
+
+		</div>
+
+	</footer><!-- #site-footer -->
