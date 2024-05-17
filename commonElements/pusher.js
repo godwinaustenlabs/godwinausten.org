@@ -3,7 +3,11 @@
 // <head> element will automatically be appended with meta favicon tags and descriptions
 // header and footer will reqire divs with id 'navbar' & 'footer'
 // To add the SIde Clip typeform use a div with id 'typeformSideClip'
+// <script src="//embed.typeform.com/next/embed.js"></script>
+// enter typeform url in url
 
+
+const url = '//embed.typeform.com/next/embed.js';
 
 function headWriter(){
     fetch('/commonElements/head.html')
@@ -14,6 +18,7 @@ function headWriter(){
             const headNodes = Array.from(container.children);
             headNodes.forEach(node => document.head.appendChild(node));
         })
+        .catch(error => console.log(error))
 };
 
 function navbarWriter(){
@@ -23,6 +28,7 @@ function navbarWriter(){
         const container = document.getElementById('navbar');
         container.innerHTML = text;
     })
+    .catch(error => console.log(error))
 };
 
 function footerWriter(){
@@ -32,6 +38,7 @@ function footerWriter(){
         const container = document.getElementById('footer');
         container.innerHTML = text;
     })
+    .catch(error => console.log(error))
 };
 
 function typeformSideClip(){
@@ -41,8 +48,23 @@ function typeformSideClip(){
         const container = document.getElementById('typeformSideClip');
         container.innerHTML = text;
     })
+    .catch(error => console.log(error))
 
-}
+};
+
+function typeformScript(url){
+
+    const script = document.createElement('script');
+    script.src = url;
+    script.type = 'text/javascript';
+    script.async = true;
+
+    script.onload = onLoad => console.log('tf script injected in body');
+    script.onerror = onError => console.log('tf script error' + onError);
+    
+    document.body.appendChild(script);
+
+};
 
 function pusher(){
 
@@ -50,6 +72,7 @@ function pusher(){
     navbarWriter();
     footerWriter();
     typeformSideClip();
+    typeformScript(url);
 
 };
 
