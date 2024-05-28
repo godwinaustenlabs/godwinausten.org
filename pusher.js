@@ -10,7 +10,7 @@
 const url = '//embed.typeform.com/next/embed.js';
 
 function headWriter(){
-    fetch('/commonElements/head.html')
+    fetch('https://godwinausten.org/commonElements/head.html')
         .then(response => response.text())
         .then(text => {
             const container = document.createElement('div');
@@ -22,7 +22,7 @@ function headWriter(){
 };
 
 function navbarWriter(){
-    fetch('/commonElements/navbar.html')
+    fetch('https://godwinausten.org/commonElements/navbar.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('navbar');
@@ -32,7 +32,7 @@ function navbarWriter(){
 };
 
 function footerWriter(){
-    fetch('/commonElements/footer.html')
+    fetch('https://godwinausten.org/commonElements/footer.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('footer');
@@ -42,7 +42,7 @@ function footerWriter(){
 };
 
 function typeformSideClip(){
-    fetch('/commonElements/typeformSideClip.html')
+    fetch('https://godwinausten.org/commonElements/typeformSideClip.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('typeformSideClip');
