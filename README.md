@@ -1,2 +1,2 @@
 # godwinausten.org
-Main website of godwinausten.org
+About Us Page of godwinausten.org
