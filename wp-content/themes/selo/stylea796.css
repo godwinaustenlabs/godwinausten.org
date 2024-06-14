@@ -1469,6 +1469,7 @@ h1 {
 .custom-logo-link h5 {
     font-weight: 600;
     letter-spacing: -0.021em;
+    font-family: -apple-system;
     font-size: 28px;
     color: var(--header-menu-color);
 }
@@ -2795,6 +2796,7 @@ blockquote:before {
     #pr-nav {
         padding-left: 1rem;
         padding-right: 1rem;
+        position: relative;
     }
 
     .custom-logo {
