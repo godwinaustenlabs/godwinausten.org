@@ -66,6 +66,11 @@ function typeformScript(url){
 
 };
 
+function loader(){
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+};
+
 function pusher(){
 
     headWriter();
@@ -73,6 +78,7 @@ function pusher(){
     footerWriter();
     typeformSideClip();
     typeformScript(url);
+    setTimeout(loader, 3000);
 
 };
 
