@@ -7012,9 +7012,83 @@
 <link rel="apple-touch-icon" href="/favicon.png" />
 <meta name="msapplication-TileImage"
   content="https://godwinausten.org//favicon.png" />
+  <style>
+	/* HTML: <div class="loader"></div> */
+	#loader {
+		width: 40px;
+		height: 20px;
+		--c: no-repeat radial-gradient(farthest-side, #000 93%, #0000);
+		background:
+			var(--c) 0 0,
+			var(--c) 50% 0;
+		background-size: 10px 10px;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		clip-path: inset(-200% -100% 0 0);
+		animation: l6-0 1.5s linear infinite;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1000;
+	}
+	
+	#loader:before {
+		content: "";
+		position: absolute;
+		width: 8px;
+		height: 12px;
+		background: #000;
+		left: -16px;
+		top: 0;
+		border-radius: 5px;
+		animation:
+			l6-1 1.5s linear infinite,
+			l6-2 0.5s cubic-bezier(0, 200, .8, 200) infinite;
+	}
+	
+	#loader:after {
+		content: "";
+		position: absolute;
+		inset: 0 0 auto auto;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: #000;
+		animation: l6-3 1.5s linear infinite;
+	}
+	
+	@keyframes l6-0 {
+		0%, 30% { background-position: 0 0, 50% 0 }
+		33% { background-position: 0 100%, 50% 0 }
+		41%, 63% { background-position: 0 0, 50% 0 }
+		66% { background-position: 0 0, 50% 100% }
+		74%, 100% { background-position: 0 0, 50% 0 }
+	}
+	
+	@keyframes l6-1 {
+		90% { transform: translateY(0) }
+		95% { transform: translateY(15px) }
+		100% { transform: translateY(15px); left: calc(100% - 8px) }
+	}
+	
+	@keyframes l6-2 {
+		100% { top: -0.1px }
+	}
+	
+	@keyframes l6-3 {
+		0%, 80%, 100% { transform: translate(0) }
+		90% { transform: translate(26px) }
+	}
+</style>
 </head>
 
-  <body>
+<div id="loader"></div>
+<div id="content" style="display: none;">
+
+
+	<body>
     <div class="body-wrapper hs-content-id-147948342424 hs-site-page page">
       <div
         data-global-resource-path="theme-challenge copy/templates/partials/header-module.html"
@@ -8781,5 +8855,5 @@
       src="cdn.jsdelivr.net/npm/slick-carousel%401.8.1/slick/slick.min.js"
     ></script>
   </body>
-  <!-- Mirrored from godwinausten.site/casestudies/cleandrive by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 09 May 2024 11:09:25 GMT -->
+</div>
 </html>
