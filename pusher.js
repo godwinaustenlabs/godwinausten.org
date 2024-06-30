@@ -22,7 +22,7 @@ function headWriter(){
 };
 
 function navbarWriter(){
-    fetch('/commonElements/navbar.html')
+    fetch('https://godwinausten.org/commonElements/navbar.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('navbar');
@@ -83,4 +83,3 @@ function pusher(){
 };
 
 document.addEventListener('DOMContentLoaded', pusher());
-
