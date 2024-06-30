@@ -6727,9 +6727,32 @@
 	<link rel="apple-touch-icon" href="/favicon.png" />
 	<meta name="msapplication-TileImage"
 		content="https://godwinausten.org//favicon.png" />
+	<style>
+		#loader {
+			position: fixed;
+			left: 50%;
+			top: 50%;
+			width: 50px;
+			height: 50px;
+			margin: -25px 0 0 -25px; /* Center the loader */
+			border: 5px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 5px solid #3498db;
+			animation: spin 2s linear infinite;
+			z-index: 1000;
+		}
+		
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+	</style>
 </head>
 
-<body class="home page-template page-template-page-templates page-template-template-full-width-page-without-header-title page-template-page-templatestemplate-full-width-page-without-header-title-php page page-id-22931 theme-selo woocommerce-no-js elementor-default elementor-kit-11 elementor-page elementor-page-22931">
+<div id="loader"></div>
+<div id="content" style="display: none;">
+
+	<body class="home page-template page-template-page-templates page-template-template-full-width-page-without-header-title page-template-page-templatestemplate-full-width-page-without-header-title-php page page-id-22931 theme-selo woocommerce-no-js elementor-default elementor-kit-11 elementor-page elementor-page-22931">
 	<div id="typeformSideClip"></div>
 	<script src="pusher.js"></script>
 	<div id="navbar"></div>
@@ -8543,6 +8566,7 @@
 	<!-- end Simple Custom CSS and JS -->
 	
 </body>
+</div>
 
 </html>
 
