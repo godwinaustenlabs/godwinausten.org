@@ -249,12 +249,110 @@
             padding: 0 !important;
             margin: 0 !important;
         }
+
+        #loader {
+            width: 40px;
+            height: 20px;
+            --c: no-repeat radial-gradient(farthest-side, #000 93%, #0000);
+            background:
+            var(--c) 0 0, var(--c) 50% 0;
+            background-size: 10px 10px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            clip-path: inset(-200% -100% 0 0);
+            animation: l6-0 1.5s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        #loader:before {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: #000;
+            left: -16px;
+            top: 0;
+            border-radius: 5px;
+            animation:
+            l6-1 1.5s linear infinite, l6-2 0.5s cubic-bezier(0, 200, .8, 200) infinite;
+        }
+
+        #loader:after {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto auto;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #000;
+            animation: l6-3 1.5s linear infinite;
+        }
+
+        @keyframes l6-0 {
+            0%, 30% {
+                background-position: 0 0, 50% 0
+            }
+
+            33% {
+                background-position: 0 100%, 50% 0
+            }
+
+            41%, 63% {
+                background-position: 0 0, 50% 0
+            }
+
+            66% {
+                background-position: 0 0, 50% 100%
+            }
+
+            74%, 100% {
+                background-position: 0 0, 50% 0
+            }
+        }
+
+        @keyframes l6-1 {
+            90% {
+                transform: translateY(0)
+            }
+
+            95% {
+                transform: translateY(15px)
+            }
+
+            100% {
+                transform: translateY(15px);
+                left: calc(100% - 8px)
+            }
+        }
+
+        @keyframes l6-2 {
+            100% {
+                top: -0.1px
+            }
+        }
+
+        @keyframes l6-3 {
+            0%, 80%, 100% {
+                transform: translate(0)
+            }
+
+            90% {
+                transform: translate(26px)
+            }
+        }
+        
     </style>
     </head>
 
 
-<body
-    class="page-template page-template-page-templates page-template-template-blog-col-1 page-template-page-templatestemplate-blog-col-1-php page page-id-1865 theme-selo woocommerce-no-js elementor-default elementor-kit-11">
+<body class="page-template page-template-page-templates page-template-template-blog-col-1 page-template-page-templatestemplate-blog-col-1-php page page-id-1865 theme-selo woocommerce-no-js elementor-default elementor-kit-11">
+    <div id="loader"></div>
+    <div id="content" style="display: none;">
     <div id="navbar"></div>
     <header id="main-header">
         <div class="container inner-header">
@@ -279,8 +377,115 @@
 
         <div class="container container-narrow">
             <div class="row">
-                <div class="col-lg p-0 blog-tile">
-                    
+                <div class="col-lg p-0 blog-tile"><style>h1{font-size:xx-large} h2{font-size: x-large} h3{font-size: larger;}</style>
+                    <h1>Privacy Policy for Godwin Austen Labs</h1>
+    <p>Last Updated: 8 July, 2024</p>
+    <p>Our website godwinausten.org, operated by Godwin Austen Labs, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, share, and protect your information when you visit our website or engage with our services. By using godwinausten.org, you agree to the collection and use of information in accordance with this policy.</p>
+
+    <h2>1. Introduction</h2>
+    <p>Godwin Austen Labs (“we”, “our”, “us”) operates the website located at <a href="http://www.godwinausten.org">www.godwinausten.org</a> (the “Site”) and provides Marketing and Sales Automation services. This Privacy Policy outlines our practices regarding the collection, use, and disclosure of information we receive from users of the Site and our clients.</p>
+
+    <h2>2. Information We Collect</h2>
+    <h3>a. Personal Information</h3>
+    <p>We may collect personal information that you provide directly to us when you use the Site or engage our services. This includes:</p>
+    <ul>
+        <li>Name</li>
+        <li>Email address</li>
+        <li>Mailing address</li>
+        <li>Phone number</li>
+        <li>Any other information you choose to provide</li>
+    </ul>
+
+    <h3>b. Automatically Collected Information</h3>
+    <p>When you visit the Site, we may automatically collect certain information about your device and usage, including:</p>
+    <ul>
+        <li>IP address</li>
+        <li>Browser type and version</li>
+        <li>Operating system</li>
+        <li>Referring URLs</li>
+        <li>Pages viewed and links clicked</li>
+        <li>Time and date of visit</li>
+        <li>Other diagnostic data</li>
+    </ul>
+
+    <h3>c. Cookies and Tracking Technologies</h3>
+    <p>We use cookies and similar tracking technologies to track activity on the Site and hold certain information. Cookies are files with a small amount of data that may include an anonymous unique identifier. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>
+
+    <h2>3. Use of Information</h2>
+    <p>We use the information we collect for various purposes, including:</p>
+    <ul>
+        <li>To provide, operate, and maintain the Site</li>
+        <li>To improve, personalize, and expand the Site</li>
+        <li>To understand and analyze how you use the Site</li>
+        <li>To communicate with you, including for customer service, updates, and promotional purposes</li>
+        <li>To process transactions and send related information</li>
+        <li>To find and prevent fraud</li>
+        <li>To comply with legal obligations</li>
+    </ul>
+
+    <h2>4. Credential Management System</h2>
+    <h3>a. Collection and Storage</h3>
+    <p>When you engage our services, we collect and store your credentials in our credential management system. This system is designed to be transparent and accessible to our clients via a secure client portal.</p>
+
+    <h3>b. Security</h3>
+    <p>Our credential management system employs advanced security measures to ensure the confidentiality, integrity, and availability of your credentials. We prioritize your information security and continuously update our practices to address new threats.</p>
+
+    <h2>5. Post-Contract Data Handling</h2>
+    <h3>a. Data Retention</h3>
+    <p>After the contract ends, we retain metrics and performance results for internal use. All other client information, except what was provided in the onboarding form, is deleted from our systems.</p>
+
+    <h3>b. Use of Retained Information</h3>
+    <p>The retained metrics and performance results are used solely for training purposes to improve our services. We do not use this information for any other purpose without your explicit consent.</p>
+
+    <h2>6. Sharing of Information</h2>
+    <p>We may share your personal information in the following circumstances:</p>
+    <h3>a. With Service Providers</h3>
+    <p>We may share your information with third-party service providers to perform services on our behalf, such as payment processing, data analysis, email delivery, hosting services, and customer service.</p>
+
+    <h3>b. With Affiliates</h3>
+    <p>We may share your information with our affiliates, in which case we will require those affiliates to honor this Privacy Policy.</p>
+
+    <h3>c. For Business Transfers</h3>
+    <p>We may share or transfer your information in connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.</p>
+
+    <h3>d. With Your Consent</h3>
+    <p>We may share your information with your consent or at your direction.</p>
+
+    <h3>e. Legal Requirements</h3>
+    <p>We may disclose your information if required to do so by law or in response to valid requests by public authorities (e.g., a court or a government agency).</p>
+
+    <h2>7. Security of Information</h2>
+    <p>We implement appropriate technical and organizational measures to protect your personal information from unauthorized access, use, disclosure, alteration, or destruction. However, no method of transmission over the Internet or method of electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+
+    <h2>8. Your Data Protection Rights</h2>
+    <p>Depending on your location, you may have the following rights regarding your personal information:</p>
+    <ul>
+        <li>Access: You have the right to request access to the personal information we hold about you.</li>
+        <li>Correction: You have the right to request that we correct any inaccurate or incomplete information.</li>
+        <li>Deletion: You have the right to request that we delete your personal information, subject to certain conditions.</li>
+        <li>Objection: You have the right to object to the processing of your personal information.</li>
+        <li>Restriction: You have the right to request that we restrict the processing of your personal information.</li>
+        <li>Data Portability: You have the right to request the transfer of your personal information to another organization, or directly to you, under certain conditions.</li>
+    </ul>
+    <p>To exercise any of these rights, please contact us at the contact information provided below.</p>
+
+    <h2>9. Children’s Privacy</h2>
+    <p>Our Site is not intended for use by children under the age of 13, and we do not knowingly collect personal information from children under 13. If we become aware that we have collected personal information from a child under 13, we will take steps to delete such information from our records.</p>
+
+    <h2>10. Intellectual Property</h2>
+    <p>All content, including text, graphics, logos, and software, on this website is the property of Godwin Austen Labs and is protected by copyright laws. Unauthorized use of any content is prohibited. All rights reserved.</p>
+
+    <h2>11. Changes to This Privacy Policy</h2>
+    <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+
+    <h2>12. Contact Information</h2>
+    <p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:</p>
+    <p>
+        Godwin Austen Labs<br>
+        Email: <a href="mailto:ceo@godwinausten.org">ceo@godwinausten.org</a>
+    </p>
+
+    <p>By using our Site and services, you acknowledge that you have read and understood this Privacy Policy. Godwin Austen Labs is not a registered 'LLC' and operates as an individually owned unregistered business, however, we reserve our rights.</p>
             </div><!-- .pagination-wrapper -->
 
         </div>
@@ -337,7 +542,7 @@
         id="eael-general-js"></script>
     <!-- start Simple Custom CSS and JS -->
     <script src="../../rum-static.pingdom.net/pa-64c02864c1d6cb0012000291.js" async></script>
-    <!-- end Simple Custom CSS and JS -->
+    <!-- end Simple Custom CSS and JS --></div>
 
 </body>
 

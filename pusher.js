@@ -82,4 +82,4 @@ function pusher(){
 
 };
 
-document.addEventListener('DOMContentLoaded', pusher());
+document.addEventListener('DOMContentLoaded', pusher);
