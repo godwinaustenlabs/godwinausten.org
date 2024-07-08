@@ -22,7 +22,7 @@ function headWriter(){
 };
 
 function navbarWriter(){
-    fetch('https://godwinausten.org/commonElements/navbar.html')
+    fetch('commonElements/navbar.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('navbar');
@@ -32,7 +32,7 @@ function navbarWriter(){
 };
 
 function footerWriter(){
-    fetch('https://godwinausten.org/commonElements/footer.html')
+    fetch('commonElements/footer.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('footer');
@@ -71,6 +71,7 @@ function loader(){
     document.getElementById('content').style.display = 'block';
 };
 
+
 function pusher(){
 
     headWriter();
@@ -83,3 +84,20 @@ function pusher(){
 };
 
 document.addEventListener('DOMContentLoaded', pusher());
+
+document.addEventListener('DOMContentLoaded', function() {
+    const acceptBtn = document.getElementById('accept-cookies');
+    const rejectBtn = document.getElementById('reject-cookies');
+    const cookieBanner = document.getElementById('cookie-banner');
+    const siteContent = document.getElementById('site-content');
+  
+    acceptBtn.addEventListener('click', function() {
+      cookieBanner.classList.add('hidden');
+      // Implement cookie handling logic or simply close the banner
+    });
+
+    acceptBtn.addEventListener('touchstart', function() {
+        cookieBanner.classList.add('hidden');
+        // Implement cookie handling logic or simply close the banner
+      });
+  });

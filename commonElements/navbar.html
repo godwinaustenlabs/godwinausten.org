@@ -30,7 +30,8 @@
           
           #cookie-banner {
             position: fixed;
-            margin-left: 4%;
+            margin-left: 50%;
+            transform: translate(-50%);
             bottom: 0;
             left: 0;
             width: 90%;
@@ -39,11 +40,12 @@
             z-index: 9999;
             padding: 1%;
             border-radius: 8px 8px 0 0; /* rounded corners */
-            transition: transform 0.3s ease-in-out;
+            transition: opacity 0.3s ease-out; 
           }
           
           .cookie-banner.hidden {
-            transform: translateY(100%);
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
           }
           
           .banner-content {
@@ -75,32 +77,29 @@
           .accept-btn:hover, .reject-btn:hover {
             opacity: 0.8;
           }
+
+          @media only screen and (max-width: 600px) {
+            #cookie-banner{
+              padding: 1.5%;
+              width: 95%;
+            }
+
+            .banner-content {
+              display: flex;
+              flex-direction: column;
+              padding-top: 20px; /* Adjust as needed for spacing */
+              text-align: center;
+            }
+          
+            .button-container {
+              margin-top: 20px; /* Increase space between text and buttons */
+            }
+          }
     </style>
     <div class="banner-content">
       <p>We use cookies to enhance your experience on our website. By continuing to use our site, you consent to our use of cookies.</p>
       <div class="button-container">
-        <button id="accept-cookies" class="accept-btn">Accept</button>
-        <button id="reject-cookies" class="reject-btn">Reject</button>
+        <button id="accept-cookies" class="accept-btn">Agree</button>
       </div>
     </div>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const acceptBtn = document.getElementById('accept-cookies');
-        const rejectBtn = document.getElementById('reject-cookies');
-        const cookieBanner = document.getElementById('cookie-banner');
-        const siteContent = document.getElementById('site-content');
-      
-        acceptBtn.addEventListener('click', function() {
-          cookieBanner.classList.add('hidden');
-          // Implement cookie handling logic or simply close the banner
-        });
-      
-        rejectBtn.addEventListener('click', function() {
-          cookieBanner.classList.add('hidden');
-          siteContent.style.display = 'none'; // Example: hide site content
-          // You can customize this to display a message or handle differently
-        });
-      });
-  </script>
