@@ -3,8 +3,7 @@
           
           #cookie-banner {
             position: fixed;
-            margin-left: 50%;
-            transform: translate(-50%);
+            margin-left: 5%;
             bottom: 0;
             left: 0;
             width: 90%;
@@ -13,12 +12,12 @@
             z-index: 9999;
             padding: 1%;
             border-radius: 8px 8px 0 0; /* rounded corners */
-            transition: opacity 0.3s ease-out; 
+            transition: all 0.3s ease-out; 
           }
           
           .cookie-banner.hidden {
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
+            transform: translateY(100%);
+            transition: all 0.3s ease-in-out;
           }
           
           .banner-content {
@@ -53,8 +52,8 @@
 
           @media only screen and (max-width: 600px) {
             #cookie-banner{
-              padding: 1.5%;
-              width: 95%;
+              padding: 1%;
+              width: 90%;
             }
 
             .banner-content {
