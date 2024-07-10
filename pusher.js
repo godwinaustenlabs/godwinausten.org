@@ -27,7 +27,7 @@ function navbarWriter(){
     .then(text => {
         const container = document.getElementById('navbar');
         container.innerHTML = text;
-    })
+        })
     .catch(error => console.log(error))
 };
 
@@ -71,6 +71,35 @@ function loader(){
     document.getElementById('content').style.display = 'block';
 };
 
+function cookies(){
+
+    fetch('commonElements/cookieBanner.html')
+    .then(response => response.text())
+    .then(text => {
+        const container = document.getElementById('cookies');
+        container.innerHTML = text;
+    })
+    .catch(error => {console.log(error)});
+   
+};
+
+function cookieHide(){
+    const acceptBtn = document.getElementById('accept-cookies');
+    const cookieBanner = document.getElementById('cookie-banner');
+    const siteContent = document.getElementById('site-content');
+  
+    acceptBtn.addEventListener('click', function() {
+      cookieBanner.classList.add('hidden');
+      // Implement cookie handling logic or simply close the banner
+    });
+
+    acceptBtn.addEventListener('touchstart', function() {
+        cookieBanner.classList.add('hidden');
+        // Implement cookie handling logic or simply close the banner
+      })
+}
+
+
 function pusher(){
 
     headWriter();
@@ -79,7 +108,9 @@ function pusher(){
     typeformSideClip();
     typeformScript(url);
     setTimeout(loader, 3000);
-
+    setTimeout(cookies, 900)
+    setTimeout(cookieHide, 1500);
 };
 
 document.addEventListener('DOMContentLoaded', pusher);
+
