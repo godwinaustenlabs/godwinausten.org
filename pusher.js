@@ -22,17 +22,17 @@ function headWriter(){
 };
 
 function navbarWriter(){
-    fetch('commonElements/navbar.html')
+    fetch('https://godwinausten.org/commonElements/navbar.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('navbar');
         container.innerHTML = text;
-    })
+        })
     .catch(error => console.log(error))
 };
 
 function footerWriter(){
-    fetch('commonElements/footer.html')
+    fetch('https://godwinausten.org/commonElements/footer.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('footer');
@@ -71,23 +71,20 @@ function loader(){
     document.getElementById('content').style.display = 'block';
 };
 
+function cookies(){
 
-function pusher(){
-
-    headWriter();
-    navbarWriter();
-    footerWriter();
-    typeformSideClip();
-    typeformScript(url);
-    setTimeout(loader, 3000);
-
+    fetch('commonElements/cookieBanner.html')
+    .then(response => response.text())
+    .then(text => {
+        const container = document.getElementById('cookies');
+        container.innerHTML = text;
+    })
+    .catch(error => {console.log(error)});
+   
 };
 
-document.addEventListener('DOMContentLoaded', pusher());
-
-document.addEventListener('DOMContentLoaded', function() {
+function cookieHide(){
     const acceptBtn = document.getElementById('accept-cookies');
-    const rejectBtn = document.getElementById('reject-cookies');
     const cookieBanner = document.getElementById('cookie-banner');
     const siteContent = document.getElementById('site-content');
   
@@ -99,5 +96,21 @@ document.addEventListener('DOMContentLoaded', function() {
     acceptBtn.addEventListener('touchstart', function() {
         cookieBanner.classList.add('hidden');
         // Implement cookie handling logic or simply close the banner
-      });
-  });
+      })
+}
+
+
+function pusher(){
+
+    headWriter();
+    navbarWriter();
+    footerWriter();
+    typeformSideClip();
+    typeformScript(url);
+    setTimeout(loader, 3000);
+    setTimeout(cookies, 900)
+    setTimeout(cookieHide, 1500);
+};
+
+document.addEventListener('DOMContentLoaded', pusher);
+
