@@ -73,7 +73,7 @@ function loader(){
 
 function cookies(){
 
-    fetch('commonElements/cookieBanner.html')
+    fetch('https://godwinausten.org/commonElements/cookieBanner.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('cookies');
