@@ -269,446 +269,575 @@
     <link rel="stylesheet"
         href="hs-fs/hub/39930638/hub_generated/module_assets/139718698332/1697043944515/module_139718698332_Social_Follow.min.css" />
     <link href="css2.css" rel="stylesheet">
+    <style>
+        /* HTML: <div class="loader"></div> */
+        #loader {
+            width: 40px;
+            height: 20px;
+            --c: no-repeat radial-gradient(farthest-side, #000 93%, #0000);
+            background:
+                var(--c) 0 0,
+                var(--c) 50% 0;
+            background-size: 10px 10px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            clip-path: inset(-200% -100% 0 0);
+            animation: l6-0 1.5s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        #loader:before {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: #000;
+            left: -16px;
+            top: 0;
+            border-radius: 5px;
+            animation:
+                l6-1 1.5s linear infinite,
+                l6-2 0.5s cubic-bezier(0, 200, .8, 200) infinite;
+        }
+
+        #loader:after {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto auto;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #000;
+            animation: l6-3 1.5s linear infinite;
+        }
+
+        @keyframes l6-0 {
+
+            0%,
+            30% {
+                background-position: 0 0, 50% 0
+            }
+
+            33% {
+                background-position: 0 100%, 50% 0
+            }
+
+            41%,
+            63% {
+                background-position: 0 0, 50% 0
+            }
+
+            66% {
+                background-position: 0 0, 50% 100%
+            }
+
+            74%,
+            100% {
+                background-position: 0 0, 50% 0
+            }
+        }
+
+        @keyframes l6-1 {
+            90% {
+                transform: translateY(0)
+            }
+
+            95% {
+                transform: translateY(15px)
+            }
+
+            100% {
+                transform: translateY(15px);
+                left: calc(100% - 8px)
+            }
+        }
+
+        @keyframes l6-2 {
+            100% {
+                top: -0.1px
+            }
+        }
+
+        @keyframes l6-3 {
+
+            0%,
+            80%,
+            100% {
+                transform: translate(0)
+            }
+
+            90% {
+                transform: translate(26px)
+            }
+        }
+    </style>
 </head>
 
 <body
     class="page-template page-template-page-templates page-template-template-blog-col-1 page-template-page-templatestemplate-blog-col-1-php page page-id-1865 theme-selo woocommerce-no-js elementor-default elementor-kit-11">
-    <div id="navbar"></div>
-    <header id="main-header">
-        <div class="container inner-header">
-            <div class="title-wrap">
-                <h1 class="header-title">A Product Launch success story</h1>
-                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="https://schema.org/">
-                    <!-- Breadcrumb NavXT 7.3.0 -->
-                    <span property="itemListElement" typeof="ListItem"><a property="item" typeof="WebPage" title="Home"
-                            href="https://godwinausten.org" class="home"><span property="name">Home</span></a>
-                        <meta property="position" content="1">
-                    </span> &gt; <span property="itemListElement" typeof="ListItem"><span property="name"
-                            class="post post-page current-item">Case Study</span>
-                        <meta property="url" content="https://cs1.godwinausten.org/">
-                        <meta property="position" content="2">
-                    </span>
+    <div id="loader"></div>
+    <div id="content" style="display: none;">
+        <div id="navbar"></div>
+        <header id="main-header">
+            <div class="container inner-header">
+                <div class="title-wrap">
+                    <h1 class="header-title">A Product Launch success story</h1>
+                    <div class="breadcrumbs" typeof="BreadcrumbList" vocab="https://schema.org/">
+                        <!-- Breadcrumb NavXT 7.3.0 -->
+                        <span property="itemListElement" typeof="ListItem"><a property="item" typeof="WebPage"
+                                title="Home" href="https://godwinausten.org" class="home"><span
+                                    property="name">Home</span></a>
+                            <meta property="position" content="1">
+                        </span> &gt; <span property="itemListElement" typeof="ListItem"><span property="name"
+                                class="post post-page current-item">Case Study</span>
+                            <meta property="url" content="https://cs1.godwinausten.org/">
+                            <meta property="position" content="2">
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id="header-wave"></div>
-    </header>
-    <main id="site-content" class="blog flex-grow-1" role="main">
+            <div id="header-wave"></div>
+        </header>
+        <main id="site-content" class="blog flex-grow-1" role="main">
 
-        <div class="container container-narrow">
-            <div class="row">
-                <div class="col-lg p-0 blog-tile">
-                    <article
-                        class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
-                        id="post-18504">
-                        <div class="blog-tile-empty-placeholder">
-                            <div class="featured-media">
-                                <figure class="mb-0">
-                                    <img fetchpriority="high" width="1200" height="800" src="assets/fb3.png"
-                                        class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
-                                </figure>
-                            </div>
-                        </div>
-                        <div class="blog-tile-content">
-
-                            <header class="entry-header">
-
-                                <h5>Introduction</h5>
-
-                                <div>
-                                    <p>This case study explores the challenges encountered during the launch of a new
-                                        product and the strategies employed in generating leads. We delve into the
-                                        adversity faced by our team, how we overcame these obstacles, and the lessons
-                                        learned throughout the process. Our hope is that by sharing our experiences,
-                                        other teams may gain valuable insights that can assist them in their own product
-                                        launches and lead generation efforts.
-                                    </p>
+            <div class="container container-narrow">
+                <div class="row">
+                    <div class="col-lg p-0 blog-tile">
+                        <article
+                            class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
+                            id="post-18504">
+                            <div class="blog-tile-empty-placeholder">
+                                <div class="featured-media">
+                                    <figure class="mb-0">
+                                        <img fetchpriority="high" width="1200" height="800" src="assets/fb3.png"
+                                            class="attachment-post-thumbnail size-post-thumbnail wp-post-image"
+                                            alt="" />
+                                    </figure>
                                 </div>
+                            </div>
+                            <div class="blog-tile-content">
+
+                                <header class="entry-header">
+
+                                    <h5>Introduction</h5>
+
+                                    <div>
+                                        <p>This case study explores the challenges encountered during the launch of a
+                                            new
+                                            product and the strategies employed in generating leads. We delve into the
+                                            adversity faced by our team, how we overcame these obstacles, and the
+                                            lessons
+                                            learned throughout the process. Our hope is that by sharing our experiences,
+                                            other teams may gain valuable insights that can assist them in their own
+                                            product
+                                            launches and lead generation efforts.
+                                        </p>
+                                    </div>
 
 
 
-                            </header>
-                        </div>
-                    </article>
+                                </header>
+                            </div>
+                        </article>
+                    </div>
                 </div>
-            </div>
-            <section class="section-base section-didvider-buffer dnd-section" id="dnd_area-module-14">
-                <div class="row-fluid content-layouts-main">
+                <section class="section-base section-didvider-buffer dnd-section" id="dnd_area-module-14">
+                    <div class="row-fluid content-layouts-main">
 
 
-                    <div class="section-row theme-scroll-reveal visible">
-                        <div class="span12 dnd-column">
-                            <div class="timeline-container">
-                                <div class="timeline-row odd">
-                                    <div class="timeline-content">
-                                        <h5>
+                        <div class="section-row theme-scroll-reveal visible">
+                            <div class="span12 dnd-column">
+                                <div class="timeline-container">
+                                    <div class="timeline-row odd">
+                                        <div class="timeline-content">
+                                            <h5>
+                                                <span>
+                                                    STEP 1
+                                                </span>
+                                            </h5>
+                                            <h3>
+                                                <span>
+                                                    The Big Problem
+                                                </span>
+                                            </h3>
                                             <span>
-                                                STEP 1
+                                                When we initially partnered with
+                                                this client, they faced
+                                                substantial challenges in
+                                                launching their new product,
+                                                including severe setbacks such as
+                                                rampant piracy and a tarnished
+                                                product reputation due to the
+                                                presence of counterfeit products
+                                                in the market. To address these
+                                                issues, we conducted a
+                                                prescriptive analysis (PA). PA
+                                                enabled us to gain a comprehensive
+                                                understanding of the most
+                                                effective marketing techniques to
+                                                employ. Furthermore, our research
+                                                pinpointed precisely where our
+                                                focus should be, allowing us to
+                                                increase ad spend with a
+                                                profitable return.
                                             </span>
-                                        </h5>
-                                        <h3>
-                                            <span>
-                                                The Big Problem
-                                            </span>
-                                        </h3>
-                                        <span>
-                                            When we initially partnered with
-                                            this client, they faced
-                                            substantial challenges in
-                                            launching their new product,
-                                            including severe setbacks such as
-                                            rampant piracy and a tarnished
-                                            product reputation due to the
-                                            presence of counterfeit products
-                                            in the market. To address these
-                                            issues, we conducted a
-                                            prescriptive analysis (PA). PA
-                                            enabled us to gain a comprehensive
-                                            understanding of the most
-                                            effective marketing techniques to
-                                            employ. Furthermore, our research
-                                            pinpointed precisely where our
-                                            focus should be, allowing us to
-                                            increase ad spend with a
-                                            profitable return.
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="timeline-row even">
-                                    <div class="timeline-content">
-                                        <h5>
+                                    <div class="timeline-row even">
+                                        <div class="timeline-content">
+                                            <h5>
+                                                <span>
+                                                    STEP 2
+                                                </span>
+                                            </h5>
+                                            <h3>
+                                                <span data-token-index="0">
+                                                    Establishing a Robust Online
+                                                    Presence:
+                                                </span>
+                                            </h3>
                                             <span>
-                                                STEP 2
+                                                Rapidly and effectively, we set up
+                                                a formidable social media
+                                                presence. Implementing business
+                                                managers and devising a
+                                                meticulously planned Awareness
+                                                Campaign, our objective was to not
+                                                only neutralize the adverse
+                                                effects on the product but also to
+                                                propagate genuine awareness in the
+                                                market. This strategic approach
+                                                allowed us to not just address the
+                                                challenges head-on but also
+                                                establish a positive narrative
+                                                around the product, contributing
+                                                significantly to its reputation
+                                                and market positioning.
                                             </span>
-                                        </h5>
-                                        <h3>
-                                            <span data-token-index="0">
-                                                Establishing a Robust Online
-                                                Presence:
-                                            </span>
-                                        </h3>
-                                        <span>
-                                            Rapidly and effectively, we set up
-                                            a formidable social media
-                                            presence. Implementing business
-                                            managers and devising a
-                                            meticulously planned Awareness
-                                            Campaign, our objective was to not
-                                            only neutralize the adverse
-                                            effects on the product but also to
-                                            propagate genuine awareness in the
-                                            market. This strategic approach
-                                            allowed us to not just address the
-                                            challenges head-on but also
-                                            establish a positive narrative
-                                            around the product, contributing
-                                            significantly to its reputation
-                                            and market positioning.
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="timeline-row odd">
-                                    <div class="timeline-content">
-                                        <h5>
+                                    <div class="timeline-row odd">
+                                        <div class="timeline-content">
+                                            <h5>
+                                                <span>
+                                                    STEP 3
+                                                </span>
+                                            </h5>
+                                            <h3>
+                                                <span data-token-index="0">
+                                                    Results of the Awareness
+                                                    Campaign:
+                                                </span>
+                                            </h3>
                                             <span>
-                                                STEP 3
+                                                Surpassing our engagement targets
+                                                with minimal Ad spend, we not only
+                                                achieved but exceeded
+                                                expectations. Effectively
+                                                neutralizing negative market
+                                                sentiments, our strategic efforts
+                                                are evident in the remarkable
+                                                results of the Awareness Campaign
+                                                showcased below. This success not
+                                                only attests to the efficiency of
+                                                our approach but also highlights
+                                                our ability to navigate challenges
+                                                and reshape the narrative
+                                                surrounding the product in a
+                                                cost-effective manner.
                                             </span>
-                                        </h5>
-                                        <h3>
-                                            <span data-token-index="0">
-                                                Results of the Awareness
-                                                Campaign:
-                                            </span>
-                                        </h3>
-                                        <span>
-                                            Surpassing our engagement targets
-                                            with minimal Ad spend, we not only
-                                            achieved but exceeded
-                                            expectations. Effectively
-                                            neutralizing negative market
-                                            sentiments, our strategic efforts
-                                            are evident in the remarkable
-                                            results of the Awareness Campaign
-                                            showcased below. This success not
-                                            only attests to the efficiency of
-                                            our approach but also highlights
-                                            our ability to navigate challenges
-                                            and reshape the narrative
-                                            surrounding the product in a
-                                            cost-effective manner.
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="timeline-row even">
-                                    <div class="timeline-content">
-                                        <h5>
+                                    <div class="timeline-row even">
+                                        <div class="timeline-content">
+                                            <h5>
+                                                <span>
+                                                    STEP 4
+                                                </span>
+                                            </h5>
+                                            <h3>
+                                                <span data-token-index="0">
+                                                    Overcoming Lead Generation
+                                                    Hurdles:
+                                                </span>
+                                            </h3>
                                             <span>
-                                                STEP 4
+                                                Encountering challenges in
+                                                converting cold leads, we
+                                                identified key obstacles in the
+                                                form of a weak landing page and a
+                                                notable absence of testimonials.
+                                                Addressing these issues became
+                                                paramount to enhancing our lead
+                                                conversion strategy. By fortifying
+                                                our landing page and incorporating
+                                                compelling testimonials, we aimed
+                                                to instill trust and credibility,
+                                                ultimately overcoming these
+                                                hurdles in our pursuit of
+                                                converting cold leads into active,
+                                                engaged customers.
                                             </span>
-                                        </h5>
-                                        <h3>
-                                            <span data-token-index="0">
-                                                Overcoming Lead Generation
-                                                Hurdles:
-                                            </span>
-                                        </h3>
-                                        <span>
-                                            Encountering challenges in
-                                            converting cold leads, we
-                                            identified key obstacles in the
-                                            form of a weak landing page and a
-                                            notable absence of testimonials.
-                                            Addressing these issues became
-                                            paramount to enhancing our lead
-                                            conversion strategy. By fortifying
-                                            our landing page and incorporating
-                                            compelling testimonials, we aimed
-                                            to instill trust and credibility,
-                                            ultimately overcoming these
-                                            hurdles in our pursuit of
-                                            converting cold leads into active,
-                                            engaged customers.
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="timeline-row odd">
-                                    <div class="timeline-content">
-                                        <h5>
+                                    <div class="timeline-row odd">
+                                        <div class="timeline-content">
+                                            <h5>
+                                                <span>
+                                                    STEP 5
+                                                </span>
+                                            </h5>
+                                            <h3>
+                                                <span data-token-index="0">
+                                                    Addressing Lead Generation
+                                                    Challenges
+                                                </span>
+                                            </h3>
                                             <span>
-                                                STEP 5
+                                                Taking a proactive approach, we
+                                                initiated backend email campaigns
+                                                designed to educate and nurture
+                                                cold leads, fostering a more
+                                                informed and engaged audience.
+                                                Simultaneously, recognizing the
+                                                importance of a strong online
+                                                presence, we undertook a
+                                                comprehensive revamp of the
+                                                website. Introducing a new web
+                                                funnel, our objective was to
+                                                counteract negative perceptions
+                                                and provide a seamless, compelling
+                                                user experience. These strategic
+                                                initiatives collectively aimed at
+                                                not only educating potential
+                                                customers but also reshaping their
+                                                perception positively for improved
+                                                conversion outcomes.
                                             </span>
-                                        </h5>
-                                        <h3>
-                                            <span data-token-index="0">
-                                                Addressing Lead Generation
-                                                Challenges
-                                            </span>
-                                        </h3>
-                                        <span>
-                                            Taking a proactive approach, we
-                                            initiated backend email campaigns
-                                            designed to educate and nurture
-                                            cold leads, fostering a more
-                                            informed and engaged audience.
-                                            Simultaneously, recognizing the
-                                            importance of a strong online
-                                            presence, we undertook a
-                                            comprehensive revamp of the
-                                            website. Introducing a new web
-                                            funnel, our objective was to
-                                            counteract negative perceptions
-                                            and provide a seamless, compelling
-                                            user experience. These strategic
-                                            initiatives collectively aimed at
-                                            not only educating potential
-                                            customers but also reshaping their
-                                            perception positively for improved
-                                            conversion outcomes.
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="timeline-row even">
-                                    <div class="timeline-content">
-                                        <h5>
+                                    <div class="timeline-row even">
+                                        <div class="timeline-content">
+                                            <h5>
+                                                <span>
+                                                    STEP 6
+                                                </span>
+                                            </h5>
+                                            <h3>
+                                                <span data-token-index="0">
+                                                    Remarkable Results of the
+                                                    Improved Lead Gen Campaign
+                                                </span>
+                                            </h3>
                                             <span>
-                                                STEP 6
+                                                Through strategic optimizations,
+                                                we achieved a substantial
+                                                reduction in Cost Per Lead,
+                                                demonstrating our commitment to
+                                                efficient resource utilization.
+                                                Concurrently, our efforts resulted
+                                                in a significant enhancement of
+                                                lead quality and buying intent,
+                                                attesting to the effectiveness of
+                                                our targeted campaigns. The
+                                                impressive return on investment
+                                                stands as a testament to our
+                                                ability to not only streamline
+                                                costs but also to deliver tangible
+                                                value by attracting high-quality
+                                                leads with a genuine interest in
+                                                our offerings.
                                             </span>
-                                        </h5>
-                                        <h3>
-                                            <span data-token-index="0">
-                                                Remarkable Results of the
-                                                Improved Lead Gen Campaign
-                                            </span>
-                                        </h3>
-                                        <span>
-                                            Through strategic optimizations,
-                                            we achieved a substantial
-                                            reduction in Cost Per Lead,
-                                            demonstrating our commitment to
-                                            efficient resource utilization.
-                                            Concurrently, our efforts resulted
-                                            in a significant enhancement of
-                                            lead quality and buying intent,
-                                            attesting to the effectiveness of
-                                            our targeted campaigns. The
-                                            impressive return on investment
-                                            stands as a testament to our
-                                            ability to not only streamline
-                                            costs but also to deliver tangible
-                                            value by attracting high-quality
-                                            leads with a genuine interest in
-                                            our offerings.
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="timeline-row odd">
-                                    <div class="timeline-content">
-                                        <h5>
+                                    <div class="timeline-row odd">
+                                        <div class="timeline-content">
+                                            <h5>
+                                                <span>
+                                                    STEP 7
+                                                </span>
+                                            </h5>
+                                            <h3>
+                                                <span data-token-index="0">
+                                                    Conclusion
+                                                </span>
+                                            </h3>
                                             <span>
-                                                STEP 7
+                                                Demonstrates our ability to
+                                                navigate complex challenges.
                                             </span>
-                                        </h5>
-                                        <h3>
-                                            <span data-token-index="0">
-                                                Conclusion
+                                            <br>
+                                            <span>
+                                                Success attributed to strategic
+                                                planning, meticulous execution,
+                                                and unwavering commitment to
+                                                excellence.
                                             </span>
-                                        </h3>
-                                        <span>
-                                            Demonstrates our ability to
-                                            navigate complex challenges.
-                                        </span>
-                                        <br>
-                                        <span>
-                                            Success attributed to strategic
-                                            planning, meticulous execution,
-                                            and unwavering commitment to
-                                            excellence.
-                                        </span>
-                                        <br>
-                                        <span>
-                                            The case study stands as a
-                                            testament to our team's expertise
-                                            and professionalism in overcoming
-                                            seemingly insurmountable
-                                            obstacles.
-                                        </span>
+                                            <br>
+                                            <span>
+                                                The case study stands as a
+                                                testament to our team's expertise
+                                                and professionalism in overcoming
+                                                seemingly insurmountable
+                                                obstacles.
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="timeline-midline" style="border-left: 5px solid #435674">
+                                    <div class="timeline-midline" style="border-left: 5px solid #435674">
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="section-row">
+                            <a class="button section-cta-btn theme-shadow" href="https://contact.godwinausten.org"
+                                style="transform: translateY(-86px); z-index: 10;">
+                                Get A Demo
+                            </a>
                         </div>
                     </div>
-                    <div class="section-row">
-                        <a class="button section-cta-btn theme-shadow" href="https://contact.godwinausten.org" style="transform: translateY(-86px); z-index: 10;">
-                            Get A Demo
+                </section>
+                <div class="row" style="margin-top: -20%;">
+                    <div class="col-lg p-0 blog-tile">
+                        <article
+                            class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
+                            id="post-18504">
+                            <div class="blog-tile-empty-placeholder">
+                                <div class="featured-media">
+                                    <figure class="mb-0">
+                                        <img fetchpriority="high" width="1200" height="800" src="assets/fb1.png"
+                                            class="attachment-post-thumbnail size-post-thumbnail wp-post-image"
+                                            alt="" />
+                                    </figure>
+                                </div>
+                            </div>
+                            <div class="blog-tile-content">
+
+                                <header class="entry-header">
+
+                                    <h2>First Awareness Campaign</h2>
+
+                                    <div>
+                                        <p>We successfully achieved our target and maintained a very high engagement
+                                            rate with minimum amount of Ad spend. As a new product this not only hyped
+                                            up the market but drew a lot of traffic onto the client's web funnel we
+                                            made.
+                                        </p>
+                                    </div>
+
+                                </header>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 20%;">
+                    <div class="col-lg p-0 blog-tile">
+                        <article
+                            class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
+                            id="post-18504">
+                            <div class="blog-tile-empty-placeholder">
+                                <div class="featured-media">
+                                    <figure class="mb-0">
+                                        <img fetchpriority="high" width="1200" height="800" src="assets/hb1.png"
+                                            class="attachment-post-thumbnail size-post-thumbnail wp-post-image"
+                                            alt="" />
+                                    </figure>
+                                </div>
+                            </div>
+                            <div class="blog-tile-content">
+
+                                <header class="entry-header">
+
+                                    <h2>First Lead Generation</h2>
+
+                                    <div>
+                                        <p>Our lead generation campaign produced an extraordinary number of leads, but
+                                            because of a weak landing page and a pre-existing negative perception of the
+                                            product, we faced the challenge of converting these cold leads into
+                                            customers.</p>
+                                    </div>
+
+                                </header>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 20%;">
+                    <div class="col-lg p-0 blog-tile">
+                        <article
+                            class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
+                            id="post-18504">
+                            <div class="blog-tile-empty-placeholder">
+                                <div class="featured-media">
+                                    <figure class="mb-0">
+                                        <img fetchpriority="high" width="1200" height="800" src="assets/fb3.png"
+                                            class="attachment-post-thumbnail size-post-thumbnail wp-post-image"
+                                            alt="" />
+                                    </figure>
+                                </div>
+                            </div>
+                            <div class="blog-tile-content">
+
+                                <header class="entry-header">
+
+                                    <h2>Second Lead Generation</h2>
+
+                                    <div>
+                                        <p>We ran a second campaign with this new strategy of making a separate
+                                            web-funnel for traffic and generated high quality leads this time. Not only
+                                            we reduced the Cost Per Lead but also increased the quality and buying
+                                            intent of the leads resulting in a better ROI.</p>
+                                    </div>
+
+                                </header>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div style="margin-top: 20%;">
+                    <h5 style="text-align: center;">
+                        PEOPLE LIKE WORKING WITH US
+                    </h5>
+                    <h2 style="text-align: center;">
+                        Trusted By The Best
+                    </h2>
+                </div>
+                <script type="text/javascript" src="https://testimonial.to/js/iframeResizer.min.js"></script>
+                <iframe id="testimonialto-embed-text--NjftKeLSf3eg674-Gim"
+                    src="https://embed-v2.testimonial.to/t/-NjftKeLSf3eg674-Gim?design=left-aligned&fontFamily=Inter&fontColor=000000&bgColor=ffffff&borderColor=ABB8C3&starColor=FDCC0D&shadowSize=shadow-none&showBorder=no&showPadding=yes&borderRadius=rounded-lg&borderWidth=border"
+                    frameborder="0" scrolling="no" width="100%"></iframe>
+                <script
+                    type="text/javascript">iFrameResize({ log: false, checkOrigin: false }, "#testimonialto-embed-text--NjftKeLSf3eg674-Gim");</script>
+
+                <div style="margin-top: 20%; text-align:center;">
+                    <h1 id="desktop">Book a free consultation</h1>
+                    <h2 id="mobile">Book a free consultation</h2>
+                    <h5 id="innerh5">Book a free 25 min call and get a complete <b>plug 'n play</b> Marketing Plan</h5>
+                    <div class="elementor-button-wrapper">
+                        <a class="elementor-button elementor-button-link elementor-size-xl"
+                            href="https://contact.godwinausten.org">
+                            <span class="elementor-button-content-wrapper">
+                                <span class="elementor-button-text">Get
+                                    started</span>
+                            </span>
                         </a>
                     </div>
                 </div>
-            </section>
-            <div class="row"  style="margin-top: -20%;">
-                <div class="col-lg p-0 blog-tile">
-                    <article
-                        class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
-                        id="post-18504">
-                        <div class="blog-tile-empty-placeholder">
-                            <div class="featured-media">
-                                <figure class="mb-0">
-                                    <img fetchpriority="high" width="1200" height="800" src="assets/fb1.png"
-                                        class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
-                                </figure>
-                            </div>
-                        </div>
-                        <div class="blog-tile-content">
-
-                            <header class="entry-header">
-
-                                <h2>First Awareness Campaign</h2>
-
-                                <div>
-                                    <p>We successfully achieved our target and maintained a very high engagement rate with minimum amount of Ad spend. As a new product this not only hyped up the market but drew a lot of traffic onto the client's web funnel we made.
-                                    </p>
-                                </div>
-
-                            </header>
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <div class="row"  style="margin-top: 20%;">
-                <div class="col-lg p-0 blog-tile">
-                    <article
-                        class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
-                        id="post-18504">
-                        <div class="blog-tile-empty-placeholder">
-                            <div class="featured-media">
-                                <figure class="mb-0">
-                                    <img fetchpriority="high" width="1200" height="800" src="assets/hb1.png"
-                                        class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
-                                </figure>
-                            </div>
-                        </div>
-                        <div class="blog-tile-content">
-
-                            <header class="entry-header">
-
-                                <h2>First Lead Generation</h2>
-
-                                <div>
-                                    <p>Our lead generation campaign produced an extraordinary number of leads, but because of a weak landing page and a pre-existing negative perception of the product, we faced the challenge of converting these cold leads into customers.</p>
-                                </div>
-
-                            </header>
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <div class="row"  style="margin-top: 20%;">
-                <div class="col-lg p-0 blog-tile">
-                    <article
-                        class="post-18504 post type-post status-publish format-standard has-post-thumbnail hentry category-sales tag-facts"
-                        id="post-18504">
-                        <div class="blog-tile-empty-placeholder">
-                            <div class="featured-media">
-                                <figure class="mb-0">
-                                    <img fetchpriority="high" width="1200" height="800" src="assets/fb3.png"
-                                        class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
-                                </figure>
-                            </div>
-                        </div>
-                        <div class="blog-tile-content">
-
-                            <header class="entry-header">
-
-                                <h2>Second Lead Generation</h2>
-
-                                <div>
-                                    <p>We ran a second campaign with this new strategy of making a separate web-funnel for traffic and generated high quality leads this time. Not only we reduced the Cost Per Lead but also increased the quality and buying intent of the leads resulting in a better ROI.</p>
-                                </div>
-
-                            </header>
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <div style="margin-top: 20%;">
-                <h5 style="text-align: center;">
-                    PEOPLE LIKE WORKING WITH US
-                  </h5>
-                  <h2 style="text-align: center;">
-                    Trusted By The Best
-                  </h2>
-            </div>
-                  <script type="text/javascript" src="https://testimonial.to/js/iframeResizer.min.js"></script>
-<iframe id="testimonialto-embed-text--NjftKeLSf3eg674-Gim" src="https://embed-v2.testimonial.to/t/-NjftKeLSf3eg674-Gim?design=left-aligned&fontFamily=Inter&fontColor=000000&bgColor=ffffff&borderColor=ABB8C3&starColor=FDCC0D&shadowSize=shadow-none&showBorder=no&showPadding=yes&borderRadius=rounded-lg&borderWidth=border" frameborder="0" scrolling="no" width="100%"></iframe>
-<script type="text/javascript">iFrameResize({log: false, checkOrigin: false}, "#testimonialto-embed-text--NjftKeLSf3eg674-Gim");</script>
-
-            <div style="margin-top: 20%; text-align:center;">
-            <h1 id="desktop">Book a free consultation</h1>
-            <h2 id="mobile">Book a free consultation</h2>
-            <h5 id="innerh5">Book a free 25 min call and get a complete <b>plug 'n play</b> Marketing Plan</h5>
-            <div class="elementor-button-wrapper">
-                <a class="elementor-button elementor-button-link elementor-size-xl" href="https://contact.godwinausten.org">
-                    <span class="elementor-button-content-wrapper">
-                        <span class="elementor-button-text">Get
-                            started</span>
-                    </span>
-                </a>
-            </div>
-        </div>
-    </main>
-                </div>
-            </div>
-        </div>
-    </section>
-    <div id="footer"></div>
+        </main>
+        </section>
+        <div id="footer"></div>
+    </div>
     <script src="https://godwinausten.org/pusher.js"></script>
 
 
