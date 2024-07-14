@@ -1469,7 +1469,6 @@ h1 {
 .custom-logo-link h5 {
     font-weight: 600;
     letter-spacing: -0.021em;
-    font-family: -apple-system;
     font-size: 28px;
     color: var(--header-menu-color);
 }
@@ -6717,7 +6716,6 @@ hr.dark-grey {
 
 .blog-tile {
     overflow: hidden;
-    margin: 0 2rem 3rem 1rem;
 }
 
 .blog-tile .entry-title {
@@ -6845,9 +6843,6 @@ hr.dark-grey {
 }
 
 @media (max-width: 600px) {
-    .blog-tile .featured-media img {
-        height: 15rem;
-    }
 
     .prev.page-numbers {
         width: 100%;
