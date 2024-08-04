@@ -97,6 +97,7 @@ function cookieHide(){
         cookieBanner.classList.add('hidden');
         // Implement cookie handling logic or simply close the banner
       })
+
 }
 
 
@@ -108,9 +109,9 @@ function pusher(){
     typeformSideClip();
     typeformScript(url);
     setTimeout(loader, 3000);
-    setTimeout(cookies, 900)
-    setTimeout(cookieHide, 1500);
+    setTimeout(cookies, 900);
 };
 
 document.addEventListener('DOMContentLoaded', pusher);
+document.addEventListener('readystatechange', cookieHide);
 
