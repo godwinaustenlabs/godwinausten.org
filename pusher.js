@@ -109,7 +109,7 @@ function pusher(){
     typeformSideClip();
     typeformScript(url);
     setTimeout(loader, 3000);
-    setTimeout(cookies, 900);
+    // setTimeout(cookies, 900);
 };
 
 document.addEventListener('DOMContentLoaded', pusher);
