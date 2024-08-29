@@ -69,6 +69,7 @@ function typeformScript(url){
 function loader(){
     document.getElementById('loader').style.display = 'none';
     document.getElementById('content').style.display = 'block';
+    setTimeout(cookieHideForce, 3000);
 };
 
 function cookies(){
@@ -100,6 +101,29 @@ function cookieHide(){
 
 }
 
+function videoPlayButton(){
+    const click = document.getElementById('uc_blox_play_button_elementor_5ffe2a5');
+    click.addEventListener('click', function(){
+        alert('Sorry! the video is unavailable right now. Dev team is working on it :)')
+    });
+}
+
+function cookieHideExec(){
+
+    if(document.readyState == 'complete'){
+        document.addEventListener('readystatechange', cookieHide);
+    }
+    else{
+        document.addEventListener('readystatechange', cookieHide);
+    }
+};
+
+function cookieHideForce(){
+
+    const cookieBanner = document.getElementById('cookie-banner');
+    cookieBanner.classList.add('hidden');
+};
+
 
 function pusher(){
 
@@ -109,9 +133,11 @@ function pusher(){
     typeformSideClip();
     typeformScript(url);
     setTimeout(loader, 3000);
-    // setTimeout(cookies, 900);
+    setTimeout(cookies, 900);
+    videoPlayButton();
+    cookieHide();
 };
 
 document.addEventListener('DOMContentLoaded', pusher);
-document.addEventListener('readystatechange', cookieHide);
+document.addEventListener('readystatechange', cookieHideExec);
 

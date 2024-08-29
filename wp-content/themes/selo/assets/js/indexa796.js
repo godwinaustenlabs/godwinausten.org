@@ -10,22 +10,22 @@ jQuery(document).ready(function () {
     let inputFocus = document.getElementById('inputFocus');
     let magicSearch = document.getElementById('magic-search');
 
-    document.addEventListener('click', function (e) {
-        if (document.getElementById('first').contains(e.target) && !btnDelete.contains(e.target)) {
-            inputFocus.classList.add('isFocus');
-            magicSearch.classList.add('focus-search');
-            primaryNav.classList.add('search-open');
-            primaryMenu.classList.add('search-open');
-            inputFocus.focus();
-        } else {
-            // Clicked outside the input
-            inputFocus.value = '';
-            inputFocus.classList.remove('isFocus');
-            magicSearch.classList.remove('focus-search');
-            primaryNav.classList.remove('search-open');
-            primaryMenu.classList.remove('search-open');
-        }
-    });
+    // document.addEventListener('click', function (e) {
+    //     if (document.getElementById('first').contains(e.target) && !btnDelete.contains(e.target)) {
+    //         inputFocus.classList.add('isFocus');
+    //         magicSearch.classList.add('focus-search');
+    //         primaryNav.classList.add('search-open');
+    //         primaryMenu.classList.add('search-open');
+    //         inputFocus.focus();
+    //     } else {
+    //         // Clicked outside the input
+    //         inputFocus.value = '';
+    //         inputFocus.classList.remove('isFocus');
+    //         magicSearch.classList.remove('focus-search');
+    //         primaryNav.classList.remove('search-open');
+    //         primaryMenu.classList.remove('search-open');
+    //     }
+    // });
 
     let dropdownSwitcher;
     let dropdownMenus = jQuery('.dropdown');
