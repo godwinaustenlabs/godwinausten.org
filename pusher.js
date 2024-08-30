@@ -133,9 +133,9 @@ function pusher(){
     typeformSideClip();
     typeformScript(url);
     setTimeout(loader, 3000);
-    setTimeout(cookies, 900);
+    // setTimeout(cookies, 900);
     videoPlayButton();
-    cookieHide();
+    // cookieHide();
 };
 
 document.addEventListener('DOMContentLoaded', pusher);
