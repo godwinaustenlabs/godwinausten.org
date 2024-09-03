@@ -3404,3 +3404,40 @@ body.rtl .elementor-22043 .elementor-element.elementor-element-bf61e84 {
     width: var(--container-widget-width);
     --flex-grow: var(--container-widget-flex-grow)
 }
+
+.social-circle.cc-video {
+    position: absolute;
+    top: -1.25rem;
+    bottom: auto;
+    left: -1.25rem;
+    right: auto;
+}
+.social-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: whitesmoke;
+    border-radius: 100%;
+    flex: none;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+@media (min-width:767px){
+    #tiktok{
+        top: -5.6rem;
+    }
+    
+    #instagram{
+        top: -5.6rem;
+    }
+}
+
+@media (max-width:767px){
+    #tiktok{
+        top: -3rem;
+    }
+    
+    #instagram{
+        top: -3rem;
+    }
+}
