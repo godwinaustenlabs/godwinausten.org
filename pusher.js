@@ -42,7 +42,7 @@ function footerWriter(){
 };
 
 function typeformSideClip(){
-    fetch('https://godwinausten.org/commonElements/typeformSideClip.html')
+    fetch('godwinausten.org/commonElements/typeformSideClip.html')
     .then(response => response.text())
     .then(text => {
         const container = document.getElementById('typeformSideClip');
