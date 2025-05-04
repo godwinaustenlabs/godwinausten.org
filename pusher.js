@@ -69,37 +69,37 @@ function typeformScript(url){
 function loader(){
     document.getElementById('loader').style.display = 'none';
     document.getElementById('content').style.display = 'block';
-    setTimeout(cookieHideForce, 3000);
+    // setTimeout(cookieHideForce, 3000);
 };
 
-function cookies(){
+// function cookies(){
 
-    fetch('https://godwinausten.org/commonElements/cookieBanner.html')
-    .then(response => response.text())
-    .then(text => {
-        const container = document.getElementById('cookies');
-        container.innerHTML = text;
-    })
-    .catch(error => {console.log(error)});
+//     fetch('https://godwinausten.org/commonElements/cookieBanner.html')
+//     .then(response => response.text())
+//     .then(text => {
+//         const container = document.getElementById('cookies');
+//         container.innerHTML = text;
+//     })
+//     .catch(error => {console.log(error)});
    
-};
+// };
 
-function cookieHide(){
-    const acceptBtn = document.getElementById('accept-cookies');
-    const cookieBanner = document.getElementById('cookie-banner');
-    const siteContent = document.getElementById('site-content');
+// function cookieHide(){
+//     const acceptBtn = document.getElementById('accept-cookies');
+//     const cookieBanner = document.getElementById('cookie-banner');
+//     const siteContent = document.getElementById('site-content');
   
-    acceptBtn.addEventListener('click', function() {
-      cookieBanner.classList.add('hidden');
-      // Implement cookie handling logic or simply close the banner
-    });
+//     acceptBtn.addEventListener('click', function() {
+//       cookieBanner.classList.add('hidden');
+//       // Implement cookie handling logic or simply close the banner
+//     });
 
-    acceptBtn.addEventListener('touchstart', function() {
-        cookieBanner.classList.add('hidden');
-        // Implement cookie handling logic or simply close the banner
-      })
+//     acceptBtn.addEventListener('touchstart', function() {
+//         cookieBanner.classList.add('hidden');
+//         // Implement cookie handling logic or simply close the banner
+//       })
 
-}
+// }
 
 function videoPlayButton(){
     const click = document.getElementById('uc_blox_play_button_elementor_5ffe2a5');
@@ -108,21 +108,21 @@ function videoPlayButton(){
     });
 }
 
-function cookieHideExec(){
+// function cookieHideExec(){
 
-    if(document.readyState == 'complete'){
-        document.addEventListener('readystatechange', cookieHide);
-    }
-    else{
-        document.addEventListener('readystatechange', cookieHide);
-    }
-};
+//     if(document.readyState == 'complete'){
+//         document.addEventListener('readystatechange', cookieHide);
+//     }
+//     else{
+//         document.addEventListener('readystatechange', cookieHide);
+//     }
+// };
 
-function cookieHideForce(){
+// function cookieHideForce(){
 
-    const cookieBanner = document.getElementById('cookie-banner');
-    cookieBanner.classList.add('hidden');
-};
+//     const cookieBanner = document.getElementById('cookie-banner');
+//     cookieBanner.classList.add('hidden');
+// };
 
 
 function pusher(){
@@ -130,8 +130,8 @@ function pusher(){
     headWriter();
     navbarWriter();
     footerWriter();
-    typeformSideClip();
     typeformScript(url);
+    typeformSideClip();
     setTimeout(loader, 3000);
     // setTimeout(cookies, 900);
     videoPlayButton();
@@ -139,5 +139,5 @@ function pusher(){
 };
 
 document.addEventListener('DOMContentLoaded', pusher);
-document.addEventListener('readystatechange', cookieHideExec);
+// document.addEventListener('readystatechange', cookieHideExec);
 
