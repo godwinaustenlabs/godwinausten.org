@@ -74,24 +74,30 @@ export default function Hero() {
         ctx.shadowBlur = 5;
         ctx.shadowColor = wave.color;
 
-        for (let x = 0; x < w; x += 5) {
-          let y =
-            h / 2 +
-            wave.yMod +
-            Math.sin(x * wave.frequency + time * wave.speed + wave.offset) *
-              wave.amplitude;
+        const points = [];
+        const step = 40; // Sample every 40px for Bezier interpolation
+
+        for (let x = 0; x <= w + step; x += step) {
+          const baseY = h / 2 + wave.yMod + Math.sin(x * wave.frequency + time * wave.speed + wave.offset) * wave.amplitude;
 
           const dx = x - relX;
           const dist = Math.sqrt(dx * dx + (h / 2 - relY) * (h / 2 - relY));
 
-          if (dist < 300) {
-            const force = 1 - dist / 300;
-            y += Math.sin(dx * 0.1 + time * 0.2) * 40 * force;
-            y += (relY - y) * 0.4 * force;
+          let y = baseY;
+          if (dist < 400) {
+            const force = (1 - dist / 400) ** 2;
+            y += Math.sin(dx * 0.05 + time * 0.1) * 60 * force;
+            y += (relY - y) * 0.5 * force;
           }
+          points.push({ x, y });
+        }
 
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+        ctx.moveTo(points[0].x, points[0].y);
+
+        for (let i = 0; i < points.length - 1; i++) {
+          const xc = (points[i].x + points[i + 1].x) / 2;
+          const yc = (points[i].y + points[i + 1].y) / 2;
+          ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
         }
         ctx.stroke();
       });

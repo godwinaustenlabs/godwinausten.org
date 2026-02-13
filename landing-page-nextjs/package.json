@@ -24,6 +24,7 @@
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.12.4",
 		"@cloudflare/workers-types": "^4.20260212.0",
+		"@ljharb/tsconfig": "^0.3.2",
 		"@types/node": "^22.13.4",
 		"@types/react": "^19.0.8",
 		"@types/react-dom": "^19.0.3",
