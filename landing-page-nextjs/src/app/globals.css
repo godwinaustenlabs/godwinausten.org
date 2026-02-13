@@ -1565,4 +1565,113 @@ body:hover .cursor-outline.hovered {
     * {
         cursor: auto !important;
     }
+
+    /* MOBILE FIXES: Reduce Vignette & Improve Visibility */
+    .neon-flow {
+        opacity: 0.3;
+        /* Reduce heavy blur effect */
+    }
+
+    .flow-shape {
+        filter: blur(60px);
+        /* Reduce blur from 100px */
+        opacity: 0.05;
+        /* Reduce opacity */
+    }
+
+    .gridlines {
+        opacity: 0.15;
+        /* Reduce grid opacity */
+    }
+
+    /* Tighten Section Spacing */
+    .panel {
+        padding: 3rem 1.5rem !important;
+        /* Reduce from excessive padding */
+        min-height: auto !important;
+    }
+
+    .hero-panel {
+        min-height: 100vh !important;
+        padding: 2rem 1.5rem !important;
+    }
+
+    /* Fix Section Gaps */
+    section {
+        margin-bottom: 0 !important;
+    }
+
+    /* Improve Text Visibility */
+    .hero-title,
+    .section-title,
+    h1,
+    h2,
+    h3 {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Fix Ecosystem Canvas Container */
+    .eco-canvas-wrapper {
+        width: 100% !important;
+        max-width: 350px !important;
+        height: 350px !important;
+        margin: 2rem auto !important;
+        background: url('/ecosystem-mobile.png') center/contain no-repeat;
+    }
+
+    .eco-canvas {
+        display: none !important;
+        /* Hide canvas on mobile, use static image */
+    }
+
+    /* Fix Ecosystem Panel for Mobile */
+    .panel.ecosystem-panel {
+        display: block !important;
+        overflow: visible !important;
+        height: auto !important;
+        min-height: auto !important;
+    }
+
+    .eco-sticky-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        position: relative !important;
+        transform: none !important;
+        width: 100% !important;
+        gap: 2rem;
+    }
+
+    /* Hide Ecosystem Visual Entirely on Mobile */
+    .eco-visual-col {
+        display: none !important;
+    }
+
+    .eco-content-col {
+        width: 100% !important;
+        order: 1;
+    }
+
+    /* Add minimal silver outline to ecosystem cards */
+    .eco-stage {
+        opacity: 1 !important;
+        transform: none !important;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(228, 228, 231, 0.15);
+        /* Polished silver */
+        border-radius: 8px;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Hide decorative rings on mobile */
+    .deco-ring {
+        display: none;
+    }
+
+    /* Ensure Content is Visible */
+    .eco-content-col,
+    .content-wrapper {
+        position: relative;
+        z-index: 2;
+    }
 }

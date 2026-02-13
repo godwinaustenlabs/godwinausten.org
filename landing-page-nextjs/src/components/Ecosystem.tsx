@@ -14,20 +14,22 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
 
   useGSAP(
     () => {
-      if (!scrollTween) return;
+      const isMobile = window.innerWidth < 1024;
 
-      // Sticky Move Logic
-      gsap.to(ecoSticky.current, {
-        x: () => window.innerWidth * 4,
-        ease: "none",
-        scrollTrigger: {
-          trigger: container.current,
-          containerAnimation: scrollTween,
-          start: "left left",
-          end: "right right",
-          scrub: true,
-        },
-      });
+      // Sticky Move Logic (Desktop only)
+      if (scrollTween && !isMobile) {
+        gsap.to(ecoSticky.current, {
+          x: () => window.innerWidth * 4,
+          ease: "none",
+          scrollTrigger: {
+            trigger: container.current,
+            containerAnimation: scrollTween,
+            start: "left left",
+            end: "right right",
+            scrub: true,
+          },
+        });
+      }
 
       // --- Vector Lattice Logic (Minimal & Unique) ---
       const canvas = document.getElementById("ecoCanvas") as HTMLCanvasElement;
