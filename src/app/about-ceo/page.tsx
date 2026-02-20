@@ -49,7 +49,7 @@ export default function AboutCEO() {
                     <div className="dossier-col">
                         <div className="profile-hero reveal-text">
                             <h2 className="name-title uppercase">Saad Naik</h2>
-                            <p className="role-caption accent-text mono uppercase">Managing Director & Founder</p>
+                            <p className="role-caption accent-text mono uppercase">Managing Director and Founder</p>
                         </div>
 
                         <div className="bio-section reveal-text">
