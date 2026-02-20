@@ -41,6 +41,9 @@ export const metadata: Metadata = {
   },
 };
 
+import Navbar from "@/components/Navbar";
+import Background from "@/components/Background";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,6 +52,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${spaceMono.variable} ${plusJakarta.variable}`}>
       <body>
+        <Background />
+        <Navbar />
         {children}
       </body>
     </html>

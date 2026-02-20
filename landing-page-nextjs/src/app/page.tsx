@@ -25,85 +25,51 @@ export default function Home() {
 
   useGSAP(
     () => {
-      const isDesktop = window.innerWidth > 768;
+      const initScroll = () => {
+        if (!wrapperRef.current) return;
 
-      if (isDesktop && wrapperRef.current) {
-        const panels = gsap.utils.toArray<HTMLElement>(".panel");
-        let totalWidth = 0;
-        panels.forEach((panel) => (totalWidth += panel.offsetWidth));
-        const dragDistance = totalWidth - window.innerWidth;
+        const isDesktop = window.innerWidth > 768;
+        if (isDesktop) {
+          const panels = gsap.utils.toArray<HTMLElement>(".panel");
+          let totalWidth = 0;
+          panels.forEach((panel) => {
+            totalWidth += panel.offsetWidth || window.innerWidth;
+          });
+          const dragDistance = totalWidth - window.innerWidth;
 
-        const tween = gsap.to(panels, {
-          x: -dragDistance,
-          ease: "none",
-          scrollTrigger: {
-            trigger: wrapperRef.current,
-            pin: true,
-            scrub: 1.5,
-            end: () => "+=" + dragDistance,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        setScrollTween(tween);
-      }
-
-      // Cursor Logic
-      if (window.matchMedia("(pointer: fine)").matches) {
-        const cursorDot = document.querySelector(".cursor-dot");
-        const cursorOutline = document.querySelector(".cursor-outline");
-
-        gsap.set([cursorDot, cursorOutline], { xPercent: -50, yPercent: -50 });
-
-        const onMouseMove = (e: MouseEvent) => {
-          gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0 });
-          gsap.to(cursorOutline, {
-            x: e.clientX,
-            y: e.clientY,
-            duration: 0.15,
+          const tween = gsap.to(panels, {
+            x: -dragDistance,
+            ease: "none",
+            scrollTrigger: {
+              trigger: wrapperRef.current,
+              pin: true,
+              pinType: "fixed",
+              anticipatePin: 1,
+              scrub: 1.5,
+              end: () => "+=" + dragDistance,
+              invalidateOnRefresh: true,
+            },
           });
 
-          // Hover effects
-          const target = e.target as HTMLElement;
-          const isHoverable = target.closest("a, button, .code-block, .hud-node, .node");
-          if (isHoverable) {
-            cursorOutline?.classList.add("hovered");
-          } else {
-            cursorOutline?.classList.remove("hovered");
-          }
-        };
+          setScrollTween(tween);
+          ScrollTrigger.refresh();
+        }
+      };
 
-        window.addEventListener("mousemove", onMouseMove);
+      // Ensure layout is stable
+      const timer = setTimeout(initScroll, 100);
+      window.addEventListener("load", () => {
+        setTimeout(() => ScrollTrigger.refresh(), 500);
+      });
 
-        // Cube Rotation Logic
-        const cubeLayer = document.querySelector(".cube-mouse-layer");
-        const onCubeMouseMove = (e: MouseEvent) => {
-          const { innerWidth, innerHeight } = window;
-          const x = (e.clientX - innerWidth / 2) / (innerWidth / 2);
-          const y = (e.clientY - innerHeight / 2) / (innerHeight / 2);
-          gsap.to(cubeLayer, {
-            rotationY: x * 30,
-            rotationX: -y * 30,
-            duration: 0.6,
-            ease: "power2.out",
-          });
-        };
-        window.addEventListener("mousemove", onCubeMouseMove);
-
-        return () => {
-          window.removeEventListener("mousemove", onMouseMove);
-          window.removeEventListener("mousemove", onCubeMouseMove);
-        };
-      }
+      return () => clearTimeout(timer);
     },
-    { scope: wrapperRef }
+    { scope: undefined }
   );
 
   return (
     <main>
       <Loader />
-      <Navbar />
-      <Background />
 
       <div className="wrapper" ref={wrapperRef}>
         <Hero />
