@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 
-const WORKER_URL = "https://chat-swarm.saadnaik.workers.dev/website";
+const WORKER_URL = "https://chat-swarm.galabs.workers.dev/website";
 
 type Message = {
   text: string;
