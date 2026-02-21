@@ -22,7 +22,7 @@ export default function About() {
     }, []);
 
     return (
-        <main className="text-[var(--accent-a)] relative page-main" ref={sectionRef}>
+        <main className="text-[var(--accent-a)] relative page-main theme-black" ref={sectionRef}>
             <div className="max-w-6xl mx-auto px-10 relative z-10">
                 <header className="about-header fade-node">
                     <Link href="/" className="back-link mono">
@@ -73,23 +73,25 @@ export default function About() {
                     </div>
                 </div>
 
-                <div className="philosophy-section panel-glass fade-node">
-                    <div className="module-header mono mb-l">
-                        <span className="module-id">CORE</span>
-                        <span className="module-title">OPERATING_PHILOSOPHY</span>
-                    </div>
-                    <div className="phil-grid">
-                        <div className="phil-node">
-                            <h4 className="mono uppercase white mb-s">01. Automate_Repetitive</h4>
-                            <p>Human capital should be reserved for high-level strategy and creativity, never for data moving or basic qualification.</p>
+                <div className="philosophy-section theme-lime full-bleed" style={{ padding: '120px 24px', marginTop: '120px', marginBottom: '80px' }}>
+                    <div className="max-w-6xl mx-auto">
+                        <div className="module-header mono mb-l" style={{ borderBottomColor: 'rgba(5, 5, 5, 0.2)' }}>
+                            <span className="module-id" style={{ color: '#050505', fontWeight: 'bold' }}>CORE</span>
+                            <span className="module-title" style={{ color: '#050505' }}>OPERATING_PHILOSOPHY</span>
                         </div>
-                        <div className="phil-node">
-                            <h4 className="mono uppercase white mb-s">02. Systemize_Chaos</h4>
-                            <p>Centralized, predictable systems beat fragmented tools every time. We build for seamless synchronicity.</p>
-                        </div>
-                        <div className="phil-node">
-                            <h4 className="mono uppercase white mb-s">03. Engineer_Scale</h4>
-                            <p>If it works for ten users, it must work for ten thousand without breaking or requiring a massive increase in overhead.</p>
+                        <div className="phil-grid">
+                            <div className="phil-node" style={{ borderLeft: '1px solid rgba(5,5,5,0.2)', paddingLeft: '1.5rem' }}>
+                                <h4 className="mono uppercase mb-s" style={{ color: '#050505' }}>01. Automate_Repetitive</h4>
+                                <p style={{ color: 'rgba(5,5,5,0.8)' }}>Human capital should be reserved for high-level strategy and creativity, never for data moving or basic qualification.</p>
+                            </div>
+                            <div className="phil-node" style={{ borderLeft: '1px solid rgba(5,5,5,0.2)', paddingLeft: '1.5rem' }}>
+                                <h4 className="mono uppercase mb-s" style={{ color: '#050505' }}>02. Systemize_Chaos</h4>
+                                <p style={{ color: 'rgba(5,5,5,0.8)' }}>Centralized, predictable systems beat fragmented tools every time. We build for seamless synchronicity.</p>
+                            </div>
+                            <div className="phil-node" style={{ borderLeft: '1px solid rgba(5,5,5,0.2)', paddingLeft: '1.5rem' }}>
+                                <h4 className="mono uppercase mb-s" style={{ color: '#050505' }}>03. Engineer_Scale</h4>
+                                <p style={{ color: 'rgba(5,5,5,0.8)' }}>If it works for ten users, it must work for ten thousand without breaking or requiring a massive increase in overhead.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

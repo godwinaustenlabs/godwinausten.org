@@ -81,7 +81,7 @@ export default function Chat() {
   }
 
   return (
-    <section className="panel">
+    <section className="panel theme-dark">
       <div className="split-layout">
         {/* Left: Text */}
         <div className="split-left">

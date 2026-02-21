@@ -40,6 +40,16 @@
     /* RESPONSIVE CUBE VARIABLES */
     --cube-s: clamp(200px, 28vw, 340px);
     --cube-half: calc(var(--cube-s) / 2);
+
+    /* THEME COLORS (ODDCOMMON / THEFUTUR INSPIRED) */
+    --theme-dark-bg: #050505;
+    /* Deep Carbon */
+    --theme-lime-bg: #ccff00;
+    --theme-yellow-bg: #ffcf00;
+
+    --theme-dark-txt: #f4f4f5;
+    --theme-lime-txt: #050505;
+    --theme-yellow-txt: #050505;
 }
 
 /* --- RESET --- */
@@ -86,7 +96,8 @@ a:visited {
     height: 100%;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
     pointer-events: none;
-    z-index: 0;
+    z-index: 100;
+    /* Ensure it stays above thematic backgrounds */
     opacity: 0.5;
     mix-blend-mode: overlay;
 }
@@ -214,19 +225,41 @@ body:hover .cursor-outline.hovered {
     font-size: clamp(3.5rem, 8vw, 10rem);
     font-weight: 700;
     text-transform: uppercase;
-    color: #e0e0e0;
+    color: var(--text-color);
+    /* Updated to use semantic variable */
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.theme-dark .text-jumbo {
     background: linear-gradient(180deg, #fff 0%, #999 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
+.theme-yellow .text-jumbo,
+.theme-lime .text-jumbo {
+    text-shadow: none;
+}
+
 .text-gradient {
-    background: linear-gradient(135deg, #fff 30%, #a0a0a0 100%);
+    /* Metallic lime aesthetic for Autonomy */
+    background: linear-gradient(to bottom,
+            #eaff80 0%,
+            #ccff00 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    padding-right: 5px;
+    /* Ensures italics aren't clipped */
+}
+
+.theme-yellow .text-gradient,
+.theme-lime .text-gradient {
+    /* For other themes, fallback to inherit or pop color to keep it legible */
+    background: none;
+    -webkit-text-fill-color: initial;
+    color: var(--text-color);
 }
 
 .text-pop {
@@ -236,13 +269,15 @@ body:hover .cursor-outline.hovered {
 .text-xl {
     font-size: clamp(2rem, 5vw, 6rem);
     font-weight: 600;
-    color: #fff;
+    color: var(--text-color);
 }
 
 .text-body {
     font-size: clamp(1rem, 1.2vw, 1.25rem);
     line-height: 1.6;
-    color: var(--muted);
+    color: var(--text-color);
+    /* was --muted */
+    opacity: 0.8;
     max-width: 50ch;
 }
 
@@ -258,13 +293,21 @@ body:hover .cursor-outline.hovered {
     border-radius: 100px;
     font-family: 'Space Mono';
     font-size: 0.75rem;
-    color: #fff;
+    color: var(--text-color);
     text-transform: uppercase;
     display: inline-block;
     margin-bottom: 1.5rem;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(5px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.theme-yellow .pill,
+.theme-lime .pill {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .glass-panel {
@@ -419,6 +462,42 @@ body:hover .cursor-outline.hovered {
     overflow: hidden;
     background: transparent;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.8s ease, color 0.8s ease;
+    /* Smooth thematic transitions */
+}
+
+/* --- THEMATIC CLASSES --- */
+.theme-dark {
+    background-color: var(--theme-dark-bg);
+    color: var(--theme-dark-txt);
+    --text-color: var(--theme-dark-txt);
+}
+
+.theme-lime {
+    background-color: var(--theme-lime-bg);
+    color: var(--theme-lime-txt);
+    --text-color: var(--theme-lime-txt);
+}
+
+.theme-yellow {
+    background-color: var(--theme-yellow-bg);
+    color: var(--theme-yellow-txt);
+    --text-color: var(--theme-yellow-txt);
+}
+
+.theme-black {
+    background-color: #000000;
+    color: var(--theme-dark-txt);
+    --text-color: var(--theme-dark-txt);
+}
+
+.full-bleed {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
 }
 
 .panel:first-of-type {
@@ -663,12 +742,14 @@ body:hover .cursor-outline.hovered {
         clip-path: polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%);
     }
 
+
     .hud-node.active-stream {
         opacity: 1;
         transform: translateY(0) scale(1.05);
         border-color: var(--accent-pop);
         box-shadow: 0 0 20px rgba(5, 217, 232, 0.1);
     }
+
 
     .hud-scanner {
         position: absolute;
@@ -695,11 +776,19 @@ body:hover .cursor-outline.hovered {
         margin-bottom: 0.5rem;
     }
 
+    .theme-cyan .hud-id {
+        color: #888;
+    }
+
     .hud-title {
         font-size: 1.25rem;
         font-weight: bold;
         margin-bottom: 1rem;
         color: #eee;
+    }
+
+    .theme-cyan .hud-title {
+        color: #f4f4f5;
     }
 
     .hud-metric {
@@ -757,16 +846,25 @@ body:hover .cursor-outline.hovered {
         border-left: 2px solid var(--accent-pop);
     }
 
+
     .hud-id {
         font-family: 'Space Mono';
         color: #666;
         font-size: 0.8rem;
     }
 
+    .theme-cyan .hud-id {
+        color: #888;
+    }
+
     .hud-title {
         font-size: 1.2rem;
         font-weight: bold;
         margin: 0.5rem 0;
+    }
+
+    .theme-cyan .hud-title {
+        color: #f4f4f5;
     }
 
     .hud-metric {
@@ -1210,6 +1308,12 @@ body:hover .cursor-outline.hovered {
     position: relative;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.theme-yellow .code-block {
+    background: #262626;
+    border: 1px solid rgba(255, 60, 60, 0.15);
+    border-top: 1px solid rgba(255, 60, 60, 0.3);
 }
 
 .code-highlight {

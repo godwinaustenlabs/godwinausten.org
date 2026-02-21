@@ -2,7 +2,7 @@
 
 export default function Architecture() {
   return (
-    <section className="panel">
+    <section className="panel theme-yellow">
       <div className="arch-grid">
         <div>
           <div className="pill">UNDER THE HOOD</div>
@@ -12,7 +12,7 @@ export default function Architecture() {
             eliminate the latency of traditional servers. Your intelligence is
             stateless, globally distributed, and instantly scalable.
           </p>
-          <ul className="mono" style={{ marginTop: "2rem", listStyle: "none", color: "#888" }}>
+          <ul className="mono" style={{ marginTop: "2rem", listStyle: "none", color: "inherit", opacity: 0.8 }}>
             <li style={{ marginBottom: "1rem" }}>{">"} Stateless Execution: Infinite scalability without baggage</li>
             <li style={{ marginBottom: "1rem" }}>{">"} Edge Native Speed: Sub 10ms global responsiveness</li>
             <li style={{ marginBottom: "1rem" }}>{">"} Sovereign Intelligence: Agents that own their outcomes</li>

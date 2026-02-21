@@ -67,6 +67,44 @@ export default function Home() {
     { scope: undefined }
   );
 
+  // Dynamic Theme Color Observer
+  useGSAP(
+    () => {
+      const isDesktop = window.innerWidth > 768;
+      const panels = gsap.utils.toArray<HTMLElement>(".panel");
+
+      const updateThemeColor = (color: string) => {
+        let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (!metaThemeColor) {
+          metaThemeColor = document.createElement("meta");
+          metaThemeColor.setAttribute("name", "theme-color");
+          document.head.appendChild(metaThemeColor);
+        }
+        metaThemeColor.setAttribute("content", color);
+      };
+
+      const getPanelColor = (panel: HTMLElement) => {
+        if (panel.classList.contains("theme-lime")) return "#ccff00";
+        if (panel.classList.contains("theme-yellow")) return "#ffcf00";
+        if (panel.classList.contains("theme-black")) return "#000000";
+        return "#050505";
+      };
+
+      if (panels.length > 0) updateThemeColor(getPanelColor(panels[0]));
+
+      panels.forEach((panel) => {
+        ScrollTrigger.create({
+          trigger: panel,
+          containerAnimation: isDesktop && scrollTween ? scrollTween : undefined,
+          start: isDesktop ? "left center" : "top center",
+          onEnter: () => updateThemeColor(getPanelColor(panel)),
+          onEnterBack: () => updateThemeColor(getPanelColor(panel)),
+        });
+      });
+    },
+    { scope: undefined, dependencies: [scrollTween] }
+  );
+
   return (
     <main>
       <Loader />

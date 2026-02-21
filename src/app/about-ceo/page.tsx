@@ -28,7 +28,7 @@ export default function AboutCEO() {
     }, []);
 
     return (
-        <main className="text-[var(--accent-a)] relative page-main" ref={containerRef}>
+        <main className="text-[var(--accent-a)] relative page-main theme-black" ref={containerRef}>
             <div className="max-w-6xl mx-auto px-10 relative z-10">
                 <header className="ceo-header">
                     <Link href="/" className="back-link mono uppercase scroll-reveal">
@@ -112,6 +112,18 @@ export default function AboutCEO() {
                                 <span className="mono text-[10px] opacity-20">EST_MMXXIII</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div className="full-bleed theme-yellow" style={{ padding: '120px 5vw', marginTop: '120px' }}>
+                    <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center" style={{ gap: '32px' }}>
+                        <div>
+                            <h2 className="mono uppercase" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#050505', letterSpacing: '-0.02em', fontWeight: 'bold', lineHeight: 1 }}>SYSTEM ARCHITECT</h2>
+                            <p style={{ color: 'rgba(5, 5, 5, 0.8)', marginTop: '16px', fontSize: '1.2rem' }}>Deploying leverage. Not just software.</p>
+                        </div>
+                        <a href="mailto:ceo@godwinausten.org" className="mono uppercase text-sm" style={{ border: '1px solid #050505', color: '#050505', padding: '16px 32px', textDecoration: 'none' }}>
+                            Initiate_Sequence
+                        </a>
                     </div>
                 </div>
             </div>

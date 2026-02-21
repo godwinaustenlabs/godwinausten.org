@@ -115,7 +115,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="panel">
+    <section className="panel theme-dark">
       <div className="hero-grid">
         <div className="hero-left">
           <div className="pill">System Architecture</div>

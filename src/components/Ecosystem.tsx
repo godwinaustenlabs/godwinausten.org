@@ -235,7 +235,7 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
   );
 
   return (
-    <section className="panel ecosystem-panel" id="ecoPanel" ref={container}>
+    <section className="panel ecosystem-panel theme-dark" id="ecoPanel" ref={container}>
       <div className="eco-sticky-wrap" id="ecoSticky" ref={ecoSticky}>
         {/* CONTENT */}
         <div className="eco-content-col">

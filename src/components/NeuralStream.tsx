@@ -60,7 +60,7 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
   );
 
   return (
-    <section className="panel system-stream-panel" id="sysPanel" ref={container}>
+    <section className="panel system-stream-panel theme-dark" id="sysPanel" ref={container}>
       <div className="stream-container">
         <div className="stream-header-mobile">
           <h2 className="text-xl">Logic Chain</h2>
@@ -84,7 +84,7 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
               <div className="hud-metric">
                 <span className="blink">●</span> LISTENING
               </div>
-              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "#888", marginTop: "10px" }}>
+              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "var(--text-color)", opacity: 0.8, marginTop: "10px" }}>
                 Tactical agents for handling direct inquiries and basic support. The first entry point
                 of automation for manual customer touchpoints.
               </div>
@@ -97,7 +97,7 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
               <div className="hud-id">02 // LAYER_02</div>
               <div className="hud-title">Voice AI Agents</div>
               <div className="hud-metric">MATCH: 98.4%</div>
-              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "#888", marginTop: "10px" }}>
+              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "var(--text-color)", opacity: 0.8, marginTop: "10px" }}>
                 Moving beyond text into autonomous calling and qualification. These agents handle
                 objections and phone-based outreach with human-like nuance.
               </div>
@@ -112,7 +112,7 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
               <div className="hud-metric">
                 <span className="blink">●</span> ACTIVE
               </div>
-              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "#888", marginTop: "10px" }}>
+              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "var(--text-color)", opacity: 0.8, marginTop: "10px" }}>
                 Full-fledged AI swarms that navigate entire business processes. These are proactive
                 systems that integrate deeply and act autonomously.
               </div>
@@ -125,7 +125,7 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
               <div className="hud-id">04 // TOTALITY</div>
               <div className="hud-title">Full Autonomy</div>
               <div className="hud-metric">DONE</div>
-              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "#888", marginTop: "10px" }}>
+              <div className="hud-desc" style={{ fontSize: "0.9rem", color: "var(--text-color)", opacity: 0.8, marginTop: "10px" }}>
                 Your operations bridged by a seamless loop of intelligence. Meeting secured, CRM
                 updated, and growth unlocked without a single click.
               </div>

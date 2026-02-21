@@ -167,7 +167,7 @@ export default function Topology() {
   const currentLayout = isMobile ? MOBILE_LAYOUT : DESKTOP_LAYOUT;
 
   return (
-    <section className="panel results-panel">
+    <section className="panel results-panel theme-dark">
       <div className="topology-layout" ref={containerRef}>
         <div className="topology-desc">
           <div className="td-header">THE BOTTLENECK</div>

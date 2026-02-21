@@ -7,7 +7,7 @@ export default function Footer() {
   const isHome = pathname === "/";
 
   return (
-    <footer className={isHome ? "panel" : "footer-static"}>
+    <footer className={isHome ? "panel theme-black" : "footer-static theme-black"}>
       <div className="footer-layout">
         <div className="mono partnership-label">
           INITIALIZE PARTNERSHIP

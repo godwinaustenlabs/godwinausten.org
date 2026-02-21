@@ -37,7 +37,7 @@ export default function PrivacyPolicy() {
     }, []);
 
     return (
-        <main className="text-[var(--accent-a)] relative page-main" ref={sectionRef}>
+        <main className="text-[var(--accent-a)] relative page-main theme-black" ref={sectionRef}>
             <div className="max-w-5xl mx-auto px-10 relative z-10">
                 <header className="privacy-header reveal">
                     <Link href="/" className="back-link mono">
@@ -139,6 +139,20 @@ export default function PrivacyPolicy() {
                             Privacy Protocol. Godwin Austen Labs operates as an individually owned unregistered
                             business, however, all rights and security standards are strictly reserved.
                         </p>
+                    </div>
+                </div>
+
+                <div className="full-bleed theme-lime" style={{ padding: '80px 5vw', marginTop: '120px' }}>
+                    <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center" style={{ gap: '32px' }}>
+                        <div>
+                            <h2 className="mono uppercase tracking-tighter" style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: '#050505', fontWeight: 'bold' }}>DATA_INQUIRIES</h2>
+                            <p style={{ color: 'rgba(5, 5, 5, 0.8)', marginTop: '8px' }}>For data erasure or compliance questions, directly query our legal node.</p>
+                        </div>
+                        <div className="contact-card glass-panel" style={{ border: '1px solid rgba(5,5,5,0.2)', padding: '24px', background: 'rgba(255,255,255,0.1)' }}>
+                            <a href="mailto:privacy@godwinausten.org" className="mono" style={{ color: '#050505', textDecoration: 'none', fontWeight: 'bold', borderBottom: '1px solid #050505' }}>
+                                privacy@godwinausten.org
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

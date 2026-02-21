@@ -2,16 +2,16 @@
 
 export default function Manifesto() {
   return (
-    <section className="panel" style={{ paddingLeft: "0px" }}>
+    <section className="panel theme-lime" style={{ paddingLeft: "0px" }}>
       <div className="manifesto-card">
         <h2 className="text-xl" style={{ fontWeight: 400, lineHeight: 1.2 }}>
           "Stop hiring for roles that{" "}
-          <span style={{ color: "#ccff00", fontWeight: 600 }}>Software</span> can
+          <span style={{ fontWeight: 800 }}>Software</span> can
           fill."
         </h2>
         <p
           className="text-body"
-          style={{ marginTop: "2rem", color: "#fff", opacity: 0.8 }}
+          style={{ marginTop: "2rem" }}
         >
           <strong>The Initiative.</strong> Automation is no longer about rigid
           scripts. It is about fluid intelligence. We architect bespoke AI
@@ -22,7 +22,7 @@ export default function Manifesto() {
         </p>
         <div
           className="mono"
-          style={{ marginTop: "3rem", color: "#fff", opacity: 0.5, fontSize: "0.8rem" }}
+          style={{ marginTop: "3rem", opacity: 0.5, fontSize: "0.8rem", fontWeight: "bold" }}
         >
           // GODWIN AUSTEN LABS
         </div>
