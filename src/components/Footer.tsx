@@ -1,20 +1,38 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default function Footer() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
   return (
-    <footer className={isHome ? "panel theme-black" : "footer-static theme-black"}>
+    <footer
+      className={isHome ? "panel theme-dark" : "footer-static theme-dark"}
+    >
       <div className="footer-layout">
-        <div className="mono partnership-label">
+        <motion.div
+          className="mono partnership-label"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 0.5 }}
+          viewport={{ once: true }}
+        >
           INITIALIZE PARTNERSHIP
-        </div>
-        <a href="https://contact.godwinausten.org" className="mega-link">
-          DEPLOY<br />AGENTS
-        </a>
+        </motion.div>
+        <motion.a
+          href="https://contact.godwinausten.org"
+          className="mega-link"
+          whileHover={{
+            scale: 1.05,
+            transition: { duration: 0.3 },
+          }}
+          whileTap={{ scale: 0.95 }}
+        >
+          DEPLOY
+          <br />
+          AGENTS
+        </motion.a>
         <div className="footer-info mono">
           <a href="mailto:TEAM@GODWINAUSTEN.ORG" className="email-link">
             TEAM@GODWINAUSTEN.ORG
@@ -63,9 +81,12 @@ export default function Footer() {
         .email-link:hover {
           color: var(--accent-pop);
         }
-        
+
         @media (max-width: 768px) {
-          .footer-info { flex-direction: column; gap: 1rem; }
+          .footer-info {
+            flex-direction: column;
+            gap: 1rem;
+          }
         }
       `}</style>
     </footer>

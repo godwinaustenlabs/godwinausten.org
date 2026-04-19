@@ -28,7 +28,7 @@ export default function AboutCEO() {
     }, []);
 
     return (
-        <main className="text-[var(--accent-a)] relative page-main theme-black" ref={containerRef}>
+        <main className="text-[var(--accent-a)] relative page-main theme-dark" ref={containerRef}>
             <div className="max-w-6xl mx-auto px-10 relative z-10">
                 <header className="ceo-header">
                     <Link href="/" className="back-link mono uppercase scroll-reveal">

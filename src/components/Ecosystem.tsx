@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { motion, Variants } from "framer-motion";
 
 interface EcosystemProps {
   scrollTween?: gsap.core.Tween;
@@ -234,12 +235,31 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
     { scope: container, dependencies: [scrollTween] }
   );
 
+  const cardVariants: Variants = {
+    hover: {
+      scale: 1.02,
+      backgroundColor: "rgba(14, 14, 16, 0.6)",
+      transition: { duration: 0.3 }
+    }
+  };
+
+  const textVariants: Variants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+  };
+
   return (
     <section className="panel ecosystem-panel theme-dark" id="ecoPanel" ref={container}>
       <div className="eco-sticky-wrap" id="ecoSticky" ref={ecoSticky}>
         {/* CONTENT */}
         <div className="eco-content-col">
-          <div className="eco-stage" id="stg-0" style={{ opacity: 1 }}>
+          <motion.div 
+            className="eco-stage" 
+            id="stg-0" 
+            style={{ opacity: 1 }}
+            whileHover="hover"
+            variants={cardVariants}
+          >
             <span className="eco-label" style={{ color: "#ccff00" }}>
               THE ENGINE
             </span>
@@ -249,8 +269,13 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
               that transforms raw LLMs into specialized architectural nodes
               capable of sovereign decision making and complex execution.
             </p>
-          </div>
-          <div className="eco-stage" id="stg-div">
+          </motion.div>
+          <motion.div 
+            className="eco-stage" 
+            id="stg-div"
+            whileHover="hover"
+            variants={cardVariants}
+          >
             <span className="eco-label" style={{ color: "#fff" }}>
               SERVICE VECTORS
             </span>
@@ -260,8 +285,13 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
               gap between static code and dynamic execution across three
               strategic vectors.
             </p>
-          </div>
-          <div className="eco-stage" id="stg-1">
+          </motion.div>
+          <motion.div 
+            className="eco-stage" 
+            id="stg-1"
+            whileHover="hover"
+            variants={cardVariants}
+          >
             <span className="eco-label" style={{ color: "#05d9e8" }}>
               VECTOR_01 // ARCHITECTURE
             </span>
@@ -272,8 +302,13 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
               <span style={{ color: "#05d9e8" }}>Cloudflare’s global edge</span>{" "}
               to ensure agents are always-available and instant.
             </p>
-          </div>
-          <div className="eco-stage" id="stg-2">
+          </motion.div>
+          <motion.div 
+            className="eco-stage" 
+            id="stg-2"
+            whileHover="hover"
+            variants={cardVariants}
+          >
             <span className="eco-label" style={{ color: "#ff2a6d" }}>
               VECTOR_02 // INTELLIGENCE
             </span>
@@ -283,8 +318,13 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
               Calling Agents to Autonomous Marketing Swarms, each is custom
               trained for your ecosystem.
             </p>
-          </div>
-          <div className="eco-stage" id="stg-3">
+          </motion.div>
+          <motion.div 
+            className="eco-stage" 
+            id="stg-3"
+            whileHover="hover"
+            variants={cardVariants}
+          >
             <span className="eco-label" style={{ color: "#05d9e8" }}>
               VECTOR_03 // INTEGRATION
             </span>
@@ -294,7 +334,7 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
               <span style={{ color: "#05d9e8" }}>CRMs</span>, pulse through your
               APIs, and trigger webhooks with zero friction.
             </p>
-          </div>
+          </motion.div>
         </div>
 
         {/* VISUAL */}

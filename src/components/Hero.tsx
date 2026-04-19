@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { motion, Variants } from "framer-motion";
 
 export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -78,7 +79,11 @@ export default function Hero() {
         const step = 40; // Sample every 40px for Bezier interpolation
 
         for (let x = 0; x <= w + step; x += step) {
-          const baseY = h / 2 + wave.yMod + Math.sin(x * wave.frequency + time * wave.speed + wave.offset) * wave.amplitude;
+          const baseY =
+            h / 2 +
+            wave.yMod +
+            Math.sin(x * wave.frequency + time * wave.speed + wave.offset) *
+              wave.amplitude;
 
           const dx = x - relX;
           const dist = Math.sqrt(dx * dx + (h / 2 - relY) * (h / 2 - relY));
@@ -114,22 +119,88 @@ export default function Hero() {
     };
   }, []);
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+    },
+  };
+
   return (
     <section className="panel theme-dark">
       <div className="hero-grid">
-        <div className="hero-left">
-          <div className="pill">System Architecture</div>
-          <h1 className="text-jumbo">
-            Deploying<br />
-            <span className="text-gradient">Autonomy.</span>
-          </h1>
-          <p className="text-body" style={{ marginTop: "2rem" }}>
+        <motion.div
+          className="hero-left"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <motion.div
+            className="pill"
+            variants={itemVariants}
+            whileHover={{
+              scale: 1.05,
+              backgroundColor: "rgba(204, 255, 0, 0.1)",
+              borderColor: "rgba(204, 255, 0, 0.5)",
+            }}
+          >
+            System Architecture 001
+          </motion.div>
+          <motion.h1 className="text-jumbo" variants={itemVariants}>
+            Deploying
+            <br />
+            <motion.span
+              className="text-gradient"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              style={{ backgroundSize: "200% 200%" }}
+            >
+              Autonomy.
+            </motion.span>
+          </motion.h1>
+          <motion.p
+            className="text-body"
+            style={{ marginTop: "2rem" }}
+            variants={itemVariants}
+          >
             Godwin Austen Labs constructs the digital central nervous systems of
             the modern enterprise. We engineer agentic infrastructures that
             breathe life into your business logic, automating the complex
             interplay of Sales, Service, and Operations with surgical precision.
-          </p>
-        </div>
+          </motion.p>
+
+          <motion.div
+            style={{ marginTop: "3rem" }}
+            variants={itemVariants}
+            whileHover={{ x: 10 }}
+          >
+            <div className="mono" style={{ opacity: 0.4, fontSize: "0.8rem" }}>
+              // STATUS: OPERATIONAL
+              <br />
+              // LATENCY: 14MS
+            </div>
+          </motion.div>
+        </motion.div>
         <div className="hero-right">
           <canvas id="hero-canvas" ref={canvasRef}></canvas>
         </div>

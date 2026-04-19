@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 const DESKTOP_LAYOUT = {
   api: { x: 0.1, y: 0.25, label: "API" },
@@ -166,10 +167,29 @@ export default function Topology() {
 
   const currentLayout = isMobile ? MOBILE_LAYOUT : DESKTOP_LAYOUT;
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.9, y: "-40%" },
+    visible: { opacity: 1, scale: 1, y: "-50%", transition: { duration: 0.5 } },
+  };
+
   return (
     <section className="panel results-panel theme-dark">
       <div className="topology-layout" ref={containerRef}>
-        <div className="topology-desc">
+        <motion.div
+          className="topology-desc"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="td-header">THE BOTTLENECK</div>
           <h2 className="td-title">
             Shattering the <span className="td-highlight">Linear Queue.</span>
@@ -180,25 +200,39 @@ export default function Topology() {
             Agent that orchestrates asymmetrical swarms to handle infinite
             volume simultaneously.
           </p>
-        </div>
+        </motion.div>
         <div className="graph-container">
           <canvas id="topology-canvas" ref={canvasRef}></canvas>
-          <div className="graph-nodes">
-            {Object.entries(currentLayout).map(([key, node]) => (
-              <div
-                key={key}
-                className="node"
-                style={{
-                  left: `${node.x * 100}%`,
-                  top: `${node.y * 100}%`,
-                  position: "absolute",
-                  borderColor: (node as { isRouter?: boolean }).isRouter ? "var(--accent-pop)" : undefined,
-                }}
-              >
-                {node.label}
-              </div>
-            ))}
-          </div>
+          <motion.div
+            className="graph-nodes"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <AnimatePresence>
+              {Object.entries(currentLayout).map(([key, node]) => (
+                <motion.div
+                  key={`${key}-${isMobile}`}
+                  className="node"
+                  style={{
+                    left: `${node.x * 100}%`,
+                    top: `${node.y * 100}%`,
+                    position: "absolute",
+                    x: "-50%",
+                    y: "-50%",
+                    borderColor: (node as { isRouter?: boolean }).isRouter
+                      ? "var(--accent-pop)"
+                      : undefined,
+                  }}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.1, zIndex: 10, borderColor: "#fff" }}
+                >
+                  {node.label}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -37,7 +37,7 @@ export default function PrivacyPolicy() {
     }, []);
 
     return (
-        <main className="text-[var(--accent-a)] relative page-main theme-black" ref={sectionRef}>
+        <main className="text-[var(--accent-a)] relative page-main theme-dark" ref={sectionRef}>
             <div className="max-w-5xl mx-auto px-10 relative z-10">
                 <header className="privacy-header reveal">
                     <Link href="/" className="back-link mono">

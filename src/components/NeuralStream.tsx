@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { motion, Variants } from "framer-motion";
 
 interface NeuralStreamProps {
   scrollTween?: gsap.core.Tween;
@@ -59,6 +60,17 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
     { scope: container, dependencies: [scrollTween] }
   );
 
+  const nodeVariants: Variants = {
+    initial: { opacity: 0.3, scale: 0.95 },
+    active: { opacity: 1, scale: 1.05 },
+    hover: { 
+      scale: 1.08, 
+      boxShadow: "0 0 30px rgba(204, 255, 0, 0.2)",
+      borderColor: "var(--accent-pop)",
+      transition: { duration: 0.3 }
+    }
+  };
+
   return (
     <section className="panel system-stream-panel theme-dark" id="sysPanel" ref={container}>
       <div className="stream-container">
@@ -76,8 +88,19 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
 
         {/* Flex Nodes */}
         <div className="stream-flex">
-          <div className="hud-node stream-item">
-            <div className="hud-scanner"></div>
+          <motion.div 
+            className="hud-node stream-item"
+            whileHover="hover"
+            variants={nodeVariants}
+          >
+            <motion.div 
+              className="hud-scanner"
+              animate={{ 
+                opacity: [0.5, 1, 0.5],
+                scaleX: [0.95, 1.05, 0.95]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            ></motion.div>
             <div className="hud-content">
               <div className="hud-id">01 // LAYER_01</div>
               <div className="hud-title">Simple Chatbots</div>
@@ -89,10 +112,21 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
                 of automation for manual customer touchpoints.
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="hud-node stream-item">
-            <div className="hud-scanner"></div>
+          <motion.div 
+            className="hud-node stream-item"
+            whileHover="hover"
+            variants={nodeVariants}
+          >
+            <motion.div 
+              className="hud-scanner"
+              animate={{ 
+                opacity: [0.5, 1, 0.5],
+                scaleX: [0.95, 1.05, 0.95]
+              }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+            ></motion.div>
             <div className="hud-content">
               <div className="hud-id">02 // LAYER_02</div>
               <div className="hud-title">Voice AI Agents</div>
@@ -102,10 +136,22 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
                 objections and phone-based outreach with human-like nuance.
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="hud-node stream-item" style={{ borderColor: "var(--accent-pop)" }}>
-            <div className="hud-scanner"></div>
+          <motion.div 
+            className="hud-node stream-item" 
+            style={{ borderColor: "var(--accent-pop)" }}
+            whileHover="hover"
+            variants={nodeVariants}
+          >
+            <motion.div 
+              className="hud-scanner"
+              animate={{ 
+                opacity: [0.5, 1, 0.5],
+                scaleX: [0.95, 1.05, 0.95]
+              }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+            ></motion.div>
             <div className="hud-content">
               <div className="hud-id" style={{ color: "var(--accent-pop)" }}>03 // LAYER_03</div>
               <div className="hud-title">Agentic Systems</div>
@@ -117,10 +163,21 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
                 systems that integrate deeply and act autonomously.
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="hud-node stream-item">
-            <div className="hud-scanner"></div>
+          <motion.div 
+            className="hud-node stream-item"
+            whileHover="hover"
+            variants={nodeVariants}
+          >
+            <motion.div 
+              className="hud-scanner"
+              animate={{ 
+                opacity: [0.5, 1, 0.5],
+                scaleX: [0.95, 1.05, 0.95]
+              }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
+            ></motion.div>
             <div className="hud-content">
               <div className="hud-id">04 // TOTALITY</div>
               <div className="hud-title">Full Autonomy</div>
@@ -130,7 +187,7 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
                 updated, and growth unlocked without a single click.
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

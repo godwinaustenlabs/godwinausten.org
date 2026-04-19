@@ -22,7 +22,7 @@ export default function About() {
     }, []);
 
     return (
-        <main className="text-[var(--accent-a)] relative page-main theme-black" ref={sectionRef}>
+        <main className="text-[var(--accent-a)] relative page-main theme-dark" ref={sectionRef}>
             <div className="max-w-6xl mx-auto px-10 relative z-10">
                 <header className="about-header fade-node">
                     <Link href="/" className="back-link mono">

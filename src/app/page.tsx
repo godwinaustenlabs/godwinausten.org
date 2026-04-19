@@ -86,7 +86,6 @@ export default function Home() {
       const getPanelColor = (panel: HTMLElement) => {
         if (panel.classList.contains("theme-lime")) return "#ccff00";
         if (panel.classList.contains("theme-yellow")) return "#ffcf00";
-        if (panel.classList.contains("theme-black")) return "#000000";
         return "#050505";
       };
 
