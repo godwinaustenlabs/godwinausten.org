@@ -5,7 +5,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "site",
-	"account_id": "abe474314ff1d961172bb5d97785be80",
+	"account_id": "ec758d282b2c89b4a1a147b64f445849",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-02-12",
 	"observability": {
