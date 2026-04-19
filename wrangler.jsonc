@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "godwinaustenlabs",
+	"name": "site",
 	"account_id": "abe474314ff1d961172bb5d97785be80",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-02-12",
@@ -36,7 +36,10 @@
 	 * Static Assets
 	 * https://developers.cloudflare.com/workers/static-assets/binding/
 	 */
-	"assets": { "directory": "./out/", "binding": "ASSETS" },
+	"assets": {
+		"directory": "./out/",
+		"binding": "ASSETS"
+	},
 	/**
 	 * Service Bindings (communicate between multiple Workers)
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
