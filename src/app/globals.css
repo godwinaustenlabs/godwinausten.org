@@ -517,10 +517,16 @@ body:hover .cursor-outline.hovered {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 4rem 10% 4rem 0;
+    padding: 4rem 2rem 4rem 0;
     position: relative;
     z-index: 2;
     border-right: 1px solid var(--glass-border);
+}
+
+@media (min-width: 1024px) {
+    .hero-left {
+        padding-right: 4rem;
+    }
 }
 
 @media (min-width: 1440px) {
@@ -529,7 +535,7 @@ body:hover .cursor-outline.hovered {
     }
 
     .hero-left {
-        padding-right: 15%;
+        padding-right: 6rem;
     }
 
     .text-body {
@@ -544,11 +550,11 @@ body:hover .cursor-outline.hovered {
     }
 
     .hero-left {
-        padding-right: 20%;
+        padding-right: 8rem;
     }
 
     .text-jumbo {
-        font-size: clamp(5rem, 10vw, 14rem);
+        font-size: clamp(5rem, 8vw, 12rem);
     }
 
     .text-xl {
