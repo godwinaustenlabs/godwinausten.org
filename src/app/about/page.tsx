@@ -73,7 +73,7 @@ export default function About() {
                     </div>
                 </div>
 
-                <div className="philosophy-section theme-lime full-bleed" style={{ padding: '120px 24px', marginTop: '120px', marginBottom: '80px' }}>
+                <div className="philosophy-section theme-yellow full-bleed" style={{ padding: '120px 24px', marginTop: '120px', marginBottom: '80px' }}>
                     <div className="max-w-6xl mx-auto">
                         <div className="module-header mono mb-l" style={{ borderBottomColor: 'rgba(5, 5, 5, 0.2)' }}>
                             <span className="module-id" style={{ color: '#050505', fontWeight: 'bold' }}>CORE</span>
@@ -82,15 +82,15 @@ export default function About() {
                         <div className="phil-grid">
                             <div className="phil-node" style={{ borderLeft: '1px solid rgba(5,5,5,0.2)', paddingLeft: '1.5rem' }}>
                                 <h4 className="mono uppercase mb-s" style={{ color: '#050505' }}>01. Automate_Repetitive</h4>
-                                <p style={{ color: 'rgba(5,5,5,0.8)' }}>Human capital should be reserved for high-level strategy and creativity, never for data moving or basic qualification.</p>
+                                <p style={{ color: 'var(--text-dim)' }}>Human capital should be reserved for high-level strategy and creativity, never for data moving or basic qualification.</p>
                             </div>
                             <div className="phil-node" style={{ borderLeft: '1px solid rgba(5,5,5,0.2)', paddingLeft: '1.5rem' }}>
                                 <h4 className="mono uppercase mb-s" style={{ color: '#050505' }}>02. Systemize_Chaos</h4>
-                                <p style={{ color: 'rgba(5,5,5,0.8)' }}>Centralized, predictable systems beat fragmented tools every time. We build for seamless synchronicity.</p>
+                                <p style={{ color: 'var(--text-dim)' }}>Centralized, predictable systems beat fragmented tools every time. We build for seamless synchronicity.</p>
                             </div>
                             <div className="phil-node" style={{ borderLeft: '1px solid rgba(5,5,5,0.2)', paddingLeft: '1.5rem' }}>
                                 <h4 className="mono uppercase mb-s" style={{ color: '#050505' }}>03. Engineer_Scale</h4>
-                                <p style={{ color: 'rgba(5,5,5,0.8)' }}>If it works for ten users, it must work for ten thousand without breaking or requiring a massive increase in overhead.</p>
+                                <p style={{ color: 'var(--text-dim)' }}>If it works for ten users, it must work for ten thousand without breaking or requiring a massive increase in overhead.</p>
                             </div>
                         </div>
                     </div>
@@ -176,7 +176,7 @@ export default function About() {
                 .module-body p {
                     font-size: 1.15rem;
                     line-height: 1.7;
-                    color: var(--accent-b);
+                    color: var(--text-dim);
                     margin-bottom: 24px;
                 }
 
@@ -215,7 +215,7 @@ export default function About() {
                 .mb-s { margin-bottom: 16px; }
                 .phil-node p {
                     line-height: 1.6;
-                    color: var(--accent-b);
+                    color: var(--text-dim);
                 }
 
                 .terminal-footer {
@@ -241,6 +241,16 @@ export default function About() {
                         font-size: 10px;
                     }
                     .panel-glass { padding: 30px; }
+                    .philosophy-section .max-w-6xl > div:first-child {
+                        text-align: center !important;
+                    }
+                    .phil-node {
+                        border-left: none !important;
+                        border-top: 1px solid rgba(5,5,5,0.1) !important;
+                        padding-left: 0 !important;
+                        padding-top: 1.5rem !important;
+                        text-align: center !important;
+                    }
                 }
             `}</style>
         </main >

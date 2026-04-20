@@ -15,6 +15,8 @@
     /* Medium Gray */
     --accent-d: #C8C4BC;
     /* Muted Tan */
+    --text-dim: #6B6B6B;
+    /* Theme-aware muted text */
 
     /* Pop Color: Electric Yellow (TACTICAL) */
     --accent-pop: #FFDD00;
@@ -585,22 +587,32 @@ body:hover .cursor-outline.hovered {
     --text-color: var(--theme-light-txt);
 }
 
-.theme-accent {
+.theme-accent, .theme-yellow {
     background-color: var(--theme-accent-bg);
     color: var(--theme-accent-txt);
     --text-color: var(--theme-accent-txt);
+    --text-dim: #2A2A2A;
+}
+
+.theme-lime {
+    background-color: var(--theme-accent-bg);
+    color: var(--theme-accent-txt);
+    --text-color: var(--theme-accent-txt);
+    --text-dim: #2A2A2A;
 }
 
 .theme-dark {
     background-color: var(--theme-dark-bg);
     color: var(--theme-dark-txt);
     --text-color: var(--theme-dark-txt);
+    --text-dim: #D1D1D1;
 }
 
 .theme-black {
     background-color: #0A0A0A;
     color: var(--theme-dark-txt);
     --text-color: var(--theme-dark-txt);
+    --text-dim: #D1D1D1;
 }
 
 .full-bleed {

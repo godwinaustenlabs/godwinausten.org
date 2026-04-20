@@ -119,7 +119,7 @@ export default function AboutCEO() {
                     <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center" style={{ gap: '32px' }}>
                         <div>
                             <h2 className="mono uppercase" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#050505', letterSpacing: '-0.02em', fontWeight: 'bold', lineHeight: 1 }}>SYSTEM ARCHITECT</h2>
-                            <p style={{ color: 'rgba(5, 5, 5, 0.8)', marginTop: '16px', fontSize: '1.2rem' }}>Deploying leverage. Not just software.</p>
+                            <p style={{ color: 'var(--text-dim)', marginTop: '16px', fontSize: '1.2rem' }}>Deploying leverage. Not just software.</p>
                         </div>
                         <a href="mailto:ceo@godwinausten.org" className="mono uppercase text-sm" style={{ border: '1px solid #050505', color: '#050505', padding: '16px 32px', textDecoration: 'none' }}>
                             Initiate_Sequence
@@ -180,7 +180,7 @@ export default function AboutCEO() {
                 .bio-paragraph {
                     font-size: 1.2rem;
                     line-height: 1.6;
-                    color: var(--accent-b);
+                    color: var(--text-dim);
                 }
                 .mt-p { margin-top: 24px; }
 
@@ -272,6 +272,12 @@ export default function AboutCEO() {
                     .visual-col { order: -1; }
                     .profile-card { position: relative; top: 0; }
                     .tenets-grid { grid-template-columns: 1fr; }
+                    .full-bleed.theme-yellow > div {
+                        text-align: center !important;
+                        flex-direction: column !important;
+                        align-items: center !important;
+                        gap: 2rem !important;
+                    }
                 }
             `}</style>
         </main>

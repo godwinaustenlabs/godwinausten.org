@@ -44,7 +44,7 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
         intensity: 0,
         scale: 0.8,
         morph: 0, // 0: Engine, 1: Arch, 2: Intel, 3: Sync
-        color: "#ccff00",
+        color: "#FFDD00",
       };
 
       // 3x3x3 Grid (27 points) - Structured and Lightweight
@@ -225,7 +225,7 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
         // INTEGRATION (Nexus Pulse)
         .to("#stg-2", { opacity: 0, y: -30, duration: 0.5 })
         .to("#stg-3", { opacity: 1, y: 0, duration: 0.5 })
-        .to(coreProps, { color: "#ccff00", intensity: 0.9, rotation: Math.PI * 3, morph: 2.5, duration: 1 }, "<");
+        .to(coreProps, { color: "#FFDD00", intensity: 0.9, rotation: Math.PI * 3, morph: 2.5, duration: 1 }, "<");
 
       return () => {
         window.removeEventListener("resize", resize);
@@ -260,7 +260,7 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
             whileHover="hover"
             variants={cardVariants}
           >
-            <span className="eco-label" style={{ color: "#ccff00" }}>
+            <span className="eco-label" style={{ color: "#FFDD00" }}>
               THE ENGINE
             </span>
             <h3 className="eco-title">Nova Framework.</h3>
