@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import Lenis from "lenis";
 
 import Loader from "@/components/Loader";
 import Navbar from "@/components/Navbar";
@@ -25,6 +26,20 @@ export default function Home() {
 
   useGSAP(
     () => {
+      // Initialize Lenis for smooth scroll and momentum
+      const lenis = new Lenis({
+        lerp: 0.1,
+        smoothWheel: true,
+      });
+
+      lenis.on('scroll', ScrollTrigger.update);
+
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+
+      gsap.ticker.lagSmoothing(0);
+
       const initScroll = () => {
         if (!wrapperRef.current) return;
 
@@ -44,8 +59,7 @@ export default function Home() {
               trigger: wrapperRef.current,
               pin: true,
               pinType: "fixed",
-              anticipatePin: 1,
-              scrub: 1.5,
+              scrub: 1, // Reduced for better responsiveness
               end: () => "+=" + dragDistance,
               invalidateOnRefresh: true,
             },
@@ -62,7 +76,11 @@ export default function Home() {
         setTimeout(() => ScrollTrigger.refresh(), 500);
       });
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        gsap.ticker.remove(lenis.raf);
+        lenis.destroy();
+      };
     },
     { scope: undefined }
   );
@@ -84,9 +102,10 @@ export default function Home() {
       };
 
       const getPanelColor = (panel: HTMLElement) => {
-        if (panel.classList.contains("theme-lime")) return "#ccff00";
-        if (panel.classList.contains("theme-yellow")) return "#ffcf00";
-        return "#050505";
+        if (panel.classList.contains("theme-accent")) return "#FFDD00";
+        if (panel.classList.contains("theme-dark")) return "#1A1A1A";
+        if (panel.classList.contains("theme-light")) return "#F2F0EB";
+        return "#F2F0EB";
       };
 
       if (panels.length > 0) updateThemeColor(getPanelColor(panels[0]));

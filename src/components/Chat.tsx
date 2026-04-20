@@ -81,7 +81,7 @@ export default function Chat() {
   }
 
   return (
-    <section className="panel theme-dark">
+    <section className="panel theme-light">
       <div className="split-layout">
         {/* Left: Text */}
         <div className="split-left">
@@ -94,6 +94,12 @@ export default function Chat() {
             of your Nova Swarm, intervene when human intuition is needed, or
             refine high-level operational protocols in real-time.
           </p>
+          <div style={{ marginTop: "2rem" }}>
+            <a href="https://contact.godwinausten.org" className="cta-button cta-button-filled" style={{ display: "inline-flex", textDecoration: "none" }}>
+              <span>Talk to Nova</span>
+              <span className="cta-arrow">→</span>
+            </a>
+          </div>
         </div>
 
         {/* Right: Chatbot */}

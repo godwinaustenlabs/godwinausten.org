@@ -335,6 +335,13 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
               APIs, and trigger webhooks with zero friction.
             </p>
           </motion.div>
+
+          <div className="eco-cta">
+            <a href="https://contact.godwinausten.org" className="cta-button cta-button-filled" style={{ display: "inline-flex", textDecoration: "none" }}>
+              <span>Build an Ecosystem</span>
+              <span className="cta-arrow">→</span>
+            </a>
+          </div>
         </div>
 
         {/* VISUAL */}

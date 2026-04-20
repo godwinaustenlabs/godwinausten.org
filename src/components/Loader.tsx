@@ -84,8 +84,6 @@ export default function Loader() {
           id="gridV"
         />
 
-        {/* Horizon Line Removed for Centering */}
-
         {/* Logo Blueprint Path (Centered & Split) */}
         <path
           id="loader-logo-bar"

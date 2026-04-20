@@ -11,7 +11,7 @@ export default function Navbar() {
     <div className="ui-layer">
       <nav className={`nav-top ${isHome ? "is-home" : ""}`}>
         <div className="logo cursor-pointer px-4 py-2">
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", color: "white", textDecoration: "none" }}>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", color: "#1A1A1A", textDecoration: "none" }}>
             <svg className="nav-logo-svg" viewBox="0 0 100 100">
               <path d="M 20 55 L 50 25 L 80 55" />
               <path d="M 30 75 L 70 75" />
@@ -34,7 +34,7 @@ export default function Navbar() {
 
       <style jsx>{`
         .nav-link-item {
-          color: white;
+          color: #1A1A1A;
           text-decoration: none;
           font-size: 13px;
           letter-spacing: 0.1em;
@@ -51,7 +51,7 @@ export default function Navbar() {
           bottom: 0;
           left: 0;
           width: 0;
-          height: 1px;
+          height: 2px;
           background: var(--accent-pop);
           transition: width 0.3s ease;
         }
@@ -59,22 +59,21 @@ export default function Navbar() {
           width: 100%;
         }
         .nav-privacy-btn {
-          color: white;
+          color: #1A1A1A;
           text-decoration: none;
           font-size: 13px;
           font-weight: 700;
           padding: 10px 24px;
-          border: 1px solid var(--metal-highlight);
+          border: 2px solid #1A1A1A;
           border-radius: 100px;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
+          background: transparent;
           transition: all 0.3s ease;
         }
         .nav-privacy-btn:hover {
           background: var(--accent-pop);
-          color: black;
+          color: #1A1A1A;
           border-color: var(--accent-pop);
-          box-shadow: 0 0 15px var(--accent-pop);
+          box-shadow: 0 0 20px rgba(255, 221, 0, 0.3);
         }
         @media (max-width: 768px) {
           .nav-links {
