@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence, Variants, useInView } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 
 const DESKTOP_LAYOUT = {
@@ -37,6 +37,12 @@ export default function Topology() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  const isInView = useInView(containerRef);
+  const isInViewRef = useRef(isInView);
+  useEffect(() => {
+    isInViewRef.current = isInView;
+  }, [isInView]);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     handleResize();
@@ -67,6 +73,8 @@ export default function Topology() {
     resize();
 
     let flowOffset = 0;
+    let lastFrameTime = 0;
+    const frameInterval = isMobile ? 33 : 0; // ~30fps on mobile, uncapped on desktop
 
     function drawBezier(p1: { x: number; y: number }, p2: { x: number; y: number }, isActive: boolean, mx: number, my: number) {
       if (!ctx) return;
@@ -105,11 +113,25 @@ export default function Topology() {
       ctx.stroke();
     }
 
-    const animate = () => {
+    const animate = (now: number) => {
+      if (!isInViewRef.current) {
+        requestAnimationFrame(animate);
+        return;
+      }
+
+      // Throttle on mobile
+      if (frameInterval && now - lastFrameTime < frameInterval) {
+        requestAnimationFrame(animate);
+        return;
+      }
+      lastFrameTime = now;
+
       ctx.clearRect(0, 0, w, h);
       flowOffset += 1;
       const rect = canvas.getBoundingClientRect();
-      const mx = clientMouse.x - rect.left, my = clientMouse.y - rect.top;
+      // Skip mouse-attraction physics on mobile (no cursor)
+      const mx = isMobile ? -1000 : clientMouse.x - rect.left;
+      const my = isMobile ? -1000 : clientMouse.y - rect.top;
 
       LINKS.forEach((l) => {
         const start = currentLayout[l[0] as keyof typeof currentLayout];

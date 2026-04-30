@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, useInView } from "framer-motion";
 
 interface EcosystemProps {
   scrollTween?: gsap.core.Tween;
@@ -12,6 +12,12 @@ interface EcosystemProps {
 export default function Ecosystem({ scrollTween }: EcosystemProps) {
   const container = useRef<HTMLDivElement>(null);
   const ecoSticky = useRef<HTMLDivElement>(null);
+
+  const isInView = useInView(container);
+  const isInViewRef = useRef(isInView);
+  useEffect(() => {
+    isInViewRef.current = isInView;
+  }, [isInView]);
 
   useGSAP(
     () => {
@@ -70,7 +76,21 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
       window.addEventListener("resize", resize);
       resize();
 
-      const drawKinetic = () => {
+      let lastFrameTime = 0;
+      const frameInterval = isMobile ? 33 : 0; // ~30fps on mobile
+
+      const drawKinetic = (now: number) => {
+        if (!isInViewRef.current) {
+          requestAnimationFrame(drawKinetic);
+          return;
+        }
+
+        if (frameInterval && now - lastFrameTime < frameInterval) {
+          requestAnimationFrame(drawKinetic);
+          return;
+        }
+        lastFrameTime = now;
+
         const w = canvas.width / (window.devicePixelRatio || 1);
         const h = canvas.height / (window.devicePixelRatio || 1);
         const cx = w / 2;

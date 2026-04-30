@@ -45,25 +45,8 @@ export default function Background() {
 
       window.addEventListener("mousemove", onMouseMove);
 
-      // Cube Rotation (Handles Global even if cube isn't present)
-      const onCubeMouseMove = (e: MouseEvent) => {
-        const cubeLayer = document.querySelector(".cube-mouse-layer");
-        if (!cubeLayer) return;
-        const { innerWidth, innerHeight } = window;
-        const x = (e.clientX - innerWidth / 2) / (innerWidth / 2);
-        const y = (e.clientY - innerHeight / 2) / (innerHeight / 2);
-        gsap.to(cubeLayer, {
-          rotationY: x * 30,
-          rotationX: -y * 30,
-          duration: 0.6,
-          ease: "power2.out",
-        });
-      };
-      window.addEventListener("mousemove", onCubeMouseMove);
-
       return () => {
         window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mousemove", onCubeMouseMove);
       };
     }
   }, { scope: undefined });

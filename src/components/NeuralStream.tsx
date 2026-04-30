@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, useInView } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import Marquee from "./Marquee";
 
@@ -16,8 +16,18 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
   const cableRef = useRef<SVGPathElement>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
 
+  const isInView = useInView(container);
+  const isInViewRef = useRef(isInView);
+  useEffect(() => {
+    isInViewRef.current = isInView;
+  }, [isInView]);
+
   // Particle background for dark section
   useEffect(() => {
+    // Skip entire particle system on mobile — O(n²) distance checks are too heavy
+    const isMobileDevice = window.innerWidth <= 768;
+    if (isMobileDevice) return;
+
     const canvas = particleCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -46,6 +56,11 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
     }
 
     const animate = () => {
+      if (!isInViewRef.current) {
+        requestAnimationFrame(animate);
+        return;
+      }
+
       ctx.clearRect(0, 0, w, h);
       particles.forEach((p) => {
         p.x += p.vx; p.y += p.vy;

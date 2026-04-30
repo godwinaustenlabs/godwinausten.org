@@ -1,16 +1,27 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion, Variants, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, Variants, useMotionValue, useSpring, useInView } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import Marquee from "./Marquee";
 
 export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 768);
+  }, []);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
   const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+  const isInView = useInView(canvasRef);
+  const isInViewRef = useRef(isInView);
+
+  useEffect(() => {
+    isInViewRef.current = isInView;
+  }, [isInView]);
 
   useEffect(() => {
     const handleMouse = (e: MouseEvent) => {
@@ -24,6 +35,9 @@ export default function Hero() {
   }, [mouseX, mouseY]);
 
   useEffect(() => {
+    // Skip entire canvas animation on mobile — too expensive
+    if (isMobile) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -56,6 +70,11 @@ export default function Hero() {
     resize();
 
     const animate = () => {
+      if (!isInViewRef.current) {
+        requestAnimationFrame(animate);
+        return;
+      }
+
       ctx.clearRect(0, 0, w, h);
       time += 1;
 
@@ -105,7 +124,7 @@ export default function Hero() {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationFrame);
     };
-  }, []);
+  }, [isMobile]);
 
   const letterVariants: Variants = {
     hidden: { y: 100, opacity: 0, rotateX: -80 },

@@ -27,9 +27,11 @@ export default function Home() {
   useGSAP(
     () => {
       // Initialize Lenis for smooth scroll and momentum
+      const isMobile = window.innerWidth <= 768;
       const lenis = new Lenis({
-        lerp: 0.1,
+        lerp: 0.08,
         smoothWheel: true,
+        // Removed gestureOrientation and syncTouch as they severely degrade Safari trackpad performance
       });
 
       lenis.on('scroll', ScrollTrigger.update);
@@ -58,8 +60,7 @@ export default function Home() {
             scrollTrigger: {
               trigger: wrapperRef.current,
               pin: true,
-              pinType: "fixed",
-              scrub: 1, // Reduced for better responsiveness
+              scrub: true, // Use direct scrubbing to let Lenis handle the smoothing
               end: () => "+=" + dragDistance,
               invalidateOnRefresh: true,
             },
