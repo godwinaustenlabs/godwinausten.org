@@ -101,15 +101,17 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
 
   useGSAP(
     () => {
-      if (!scrollTween || !container.current) return;
+      const isMobile = window.innerWidth <= 768;
       const items = gsap.utils.toArray<HTMLElement>(".stream-item");
-
       if (cableRef.current) {
         gsap.fromTo(cableRef.current,
           { strokeDashoffset: 1000, strokeDasharray: 1000 },
           { strokeDashoffset: 0, ease: "none", scrollTrigger: {
-            trigger: container.current, containerAnimation: scrollTween,
-            start: "left center", end: "right center", scrub: 1,
+            trigger: container.current, 
+            containerAnimation: isMobile ? undefined : scrollTween,
+            start: isMobile ? "top center" : "left center", 
+            end: isMobile ? "bottom center" : "right center", 
+            scrub: 1,
           }}
         );
       }
@@ -117,10 +119,12 @@ export default function NeuralStream({ scrollTween }: NeuralStreamProps) {
       items.forEach((node) => {
         gsap.to(node, {
           scrollTrigger: {
-            trigger: node, containerAnimation: scrollTween, start: "left center",
+            trigger: node, 
+            containerAnimation: isMobile ? undefined : scrollTween, 
+            start: isMobile ? "top center" : "left center",
             toggleClass: { targets: node, className: "active-stream" },
             onEnter: () => {
-              gsap.fromTo(node, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, clearProps: "x" });
+              gsap.fromTo(node, { opacity: 0, x: isMobile ? 0 : -20, y: isMobile ? 20 : 0 }, { opacity: 1, x: 0, y: 0, duration: 0.3, clearProps: "all" });
             },
           },
         });

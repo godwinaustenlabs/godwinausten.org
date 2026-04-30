@@ -1893,6 +1893,7 @@ body:hover .cursor-outline.hovered {
         grid-template-columns: 1fr;
         width: 90%;
         gap: 2rem;
+        height: auto;
     }
 
     .topology-desc {

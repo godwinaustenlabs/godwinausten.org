@@ -219,9 +219,9 @@ export default function Ecosystem({ scrollTween }: EcosystemProps) {
       const cubeTl = gsap.timeline({
         scrollTrigger: {
           trigger: container.current,
-          containerAnimation: scrollTween,
-          start: "left left",
-          end: "right right",
+          containerAnimation: isMobile ? undefined : scrollTween,
+          start: isMobile ? "top center" : "left left",
+          end: isMobile ? "bottom center" : "right right",
           scrub: 1.5,
         },
       });

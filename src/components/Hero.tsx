@@ -86,8 +86,8 @@ export default function Hero() {
         ctx.beginPath();
         ctx.strokeStyle = wave.color;
         ctx.lineWidth = 2;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = wave.color;
+        // Removed shadowBlur to drastically improve Canvas FPS on Safari
+        ctx.shadowBlur = 0;
 
         const points = [];
         const step = 30;
@@ -210,24 +210,24 @@ export default function Hero() {
           <motion.div className="hero-stats" custom={3} variants={fadeUp}>
             <div className="hero-stat">
               <motion.span className="hero-stat-number"
-                initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-                viewport={{ once: true }} transition={{ duration: 1, delay: 1.5 }}
+                initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.8 }}
               >14ms</motion.span>
               <span className="hero-stat-label">Avg Latency</span>
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat">
               <motion.span className="hero-stat-number"
-                initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-                viewport={{ once: true }} transition={{ duration: 1, delay: 1.7 }}
+                initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.9 }}
               >99.9%</motion.span>
               <span className="hero-stat-label">Uptime</span>
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat">
               <motion.span className="hero-stat-number"
-                initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-                viewport={{ once: true }} transition={{ duration: 1, delay: 1.9 }}
+                initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.6, delay: 1.0 }}
               >300+</motion.span>
               <span className="hero-stat-label">Edge Nodes</span>
             </div>

@@ -49,7 +49,7 @@ export default function Manifesto() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "0px" }}
       >
         <motion.h2 className="text-xl manifesto-headline" variants={slideUp}>
           &ldquo;Stop hiring for roles that{" "}
@@ -74,21 +74,21 @@ export default function Manifesto() {
           <div className="manifesto-metric">
             <motion.span className="manifesto-metric-value"
               initial={{ scale: 0 }} whileInView={{ scale: 1 }}
-              viewport={{ once: true }} transition={{ type: "spring", stiffness: 200, delay: 0.5 }}
+              viewport={{ once: true, margin: "0px" }} transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
             >10x</motion.span>
             <span className="manifesto-metric-label">Faster Deployment</span>
           </div>
           <div className="manifesto-metric">
             <motion.span className="manifesto-metric-value"
               initial={{ scale: 0 }} whileInView={{ scale: 1 }}
-              viewport={{ once: true }} transition={{ type: "spring", stiffness: 200, delay: 0.7 }}
+              viewport={{ once: true, margin: "0px" }} transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
             >85%</motion.span>
             <span className="manifesto-metric-label">Cost Reduction</span>
           </div>
           <div className="manifesto-metric">
             <motion.span className="manifesto-metric-value"
               initial={{ scale: 0 }} whileInView={{ scale: 1 }}
-              viewport={{ once: true }} transition={{ type: "spring", stiffness: 200, delay: 0.9 }}
+              viewport={{ once: true, margin: "0px" }} transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
             >24/7</motion.span>
             <span className="manifesto-metric-label">Always On</span>
           </div>
