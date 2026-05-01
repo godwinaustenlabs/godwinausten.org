@@ -455,56 +455,9 @@ body:hover .cursor-outline.hovered {
 }
 
 .loader-svg {
-    width: 400px;
-    height: 300px;
+    width: min(60vw, 320px);
+    height: min(60vw, 320px);
     overflow: visible;
-}
-
-.loader-grid {
-    stroke: rgba(0, 0, 0, 0.1);
-    stroke-width: 1;
-    vector-effect: non-scaling-stroke;
-}
-
-.loader-line {
-    fill: none;
-    stroke: var(--accent-pop);
-    stroke-width: 2;
-    stroke-linecap: round;
-    filter: drop-shadow(0 0 5px rgba(255, 221, 0, 0.4));
-}
-
-.loader-logo-path {
-    fill: none;
-    stroke: #1A1A1A;
-    stroke-width: 5;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    filter: none;
-    opacity: 0;
-    animation: logoGlow 3s infinite alternate ease-in-out;
-}
-
-@keyframes logoGlow {
-    0% {
-        filter: drop-shadow(0 0 3px rgba(26, 26, 26, 0.2));
-    }
-
-    100% {
-        filter: drop-shadow(0 0 8px rgba(255, 221, 0, 0.4));
-    }
-}
-
-.loader-node {
-    fill: #1A1A1A;
-    opacity: 0;
-}
-
-.loader-text {
-    font-family: 'Space Mono';
-    font-size: 10px;
-    fill: #1A1A1A;
-    opacity: 0;
 }
 
 /* --- LAYOUT --- */
@@ -555,14 +508,14 @@ body:hover .cursor-outline.hovered {
 }
 
 .nav-logo-svg {
-    width: 24px;
-    height: 24px;
-    stroke: var(--accent-pop);
-    stroke-width: 10;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    fill: none;
-    filter: drop-shadow(0 0 4px rgba(255, 221, 0, 0.4));
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 0 4px rgba(254, 191, 0, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.nav-logo-svg:hover {
+    filter: drop-shadow(0 0 8px rgba(254, 191, 0, 0.5));
 }
 
 .wrapper {
