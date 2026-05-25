@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   title: "Godwin Austen Labs",
   description: "Nova Framework. Deploying Autonomy with Agentic infrastructures.",
   icons: {
-    icon: "/icon.svg?v=2",
+    icon: "/logo.png",
   },
   openGraph: {
     title: "Godwin Austen Labs",
