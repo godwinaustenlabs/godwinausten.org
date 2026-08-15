@@ -70,7 +70,7 @@ export default function Loader() {
   );
 
   // Logo color
-  const primaryColor = "#FFDD00";
+  const primaryColor = "#1b1b1a";
 
   return (
     <div id="loader" ref={container}>
