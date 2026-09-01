@@ -1,0 +1,126 @@
+/**
+ * wrangler.jsonc — Cloudflare Worker configuration for `site`.
+ *
+ * RULES (see CLAUDE.md):
+ *  - Every binding below MUST have a matching row in docs/cloudflare-resources.md.
+ *  - Resources are NEVER hand-created in the dashboard. Create them with
+ *    `npx wrangler <product> create <name>` and record them in the registry.
+ *  - After changing any binding, run `npm run cf:typegen` to regenerate
+ *    cloudflare-env.d.ts so TypeScript stays in sync.
+ *
+ * Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "site",
+  "main": ".open-next/worker.js",
+  // Bump deliberately; a newer date can change runtime behaviour.
+  // Ceiling: the workerd bundled by @cloudflare/vitest-pool-workers. Setting a
+  // date newer than that binary supports makes `npm run test:worker` refuse to
+  // start, so bump this and the pool together.
+  // https://developers.cloudflare.com/workers/configuration/compatibility-dates/
+  "compatibility_date": "2026-08-22",
+  "compatibility_flags": [
+    // Required by Next.js / OpenNext (Node built-ins in the Workers runtime).
+    "nodejs_compat",
+    // Required by OpenNext: makes same-Worker fetch() go back out through the
+    // public internet instead of short-circuiting, so routing/caching behaves
+    // like a real edge request.
+    "global_fetch_strictly_public",
+  ],
+  // Deploy to <worker>.<subdomain>.workers.dev until the custom domain is wired.
+  // To go live on godwinausten.org later, add a "routes" array here and record
+  // the zone in docs/cloudflare-resources.md.
+  "workers_dev": true,
+  // ---------------------------------------------------------------------------
+  // Static assets (built by OpenNext into .open-next/assets)
+  // ---------------------------------------------------------------------------
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  // ---------------------------------------------------------------------------
+  // Self-reference — required by OpenNext for ISR revalidation + cache purge.
+  // The `service` value MUST equal the `name` above.
+  // ---------------------------------------------------------------------------
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "site",
+    },
+  ],
+  // ---------------------------------------------------------------------------
+  // R2 — object storage
+  // ---------------------------------------------------------------------------
+  "r2_buckets": [
+    {
+      // Brand + funnel media: VSL video, case-study imagery, downloadables.
+      "binding": "MEDIA",
+      "bucket_name": "site-media",
+    },
+    {
+      // OpenNext incremental (ISR) cache. Binding name is fixed by OpenNext.
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "site-isr-cache",
+    },
+  ],
+  // ---------------------------------------------------------------------------
+  // Workers AI — no resource to provision, binding only.
+  //
+  // `remote: true` is not a choice: Workers AI has no local simulation, so every
+  // call — including from `npm run dev` — hits the real API and is billed. Treat
+  // any AI call in local dev as a real spend. See SECURITY.md §6.
+  // https://developers.cloudflare.com/workers-ai/
+  // ---------------------------------------------------------------------------
+  "ai": {
+    "binding": "AI",
+    "remote": true,
+  },
+  // ---------------------------------------------------------------------------
+  // Images — Cloudflare Images binding used by the Next.js image loader.
+  // https://developers.cloudflare.com/images/transform-images/bindings/
+  // ---------------------------------------------------------------------------
+  "images": {
+    "binding": "IMAGES",
+  },
+  // ---------------------------------------------------------------------------
+  // Plain (non-secret) vars. Secrets go through `npx wrangler secret put`,
+  // never in this file. See SECURITY.md.
+  // ---------------------------------------------------------------------------
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://godwinausten.org",
+    "ENVIRONMENT": "production",
+  },
+  // ---------------------------------------------------------------------------
+  // Observability — logs in the dashboard + `npm run tail`.
+  // ---------------------------------------------------------------------------
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+  // Upload source maps so stack traces in logs point at real source lines.
+  "upload_source_maps": true,
+  // ---------------------------------------------------------------------------
+  // NOT PROVISIONED YET — do not uncomment without (a) creating the resource via
+  // wrangler and (b) adding it to docs/cloudflare-resources.md.
+  //
+  // "durable_objects": {
+  //   "bindings": [{ "name": "SESSION", "class_name": "SessionDO" }]
+  // },
+  // "migrations": [
+  //   { "tag": "v1", "new_sqlite_classes": ["SessionDO"] }
+  // ],
+  //
+  // "d1_databases": [
+  //   { "binding": "DB", "database_name": "TBD", "database_id": "TBD" }
+  // ],
+  //
+  // "kv_namespaces": [
+  //   { "binding": "CONFIG", "id": "TBD" }
+  // ],
+  //
+  // "queues": {
+  //   "producers": [{ "binding": "LEADS", "queue": "TBD" }]
+  // }
+  // ---------------------------------------------------------------------------
+}

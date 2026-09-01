@@ -1,0 +1,42 @@
+import { z } from "zod";
+import { defineBlock } from "@/modules";
+
+export const servicesRowsSchema = z.object({
+  index: z.string().min(1),
+  eyebrow: z.string().min(1),
+  headline: z.string().min(1),
+  rows: z
+    .array(
+      z.object({
+        index: z.string().min(1),
+        title: z.string().min(1),
+        detail: z.string().min(1),
+      }),
+    )
+    .min(1),
+  /** The hand-off to the next section. */
+  next: z.object({ index: z.string(), label: z.string(), href: z.string() }),
+  /**
+   * Show the morphing lattice above the headline.
+   *
+   * Off by default. It is the home page's one piece of ambient motion; on a
+   * sub-route, where the same block carries a plain list of channels, it is
+   * decoration with nothing to say.
+   */
+  lattice: z.boolean().default(false),
+});
+
+export type ServicesRowsProps = z.infer<typeof servicesRowsSchema>;
+
+export const servicesRows = defineBlock({
+  id: "services-rows",
+  displayName: "Services — one cell per offering",
+  schema: servicesRowsSchema,
+  load: () => import("./index"),
+  defaults: {
+    // `stickyHead` makes the frame publish `--block-lead`, which the head and
+    // the ink bar offset themselves by so the cells slide past them.
+    layout: { width: "full-bleed", spacing: "none", panel: "content", stickyHead: true },
+    motion: { reveal: "rise" },
+  },
+});

@@ -1,0 +1,348 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Blocks consume these, never raw hex values — that is what lets
+ * a whole page's palette change without touching a single block.
+ * Tailwind v4 is CSS-first: everything in @theme becomes a utility.
+ * https://tailwindcss.com/docs/theme
+ *
+ * The palette is a paper-and-ink one on purpose. See docs/brief.md: this is a
+ * creative-studio site, not a dark SaaS console. There is no dark variant —
+ * paper is the brand, and flipping it would break the one accent we allow.
+ */
+@theme {
+  /* Paper. The single background of the entire site. */
+  --color-paper: #f6f5f1;
+  /* Ink. Primary text and every illustration stroke. */
+  --color-ink: #0e0e0c;
+  /* Soft. Secondary text only — never a background. */
+  --color-soft: #6e6d66;
+  /* Hairline. 1px rules and grid seams. Never a card border, because there are
+     no cards (CLAUDE.md §7, docs/brief.md — full-bleed blocks only). */
+  --color-hairline: #d8d6cc;
+  /* Signal lime. One dot, one active state, one hover underline. Never a fill. */
+  --color-signal: #c6ff3e;
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  /* Tight tracking is a property of the display face at these sizes, not a
+     decision each block re-makes. Tailwind v4 attaches it to `font-display`. */
+  --font-display--letter-spacing: -0.03em;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-mono--letter-spacing: 0.02em;
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* The page gutter, as a spacing utility: `px-gutter`, `ms-gutter`, etc.
+     The value itself is responsive — see `--gutter` below. Blocks apply it to
+     their text columns; blocks with bleeding tiles simply don't, which is how a
+     tile touches the viewport edge without fighting the frame. */
+  --spacing-gutter: var(--gutter);
+
+  /* The desktop filmstrip threshold. Mirrored in JS as STRIP_MIN_WIDTH in
+     src/modules/runtime/scroll-engine.ts — the two must agree. */
+  --breakpoint-wide: 1200px;
+
+  /* The fixed chrome. Every panel is sized against these so nothing ever runs
+     under the top bar or past the bottom one — see `--band` below. */
+  --spacing-chrome-top: var(--chrome-top);
+  --spacing-chrome-bottom: var(--chrome-bottom);
+}
+
+/*
+ * `strip:` — applies only while the page is running as a horizontal filmstrip.
+ *
+ * ScrollStage's engine sets `data-scroll-mode="strip"` on `<html>` once it has
+ * measured the viewport and confirmed the visitor has not asked for reduced
+ * motion. Flagging the root rather than the stage is deliberate: the site header
+ * is a sibling of the stage, not a child, and it has to switch too.
+ *
+ * The variant matches the flagged element itself as well as its descendants, so
+ * a rule can be written against either.
+ *
+ * Everything vertical is the *unprefixed* default, so a no-JS or reduced-motion
+ * visitor gets the vertical page with no flash of a broken horizontal layout.
+ */
+@custom-variant strip (&:where([data-scroll-mode="strip"], [data-scroll-mode="strip"] *));
+
+@layer base {
+  /*
+   * The gutter is one value the whole site agrees on, widening as the viewport
+   * does. On the filmstrip it becomes viewport-relative so panels keep their
+   * proportions on very wide screens instead of stranding text in the middle.
+   */
+  :root {
+    --gutter: 1.25rem;
+
+    /*
+     * The chrome band.
+     *
+     * A fixed bar at the top and another at the bottom, with every panel sized
+     * to exactly what is left between them. This is the rule that stops a
+     * section running under the nav or spilling past the fold — the two things
+     * that were wrong before this existed. Nothing on the site may be taller
+     * than `--band`; a panel with more content than that shortens its type or
+     * drops a cell, it does not overflow.
+     */
+    --chrome-top: 3.25rem;
+    --chrome-bottom: 3rem;
+    --band: calc(100svh - var(--chrome-top) - var(--chrome-bottom));
+
+    /* Seams. Every division on the page is one hairline wide — cells are told
+       apart by the gap between them, never by a border around them. */
+    --seam: 1px;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --gutter: 2rem;
+      --chrome-top: 3.5rem;
+      --chrome-bottom: 3.25rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    :root {
+      --gutter: 2.5rem;
+      --chrome-top: 3.75rem;
+      --chrome-bottom: 3.5rem;
+    }
+  }
+
+  html {
+    /*
+     * Neither of these is global, and both used to be.
+     *
+     * `overflow-anchor: none` exists because the filmstrip drives itself off
+     * window scroll and the browser's scroll anchoring fights the transform.
+     * Left on everywhere it disables anchoring on the *vertical* routes too, so
+     * every late-arriving font or image above the viewport shifts the page under
+     * the reader — which is exactly what "jittery scrolling" feels like.
+     *
+     * `scroll-behavior: smooth` makes the browser animate every programmatic
+     * scroll, including ones it decides to make itself. `scrollToId` asks for
+     * smooth explicitly where it wants it, so the global is only a way to get
+     * surprised.
+     */
+    overflow-anchor: auto;
+  }
+
+  html[data-scroll-mode="strip"] {
+    overflow-anchor: none;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  /* Visible focus that reads as part of the design rather than a browser default. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  /* Non-negotiable: every scroll/parallax effect must respect this.
+     ScrollStage additionally refuses to enter filmstrip mode at all. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /*
+   * The loader mark writes itself on, then fills.
+   *
+   * Keyframes rather than a React-driven transition: a transition needs a state
+   * change one frame after mount to interpolate from, which means a `setState`
+   * inside an effect and a cascading render. An animation just runs. The mark is
+   * re-keyed on the loader's phase so it replays on every navigation.
+   */
+  @keyframes loader-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes loader-fill {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /*
+   * The placeholder demo reel. All of it is here rather than inline so the
+   * reduced-motion rule below can stop the lot in one place — a looping reel is
+   * exactly the kind of ambient movement someone turns that setting on to avoid.
+   */
+  @keyframes reel-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes reel-sweep {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(420%);
+    }
+  }
+
+  @keyframes reel-progress {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  /* Four captions share one loop, each visible for a quarter of it. */
+  @keyframes reel-caption {
+    0%,
+    24% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    26%,
+    100% {
+      opacity: 0;
+      transform: translateY(-0.35rem);
+    }
+  }
+
+  /* Under reduced motion there is no curtain at all — not a still one. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-loader] {
+      display: none;
+    }
+
+    /* The reel holds on its first frame: still legible, nothing moving. */
+    [class*="reel-"] {
+      animation: none !important;
+    }
+  }
+
+  /*
+   * The cell grid.
+   *
+   * Read from oddcommon.com, which is built almost entirely out of it: content
+   * lives in rectangular cells that butt together, told apart by a one-pixel
+   * seam. The seam is drawn as a *gap over a hairline ground*, not as borders
+   * on the cells, so it is always exactly one pixel wherever the grid reflows
+   * and there is never a doubled or stranded line at a wrap point.
+   *
+   * This is the site's whole layout system. If a piece of content is not in a
+   * cell, it is in the wrong place.
+   */
+  .grid-cells {
+    display: grid;
+    gap: var(--seam);
+    background-color: var(--color-hairline);
+  }
+
+  .cell {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    background-color: var(--color-paper);
+  }
+
+  .cell-ink {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /*
+   * A cell's eyebrow: a full-bleed bar across its top, not a floating label.
+   * Anchoring it to the cell edge is what makes a page of them line up.
+   */
+  .cell-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: none;
+    padding: 0.75rem var(--gutter);
+  }
+
+  /* The cell's body. The only place free-form content is allowed. */
+  .cell-body {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding: clamp(1.25rem, 3vh, 2.25rem) var(--gutter);
+  }
+
+  /*
+   * The mono label. Eyebrows, nav, captions, corner meta, section indices —
+   * the only "chrome" the design allows itself.
+   */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /*
+   * The lime underline that grows on hover. This is the accent's main job.
+   * Uses background-size rather than a pseudo-element so it composes with any
+   * inline text without needing a positioning context.
+   */
+  .signal-link {
+    background-image: linear-gradient(var(--color-signal), var(--color-signal));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 0.18em;
+    transition: background-size 0.4s var(--ease-out-expo);
+  }
+
+  .signal-link:hover,
+  .signal-link:focus-visible {
+    background-size: 100% 0.18em;
+  }
+
+  /*
+   * Corner "+" tick marks (docs/inspiration/raw/07-liminal-brand-board.jpg).
+   * A recurring registration-mark detail, drawn with a gradient pair so it
+   * costs no extra elements.
+   */
+  .tick {
+    /* currentColor so a tick works on paper and on ink without a second class. */
+    background-image:
+      linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size:
+      100% 1px,
+      1px 100%;
+  }
+}

@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Wrangler must not try to reach the Cloudflare API during CI.
+  # Bindings in tests are local Miniflare simulations.
+  CI: true
+
+jobs:
+  quality:
+    name: Typecheck · Lint · Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Generate binding types
+        # Offline: reads wrangler.jsonc only, no Cloudflare credentials needed.
+        run: npm run cf:typegen
+
+      - name: Resource registry matches wrangler.jsonc
+        run: npm run check:resources
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format
+        run: npm run format:check
+
+      - name: Unit tests (jsdom)
+        run: npm run test:unit
+
+      - name: Integration tests (workerd)
+        run: npm run test:worker
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # High/critical findings block the build. See SECURITY.md §8.
+      - run: npm audit --audit-level=high
+
+  build:
+    name: Worker build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run cf:typegen
+      # Proves the OpenNext build produces a deployable worker.
+      # Deployment itself is handled by Cloudflare Workers Builds, not here —
+      # that keeps Cloudflare credentials out of GitHub entirely.
+      - run: npm run build:worker

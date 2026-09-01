@@ -1,0 +1,16 @@
+.next
+.open-next
+.wrangler
+coverage
+playwright-report
+test-results
+node_modules
+package-lock.json
+docs/inspiration
+
+# Generated artwork. Reformatting it would produce a diff on every run of
+# `npm run format` that the generators would then undo.
+public/assets
+
+# Generated marks — see scripts/generate-favicon.mjs and scripts/trace-figure.mjs
+src/app/icon.svg

@@ -1,0 +1,16 @@
+# Cloudflare Workers static-asset headers.
+# Applied to files served from .open-next/assets. Dynamic responses get their
+# headers from src/middleware.ts instead.
+
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Generated artwork (scripts/generate-*.mjs). Not content-hashed, so it cannot
+# be immutable — a regenerated figure has to be able to reach people. A day of
+# browser cache plus a week at the edge with stale-while-revalidate is the right
+# trade for an asset that changes when a designer changes it, not per deploy.
+/assets/*
+  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400

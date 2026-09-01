@@ -1,0 +1,67 @@
+# ---- dependencies ----------------------------------------------------------
+node_modules/
+.pnp
+.pnp.js
+
+# ---- build output ----------------------------------------------------------
+.next/
+out/
+build/
+dist/
+.open-next/
+next-env.d.ts
+
+# ---- cloudflare ------------------------------------------------------------
+# Local Miniflare state: simulated R2/KV/D1/DO data. Machine-local, never shared.
+.wrangler/
+# Generated from wrangler.jsonc by `npm run cf:typegen`.
+cloudflare-env.d.ts
+worker-configuration.d.ts
+# D1 dumps may contain production data. Never commit them. See SECURITY.md.
+.d1-dumps/
+
+# ---- secrets ---------------------------------------------------------------
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.pem
+*.key
+
+# ---- test artefacts --------------------------------------------------------
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+
+# ---- tooling caches --------------------------------------------------------
+*.tsbuildinfo
+.eslintcache
+.turbo/
+.vercel/
+# Generated knowledge graph (graphify). Machine-local, rebuilt on demand.
+graphify-out/
+
+# ---- os / editor -----------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ---- logs ------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# ---- docs ------------------------------------------------------------------
+# Reference imagery is large and often licensed. Keep it local unless a file is
+# small, ours, and deliberately committed.
+docs/inspiration/**/*
+!docs/inspiration/**/*.md
+!docs/inspiration/**/.gitkeep

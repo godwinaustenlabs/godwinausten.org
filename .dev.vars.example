@@ -1,0 +1,14 @@
+# Local-only Worker secrets and vars, read by wrangler/Miniflare during
+# `npm run dev` and `npm run preview`.
+#
+# Copy to `.dev.vars` (git-ignored) and fill in. NEVER commit `.dev.vars`.
+# Production values are set with: npx wrangler secret put <NAME> --name site
+# See SECURITY.md.
+
+# Tells Next.js which .env.* files to load inside the Worker preview.
+NEXTJS_ENV=development
+
+# --- not yet used; here so the shape is agreed before we need them ---
+# RESEND_API_KEY=
+# TURNSTILE_SECRET_KEY=
+# D1_NAME=
