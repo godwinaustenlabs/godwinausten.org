@@ -217,6 +217,13 @@ production data sitting on a laptop; delete it when you are done with it.
 - **Nothing deploys automatically today.** `main` is not connected to Cloudflare;
   that happens at launch. Until then the only deploy path is `npm run deploy`
   from a machine already logged in with `wrangler login`.
+- **The worker is live on its workers.dev subdomain**
+  (`https://site.galabs.workers.dev`), deployed by hand from `dev` on the
+  owner's instruction. `workers_dev: true` and no zone route, so the apex domain
+  is untouched — but the URL is public, unauthenticated, and crawlable. Every
+  §10 item below applies to it _now_, not at launch. To take it down without
+  deleting the worker, set `workers_dev` to `false` in `wrangler.jsonc` and
+  redeploy.
 - When it is connected, deploys run through **Cloudflare Workers Builds** from
   the connected repository. There are no Cloudflare credentials in the repo or in
   GitHub secrets, which removes the single most commonly leaked token.
@@ -242,6 +249,11 @@ Tracked here so they are visible rather than forgotten. None of these are done.
       studio's artwork on the owner's instruction (`docs/adr/0004`). Licence it,
       re-trace from an image we own, or drop it before the site is public. This
       is a legal exposure, not a security one, but it blocks the same launch.
+- [ ] **Stock photograph licensing** — the four images under
+      `public/assets/photo/` came from Unsplash (`docs/photo-credits.md`,
+      `npm run gen:photos`). The owner said they would check the licensing
+      themselves; until that is written down, treat it as unresolved. Same class
+      of exposure as the traced figure above.
 - [ ] Lead endpoint hardening (§5) — **blocks the funnel form shipping.**
       Honeypot and PII-free logging are done; Turnstile, rate limiting, consent
       copy + privacy policy, and a retention decision are not. The form is live

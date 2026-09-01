@@ -43,8 +43,10 @@ Requires Node ≥ 20.9 and a Cloudflare login (`npx wrangler login`).
 | `npm run lint` / `lint:fix`       | ESLint                                                       |
 | `npm run format` / `format:check` | Prettier                                                     |
 | `npm run check:resources`         | Fails if `wrangler.jsonc` and the resource registry disagree |
-| `npm run gen:scribble`            | Regenerate the hero scribble figure                          |
+| `npm run gen:figure`              | Retrace the hero figure from the reference artwork           |
 | `npm run gen:stills`              | Regenerate the work-tile placeholder stills                  |
+| `npm run gen:photos`              | Re-download the stock photographs and rewrite the credits    |
+| `npm run gen:favicon`             | Rebuild `src/app/icon.svg` from the loader's path data       |
 | `npm run ci`                      | Everything CI runs, locally                                  |
 
 ### Test
@@ -196,16 +198,28 @@ real `<a href>` so ⌘-click and crawlers keep working.
 
 ### Generated artwork
 
-Everything visual on the site is produced by a seeded script in this repo —
-nothing third-party ships (`docs/adr/0003-…`).
+Every visual asset is produced by a script in this repo. Nothing here is drawn
+by hand, so nothing here should be edited by hand — change the script and
+re-run it.
 
-| Command                | Produces                            |
-| ---------------------- | ----------------------------------- |
-| `npm run gen:scribble` | `public/assets/scribble-figure.svg` |
-| `npm run gen:stills`   | `public/assets/tiles/*.svg`         |
+| Command               | Produces                              | Deterministic |
+| --------------------- | ------------------------------------- | ------------- |
+| `npm run gen:figure`  | `public/assets/figure.svg`            | yes           |
+| `npm run gen:stills`  | `public/assets/tiles/*.svg`           | yes           |
+| `npm run gen:favicon` | `src/app/icon.svg`                    | yes           |
+| `npm run gen:photos`  | `public/assets/photo/*.jpg` + credits | network       |
 
-Both are deterministic: regenerating with an unchanged script produces
-byte-identical output. Tune the parameters in the script, never the SVG.
+The deterministic three regenerate byte-identically from an unchanged script;
+tune the parameters in the script, never the SVG. `gen:photos` reaches the
+network and is the one exception to "nothing third-party ships" — see
+`docs/photo-credits.md` for what it fetched and `docs/adr/0003-…` for the rule
+it bends.
+
+`gen:favicon` reads `src/components/layout/loader-mark.ts`, the same path data
+the loading curtain draws, and crops it square to the mark's own bounding box —
+the mark sits off-centre in the loader's full-screen stage, which is right there
+and unreadable at 16px. Keeping one source means the tab icon cannot end up a
+revision behind the curtain.
 
 ---
 
