@@ -21,7 +21,6 @@ export default function ContactFooter({
   body,
   channels,
   wordmark,
-  photo,
 }: ContactFooterProps) {
   return (
     <Panel className="grid-rows-[auto_1fr_auto] md:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.1fr)] md:grid-rows-[auto_1fr_auto]">
@@ -42,16 +41,21 @@ export default function ContactFooter({
         deliberate bleed.
       */}
       <MediaCell
-        className="cell-ink col-span-full min-h-[26svh] md:col-span-1 md:min-h-0"
+        /*
+          A lifted black, not `--color-ink`.
+
+          This cell used to carry a photograph at 30% over ink, and what that
+          actually did — whatever the picture was — was raise the ground to a
+          charcoal. Removing the photograph without replacing that lift drops the
+          cell to #0E0E0C, which against the paper beside it reads as a hole
+          punched in the page rather than as the dark half of a spread.
+
+          One value, one use, so it stays a literal here rather than becoming a
+          palette token nothing else would reference.
+        */
+        className="cell-ink col-span-full min-h-[26svh] bg-[#1B1B18] md:col-span-1 md:min-h-0"
         style={{ containerType: "inline-size" }}
       >
-        {photo ? (
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-30 grayscale-[0.3]"
-            style={{ backgroundImage: `url(${photo})` }}
-          />
-        ) : null}
         <span
           aria-hidden="true"
           className="absolute bottom-[-0.18em] -left-[0.08em] z-10 font-display text-[38cqw] leading-[0.78] font-bold whitespace-nowrap text-paper/90"

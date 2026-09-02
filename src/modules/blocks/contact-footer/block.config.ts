@@ -10,7 +10,6 @@ export const contactFooterSchema = z.object({
   /** Wordmark, set huge and cropped by the panel edge. */
   wordmark: z.string().min(1),
   /** Backdrop behind the cropped wordmark. */
-  photo: z.string().optional(),
 });
 
 export type ContactFooterProps = z.infer<typeof contactFooterSchema>;

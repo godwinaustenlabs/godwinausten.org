@@ -159,6 +159,34 @@ with a real destination behind it.
 
 ---
 
+## 5a. The media endpoint
+
+`GET /api/media/[id]` streams objects out of the `site-media` R2 bucket. It is
+public and unauthenticated, which is correct — everything it can reach is
+marketing collateral we are trying to hand out.
+
+**What stops it becoming a read cursor over the bucket** is that `[id]` is a key
+of `MEDIA_ASSETS` in `src/server/media.ts` and nothing else. The URL never
+carries a bucket key, so there is no traversal to sanitise and no object outside
+that table that can be named. Adding a reachable object is a code change with a
+review attached, and that is deliberate.
+
+Rules:
+
+- **Never** widen this to `[...key]` or otherwise pass a request-supplied string
+  to `MEDIA.get()`. The bucket also holds anything the owner uploads for other
+  purposes.
+- Responses carry `X-Content-Type-Options: nosniff` and an explicit
+  `Content-Type` from the table, never one derived from the object.
+- `Content-Disposition: attachment` is set only for assets that declare a
+  `filename` — a film must not download instead of playing.
+
+**The lead magnet's gate is the form, not this route.** Anyone who finds the
+download path can fetch the guide without giving us an address. That is the same
+trade every ungated lead magnet makes, and hardening it would cost a signing
+secret and a launch blocker to protect a PDF we are actively giving away. It is
+recorded here so nobody later mistakes the flow for access control.
+
 ## 6. Workers AI
 
 Workers AI is bound as `AI` and reachable from any server code. Treat model

@@ -64,18 +64,27 @@ All copy lives in `src/content/copy/home.ts`. Editing it never touches layout.
 
 ## Visual direction
 
-| Aspect        | Direction                                                                                                                                                             | Reference                                                |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| Palette       | Paper `#F6F5F1`, ink `#0E0E0C`, soft `#6E6D66`, hairline `#D8D6CC`. Signal lime `#C6FF3E` **sparingly** — one dot, one active state, a hover underline. Never a fill. | build prompt §4                                          |
-| Type          | Space Grotesk (display, tight tracking at size), Inter (body), IBM Plex Mono (every eyebrow, nav, caption, index, corner label)                                       | build prompt §4                                          |
-| Layout / grid | Full-bleed blocks that touch and overlap. **No cards.** No borders round content, no radius past 8px, no shadows anywhere. Seams, not boxes.                          | `03-oddcommon-reach-out.png`                             |
-| Motion feel   | Structural, not decorative. A horizontal filmstrip on wide desktop, parallax on decorative layers only, reveals on entry. Vertical and quiet everywhere else.         | build prompt §5, `01-mantis-hero-wide.jpg`               |
-| Imagery       | No photography. One generated scribble figure, abstract line-work placeholders for real footage. Nothing third-party ships.                                           | `02-mantis-hero-scribble-closeup.jpg`, `docs/adr/0003-…` |
+| Aspect        | Direction                                                                                                                                                                                                                                                   | Reference                                                |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Palette       | Paper `#F6F5F1`, ink `#0E0E0C`, soft `#6E6D66`, hairline `#D8D6CC`. Signal lime `#C6FF3E` **sparingly** — a dot, an active state, a hover underline, and one short rule above a claim. Never behind text, never a page ground; a bar, at most one per cell. | build prompt §4                                          |
+| Type          | Space Grotesk (display, tight tracking at size), Inter (body), IBM Plex Mono (every eyebrow, nav, caption, index, corner label)                                                                                                                             | build prompt §4                                          |
+| Layout / grid | Full-bleed blocks that touch and overlap. **No cards.** No borders round content, no radius past 8px, no shadows anywhere. Seams, not boxes.                                                                                                                | `03-oddcommon-reach-out.png`                             |
+| Motion feel   | Structural, not decorative. A horizontal filmstrip on wide desktop, parallax on decorative layers only, reveals on entry. Vertical and quiet everywhere else.                                                                                               | build prompt §5, `01-mantis-hero-wide.jpg`               |
+| Imagery       | No photography. One generated scribble figure, abstract line-work placeholders for real footage. Nothing third-party ships.                                                                                                                                 | `02-mantis-hero-scribble-closeup.jpg`, `docs/adr/0003-…` |
 
 **The card test.** If a change involves a `<div>` with padding, a border and a
 shadow holding some text, it is the wrong pattern for this site. Colour and
 imagery bleed across section seams so the page does not read as a stack of
 repeated templates.
+
+**The empty-cell test.** A cell is as tall as its panel, so a short paragraph
+pinned to its floor leaves two-thirds of a box doing nothing and reads as a
+caption adrift. Fill it by **saying more**, not by drawing more: a claim
+over the paragraph, set large, is worth more than an illustration of the
+paragraph. Then anchor the two together to one edge — a block at the top and a
+block at the bottom of a tall cell puts the void in the middle, where it reads
+as a fault rather than as space. Filling it with texture for the sake of not
+being empty is the failure mode this test exists to catch.
 
 ## Motion principles
 
@@ -93,8 +102,16 @@ repeated templates.
    element is the wrong place to spend a frame.
 5. **Pinning is layout, not motion.** `layout.stickyHead` survives
    `prefers-reduced-motion`; parallax does not. A released head would leave rows
-   that were designed against it without their anchor.
-6. **A route change is never a hard cut.** The outgoing page scrambles away and
+   that were designed against it without their anchor. It does **not** survive a
+   phone: below 768px nothing pins, because a transform trailing native scroll
+   by a frame reads as a shudder, and a stack is what a phone reader expects.
+6. **One section is allowed to stop the strip.** "How it gets built" holds
+   against the leading edge and runs its three offerings past vertically before
+   the page resumes moving left. It is the only place the sideways travel
+   pauses, and it earns it: three things being compared want to arrive one at a
+   time against a heading that never leaves. A second section doing this would
+   make the filmstrip feel broken rather than deliberate.
+7. **A route change is never a hard cut.** The outgoing page scrambles away and
    the next unfolds out of the noise — covered _before_ the router commits.
 
 ## Pages

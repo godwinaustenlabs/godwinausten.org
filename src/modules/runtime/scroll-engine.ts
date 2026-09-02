@@ -24,6 +24,26 @@
  */
 export const STRIP_MIN_WIDTH = 1200;
 
+/**
+ * Below this width, `--block-lead` stays at 0 and nothing pins.
+ *
+ * A pinned head is a transform chasing the scroll position, one frame behind
+ * it. On the filmstrip that is invisible, because the whole track is already
+ * moving under the same lerp — the head is still relative to its neighbours.
+ * In vertical flow on a phone it is not: the page scrolls at the compositor's
+ * speed and the head is repainted a frame late against it, so the "stuck"
+ * element visibly shudders against the text beside it. Worse, mobile browsers
+ * resize the viewport as the URL bar hides, which re-fires the measurement
+ * mid-gesture and makes it jump.
+ *
+ * `position: sticky` is the right tool at this size and the wrong one inside
+ * the strip's transformed track (there is no scrollport to stick to). Rather
+ * than ship a second, subtly different pin, small screens simply read the
+ * section as an ordinary stack — the head scrolls away with its rows, which is
+ * what a phone reader expects anyway.
+ */
+export const PIN_MIN_WIDTH = 768;
+
 export type ScrollMode = "flow" | "strip";
 
 /**
@@ -43,6 +63,8 @@ interface Tracked {
   last: number;
   /** Last lead written, same reason. */
   lastLead: number;
+  /** Last hold written, same reason. */
+  lastHold: number;
 }
 
 /**
@@ -65,6 +87,54 @@ export function leadOffset(
       : [rect.left, rect.width, viewport.width];
 
   return clamp(-start, 0, Math.max(0, extent - span));
+}
+
+/**
+ * `leadOffset`, or a flat 0 on a viewport too narrow to pin. The value the
+ * engine actually publishes as `--block-lead`.
+ *
+ * Separate from `leadOffset` so the "does this width pin at all" decision is one
+ * pure function with a test, rather than a branch buried in the frame loop —
+ * the same reason `resolveMode` is not inlined into `measure`.
+ */
+export function pinLead(
+  rect: { top: number; left: number; width: number; height: number },
+  viewport: { width: number; height: number },
+  axis: "x" | "y",
+): number {
+  if (viewport.width < PIN_MIN_WIDTH) return 0;
+  return Math.round(leadOffset(rect, viewport, axis));
+}
+
+/**
+ * The same travel as `pinLead`, expressed 0→1 across the whole pinnable range.
+ *
+ * `--block-lead` is a length, which is the right shape for "hold this child
+ * still" — you offset by it and the child stops. It is the wrong shape for
+ * "drive something else with the hold", because CSS cannot divide one length by
+ * another: there is no way to ask `calc()` what fraction of its range a length
+ * has covered. A section that wants to move an inner stack by a proportion of
+ * its own height needs that fraction as a unitless number, and this is it.
+ *
+ * 0 the moment the section's leading edge reaches the viewport's; 1 when it has
+ * travelled as far as it can while still covering the screen. Zero for a section
+ * no bigger than the viewport — there is nothing to hold — and zero below
+ * `PIN_MIN_WIDTH`, for the reason given there.
+ */
+export function holdProgress(
+  rect: { top: number; left: number; width: number; height: number },
+  viewport: { width: number; height: number },
+  axis: "x" | "y",
+): number {
+  if (viewport.width < PIN_MIN_WIDTH) return 0;
+  const [extent, span] =
+    axis === "y" ? [rect.height, viewport.height] : [rect.width, viewport.width];
+  const range = extent - span;
+  if (range <= 0) return 0;
+  // `+ 0` normalises the negative zero that falls out of dividing `-0` by the
+  // range when the section's edge lands exactly on the viewport's. It stringifies
+  // as "0" either way, so this is tidiness at the API boundary rather than a fix.
+  return clamp(leadOffset(rect, viewport, axis) / range, 0, 1) + 0;
 }
 
 /**
@@ -297,10 +367,21 @@ export function createScrollEngine(options: EngineOptions): EngineHandle {
         entry.el.style.setProperty("--block-progress", String(rounded));
       }
 
-      const lead = Math.round(leadOffset(rect, viewport, axis));
+      // Below `PIN_MIN_WIDTH` this is a flat 0 rather than a skipped write, so
+      // a resize across the breakpoint releases a head that was already offset
+      // instead of freezing it at its last value.
+      const lead = pinLead(rect, viewport, axis);
       if (lead !== entry.lastLead) {
         entry.lastLead = lead;
         entry.el.style.setProperty("--block-lead", `${lead}px`);
+      }
+
+      // Three decimals: this one drives a translate measured in hundreds of
+      // pixels, so two would step visibly.
+      const hold = Math.round(holdProgress(rect, viewport, axis) * 1000) / 1000;
+      if (hold !== entry.lastHold) {
+        entry.lastHold = hold;
+        entry.el.style.setProperty("--block-hold", String(hold));
       }
     }
   }
@@ -354,13 +435,14 @@ export function createScrollEngine(options: EngineOptions): EngineHandle {
 
   return {
     track(el) {
-      const entry: Tracked = { el, last: -1, lastLead: -1 };
+      const entry: Tracked = { el, last: -1, lastLead: -1, lastHold: -1 };
       tracked.add(entry);
       request();
       return () => {
         tracked.delete(entry);
         el.style.removeProperty("--block-progress");
         el.style.removeProperty("--block-lead");
+        el.style.removeProperty("--block-hold");
       };
     },
     measure,
@@ -382,6 +464,7 @@ export function createScrollEngine(options: EngineOptions): EngineHandle {
       for (const entry of tracked) {
         entry.el.style.removeProperty("--block-progress");
         entry.el.style.removeProperty("--block-lead");
+        entry.el.style.removeProperty("--block-hold");
       }
       tracked.clear();
     },

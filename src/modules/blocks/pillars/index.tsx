@@ -29,9 +29,18 @@ export default function Pillars({ items }: PillarsProps) {
           {item.photo ? (
             <div
               aria-hidden="true"
+              /*
+                Fully desaturated, and quieter than it was.
+                
+                Three tiles side by side each carrying a different texture is
+                three things asking for attention behind three words that are
+                the actual content. `grayscale-[0.4]` also left the wire
+                photograph visibly coloured, which put reds and blues on a page
+                whose palette is paper, ink and one lime.
+              */
               className={cn(
-                "pointer-events-none absolute inset-0 bg-cover bg-center grayscale-[0.4]",
-                i % 2 === 1 ? "opacity-25" : "opacity-[0.14]",
+                "pointer-events-none absolute inset-0 bg-cover bg-center grayscale",
+                i % 2 === 1 ? "opacity-[0.16]" : "opacity-[0.09]",
               )}
               style={{ backgroundImage: `url(${item.photo})` }}
             />

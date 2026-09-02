@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { mediaHref } from "@/server/media";
 
 /**
  * The lead-magnet opt-in.
@@ -27,9 +28,27 @@ const submissionSchema = z.object({
 });
 
 export type LeadMagnetState =
-  { status: "idle" } | { status: "success" } | { status: "error"; message: string };
+  | { status: "idle" }
+  /** `href` is the download the client should start. See `mediaHref`. */
+  | { status: "success"; href: string }
+  | { status: "error"; message: string };
 
 const GENERIC_ERROR = "That didn't go through. Try again, or email us directly.";
+
+/**
+ * Where a successful opt-in sends the visitor.
+ *
+ * The URL is not a secret and is not meant to be: the gate here is the form,
+ * not cryptography. Anyone who finds this path can fetch the guide without
+ * giving us an address, which is true of every ungated lead magnet on the
+ * internet and is the trade every one of them makes — a signed, expiring link
+ * would cost a new secret, a launch blocker, and a support burden, to protect a
+ * PDF we are actively trying to give away.
+ *
+ * What *is* controlled is which object it can reach: `MEDIA_ASSETS` is an
+ * allowlist, so this path serves the playbook and nothing else in the bucket.
+ */
+const DOWNLOAD = mediaHref("playbook", { download: true });
 
 export async function requestPlaybook(
   _previous: LeadMagnetState,
@@ -52,14 +71,17 @@ export async function requestPlaybook(
 
   if (parsed.data.company) {
     // Silently succeed. A bot that knows it failed just tries again.
-    return { status: "success" };
+    return { status: "success", href: DOWNLOAD };
   }
 
   try {
     await deliver(parsed.data.email);
-    return { status: "success" };
+    return { status: "success", href: DOWNLOAD };
   } catch {
-    return { status: "error", message: GENERIC_ERROR };
+    // The record failed, not the guide. Someone who has just typed their
+    // address to get a PDF should get the PDF: withholding it to punish our own
+    // logging outage loses the conversion and teaches the visitor nothing.
+    return { status: "success", href: DOWNLOAD };
   }
 }
 

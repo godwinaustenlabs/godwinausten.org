@@ -20,14 +20,14 @@ Account: **Godwin Austen Labs** (`ec758d282b2c89b4a1a147b64f445849`)
 
 ## Active bindings
 
-| Binding                    | Type                  | Resource            | Created      | Purpose                                                                                                     |
-| -------------------------- | --------------------- | ------------------- | ------------ | ----------------------------------------------------------------------------------------------------------- |
-| `ASSETS`                   | Workers static assets | `.open-next/assets` | build output | Static files emitted by the OpenNext build. Managed by the adapter.                                         |
-| `WORKER_SELF_REFERENCE`    | Service               | `site`              | 2026-08-31   | Required by OpenNext for ISR revalidation and cache purge. Must equal the worker name.                      |
-| `MEDIA`                    | R2 bucket             | `site-media`        | 2026-08-31   | Brand and funnel media: VSL video, case-study imagery, downloadables. Served through `src/lib/media.ts`.    |
-| `NEXT_INC_CACHE_R2_BUCKET` | R2 bucket             | `site-isr-cache`    | 2026-08-31   | OpenNext incremental (ISR) cache. Machine-managed — never write by hand. Binding name is fixed by OpenNext. |
-| `AI`                       | Workers AI            | —                   | 2026-08-31   | Workers AI inference. No resource to provision; binding only.                                               |
-| `IMAGES`                   | Cloudflare Images     | —                   | 2026-08-31   | Image transformation binding. No resource to provision.                                                     |
+| Binding                    | Type                  | Resource            | Created      | Purpose                                                                                                                              |
+| -------------------------- | --------------------- | ------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `ASSETS`                   | Workers static assets | `.open-next/assets` | build output | Static files emitted by the OpenNext build. Managed by the adapter.                                                                  |
+| `WORKER_SELF_REFERENCE`    | Service               | `site`              | 2026-08-31   | Required by OpenNext for ISR revalidation and cache purge. Must equal the worker name.                                               |
+| `MEDIA`                    | R2 bucket             | `site-media`        | 2026-08-31   | Brand and funnel media: VSL video, case-study imagery, downloadables. Reachable only through the allowlist in `src/server/media.ts`. |
+| `NEXT_INC_CACHE_R2_BUCKET` | R2 bucket             | `site-isr-cache`    | 2026-08-31   | OpenNext incremental (ISR) cache. Machine-managed — never write by hand. Binding name is fixed by OpenNext.                          |
+| `AI`                       | Workers AI            | —                   | 2026-08-31   | Workers AI inference. No resource to provision; binding only.                                                                        |
+| `IMAGES`                   | Cloudflare Images     | —                   | 2026-08-31   | Image transformation binding. No resource to provision.                                                                              |
 
 ## Workers
 

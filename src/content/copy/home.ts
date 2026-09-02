@@ -68,7 +68,19 @@ const homeCopySchema = z.object({
     index: z.string(),
     eyebrow: z.string(),
     headline: z.string(),
-    rows: z.array(z.object({ index: z.string(), title: z.string(), detail: z.string() })).min(1),
+    rows: z
+      .array(
+        z.object({
+          index: z.string(),
+          title: z.string(),
+          detail: z.string(),
+          /** The offering as a claim, set in display type above the detail. */
+          claim: z.string().optional(),
+          /** Schematic of this offering. See scripts/generate-diagrams.mjs. */
+          figure: z.string().optional(),
+        }),
+      )
+      .min(1),
     next: nextSchema,
   }),
   magnet: z.object({
@@ -81,11 +93,25 @@ const homeCopySchema = z.object({
     contents: z.array(z.string()).min(1),
     /** Set on the cover tile, so the offer reads as an object you receive. */
     cover: z.object({ title: z.string(), format: z.string() }),
+    /** The loud button, shown before the field. */
+    cta: z.string(),
+    /** Asked once the button has been pressed. */
+    prompt: z.string(),
     placeholder: z.string(),
     submit: z.string(),
+    /** Manual download link in the success state. */
+    again: z.string(),
     micro: z.string(),
     success: z.string(),
     successBody: z.string(),
+    next: nextSchema,
+  }),
+  mark: z.object({
+    index: z.string(),
+    eyebrow: z.string(),
+    headline: z.string(),
+    body: z.string(),
+    hint: z.string(),
     next: nextSchema,
   }),
   vsl: z.object({
@@ -150,18 +176,24 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
         title: "Workflow Mapping",
         detail:
           "We sit with the work before we automate it. Half of what teams ask for turns out not to be the thing costing them.",
+        claim: "We watch before we build.",
+        figure: "/assets/diagrams/mapping.svg",
       },
       {
         index: "02",
         title: "Agent Swarms",
         detail:
           "Chat, voice, outbound. Narrow agents that hand off to each other, built on your playbooks rather than a generic prompt.",
+        claim: "Many small agents, not one big one.",
+        figure: "/assets/diagrams/swarm.svg",
       },
       {
         index: "03",
         title: "Systems Integration",
         detail:
           "Wired into the CRM and helpdesk you already use. Nobody should copy anything between two screens.",
+        claim: "Nothing new to log into.",
+        figure: "/assets/diagrams/integration.svg",
       },
     ],
     next: { index: "03", label: "What to automate first", href: "#playbook" },
@@ -170,20 +202,24 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
   magnet: {
     index: "03",
     eyebrow: "Free guide",
-    kicker: "Free, and actually useful",
-    headline: "The worksheet we run on day one.",
-    body: "Most teams find the expensive thing is not the one they were about to pay us to fix. This is how we work that out — the same worksheet, before any code.",
+    kicker: "Free — no call, no sequence",
+    headline: "Steal our day-one worksheet.",
+    body: "The four questions we ask before writing a line of code. Most teams find the expensive thing is not the one they were about to pay us to fix.",
     contents: [
       "The four questions that price a workflow",
       "How to spot the task that only looks expensive",
       "The three failure modes that kill agent projects",
     ],
     cover: { title: "What to automate first", format: "PDF — 9 pages" },
+    cta: "Download it free",
+    prompt: "Where do we send it?",
     placeholder: "you@company.com",
-    submit: "Send me the guide",
-    micro: "One email with the guide attached. No call, no sequence, unsubscribe whenever.",
-    success: "On its way.",
-    successBody: "Check your inbox — if it is not there in a minute, tell us and we'll resend.",
+    submit: "Send it",
+    micro: "One email. Nothing else, ever.",
+    success: "Downloading now.",
+    successBody:
+      "It should be in your downloads. We'll email the updated version when there is one.",
+    again: "Download again",
     next: { index: "04", label: "Watch the whole thing", href: "#watch" },
   },
 
@@ -199,6 +235,15 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
       "The handoff to a human",
       "What it costs to run",
     ],
-    next: { index: "05", label: "Talk to us", href: "#contact" },
+    next: { index: "05", label: "Who's behind it", href: "#who" },
+  },
+
+  mark: {
+    index: "05",
+    eyebrow: "Who's behind it",
+    headline: "We would rather be useful than impressive.",
+    body: "A handful of engineers in Lahore who like the unglamorous half of the work: the week spent watching, the handoff nobody wrote down, the thing that breaks on a Tuesday. We build what survives being used every day by people who did not ask for it — and we will tell you when a problem does not need us.",
+    hint: "Move your cursor",
+    next: { index: "06", label: "Talk to us", href: "#contact" },
   },
 } satisfies HomeCopy);

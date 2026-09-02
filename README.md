@@ -45,6 +45,8 @@ Requires Node ≥ 20.9 and a Cloudflare login (`npx wrangler login`).
 | `npm run check:resources`         | Fails if `wrangler.jsonc` and the resource registry disagree |
 | `npm run gen:figure`              | Retrace the hero figure from the reference artwork           |
 | `npm run gen:stills`              | Regenerate the work-tile placeholder stills                  |
+| `npm run gen:diagrams`            | Regenerate the service schematics and stage backdrops        |
+| `npm run gen:placeholder-pdf`     | Rebuild the stand-in guide the opt-in serves                 |
 | `npm run gen:photos`              | Re-download the stock photographs and rewrite the credits    |
 | `npm run gen:favicon`             | Rebuild `src/app/icon.svg` from the loader's path data       |
 | `npm run ci`                      | Everything CI runs, locally                                  |
@@ -202,14 +204,16 @@ Every visual asset is produced by a script in this repo. Nothing here is drawn
 by hand, so nothing here should be edited by hand — change the script and
 re-run it.
 
-| Command               | Produces                              | Deterministic |
-| --------------------- | ------------------------------------- | ------------- |
-| `npm run gen:figure`  | `public/assets/figure.svg`            | yes           |
-| `npm run gen:stills`  | `public/assets/tiles/*.svg`           | yes           |
-| `npm run gen:favicon` | `src/app/icon.svg`                    | yes           |
-| `npm run gen:photos`  | `public/assets/photo/*.jpg` + credits | network       |
+| Command                       | Produces                                 | Deterministic |
+| ----------------------------- | ---------------------------------------- | ------------- |
+| `npm run gen:figure`          | `public/assets/figure.svg`               | yes           |
+| `npm run gen:stills`          | `public/assets/tiles/*.svg`              | yes           |
+| `npm run gen:diagrams`        | `public/assets/diagrams/*.svg`           | yes           |
+| `npm run gen:placeholder-pdf` | `public/assets/playbook-placeholder.pdf` | yes           |
+| `npm run gen:favicon`         | `src/app/icon.svg`                       | yes           |
+| `npm run gen:photos`          | `public/assets/photo/*.jpg` + credits    | network       |
 
-The deterministic three regenerate byte-identically from an unchanged script;
+The deterministic five regenerate byte-identically from an unchanged script;
 tune the parameters in the script, never the SVG. `gen:photos` reaches the
 network and is the one exception to "nothing third-party ships" — see
 `docs/photo-credits.md` for what it fetched and `docs/adr/0003-…` for the rule

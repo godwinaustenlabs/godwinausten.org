@@ -65,3 +65,6 @@ yarn-error.log*
 docs/inspiration/**/*
 !docs/inspiration/**/*.md
 !docs/inspiration/**/.gitkeep
+
+# local agent config / generated knowledge graph
+.claude/settings.local.json

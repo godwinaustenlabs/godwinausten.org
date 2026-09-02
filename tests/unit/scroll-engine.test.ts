@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   clamp,
+  holdProgress,
+  PIN_MIN_WIDTH,
+  pinLead,
   progressThroughViewport,
   resolveMode,
   STRIP_MIN_WIDTH,
@@ -77,5 +80,80 @@ describe("clamp", () => {
     expect(clamp(5, 0, 10)).toBe(5);
     expect(clamp(-1, 0, 10)).toBe(0);
     expect(clamp(11, 0, 10)).toBe(10);
+  });
+});
+
+describe("pinLead", () => {
+  // A section twice the height of the viewport, scrolled 300px past the top.
+  const rect = { top: -300, left: -300, width: 2400, height: 1600 };
+
+  it("pins on a viewport wide enough for it", () => {
+    expect(pinLead(rect, { width: PIN_MIN_WIDTH, height: 800 }, "y")).toBe(300);
+    expect(pinLead(rect, { width: 1440, height: 800 }, "x")).toBe(300);
+  });
+
+  it("refuses to pin on a phone", () => {
+    // The transform is a frame behind native scrolling, which reads as a
+    // shudder against the text beside it. Below the breakpoint the section is
+    // an ordinary stack and the head scrolls away with its rows.
+    expect(pinLead(rect, { width: PIN_MIN_WIDTH - 1, height: 844 }, "y")).toBe(0);
+    expect(pinLead(rect, { width: 390, height: 844 }, "y")).toBe(0);
+  });
+
+  it("returns a flat 0 rather than the last value, so a resize releases the head", () => {
+    // Writing 0 is what un-sticks a head that was already offset when the
+    // viewport crossed the breakpoint. Skipping the write would freeze it.
+    const wide = pinLead(rect, { width: 1440, height: 800 }, "y");
+    const narrow = pinLead(rect, { width: 500, height: 800 }, "y");
+    expect(wide).toBeGreaterThan(0);
+    expect(narrow).toBe(0);
+  });
+
+  it("still clamps to the section, so a head is never carried past its own end", () => {
+    // Same guarantee `leadOffset` gives: travel stops at extent - span.
+    const shallow = { top: -9999, left: 0, width: 1440, height: 1000 };
+    expect(pinLead(shallow, { width: 1440, height: 800 }, "y")).toBe(200);
+  });
+});
+
+describe("holdProgress", () => {
+  const viewport = { width: 1440, height: 900 };
+  // A two-screen-wide panel: one screen of content, one of scroll budget.
+  const panel = (left: number) => ({ top: 0, left, width: viewport.width * 2, height: 900 });
+
+  it("reads 0 the moment the section's leading edge lands", () => {
+    expect(holdProgress(panel(0), viewport, "x")).toBe(0);
+  });
+
+  it("reads 1 once it has travelled as far as it can while still covering the screen", () => {
+    // Range is `extent - span` = one viewport width.
+    expect(holdProgress(panel(-viewport.width), viewport, "x")).toBe(1);
+  });
+
+  it("reads 0.5 halfway, which is what puts the second of three offerings in the window", () => {
+    expect(holdProgress(panel(-viewport.width / 2), viewport, "x")).toBeCloseTo(0.5, 5);
+  });
+
+  it("stays clamped either side of the hold", () => {
+    expect(holdProgress(panel(5000), viewport, "x")).toBe(0);
+    expect(holdProgress(panel(-9999), viewport, "x")).toBe(1);
+  });
+
+  it("is 0 for a section no bigger than the viewport, which has nothing to hold", () => {
+    // The reason `services-rows` asks for a 2vw panel: a 1vw one cannot pin,
+    // and dividing by its zero range would be a NaN in the style attribute.
+    const exact = { top: 0, left: 0, width: viewport.width, height: 900 };
+    expect(holdProgress(exact, viewport, "x")).toBe(0);
+    expect(Number.isNaN(holdProgress(exact, viewport, "x"))).toBe(false);
+  });
+
+  it("refuses to hold on a phone, for the same reason nothing pins there", () => {
+    const small = { width: 390, height: 844 };
+    expect(holdProgress({ top: -400, left: 0, width: 390, height: 2000 }, small, "y")).toBe(0);
+  });
+
+  it("measures the vertical axis the same way", () => {
+    const tall = { top: -450, left: 0, width: 1440, height: 1800 };
+    expect(holdProgress(tall, viewport, "y")).toBeCloseTo(0.5, 5);
   });
 });

@@ -24,12 +24,23 @@ test.describe("home — the funnel", () => {
       "services-rows",
       "lead-magnet",
       "vsl-panel",
+      // A breath between the film and the ask. Present in the DOM at every
+      // width — `stripOnly` hides it with `display`, so reading order is the
+      // same document either way.
+      "mark-field",
       "contact-footer",
     ]);
 
     // The ask precedes the video. Reversing them spends the reader's peak
     // willingness on a four-minute commitment.
     expect(blocks.indexOf("lead-magnet")).toBeLessThan(blocks.indexOf("vsl-panel"));
+
+    // The ornament is filmstrip-only: a cursor-lit surface with no cursor to
+    // light it is dead weight, and nothing in the funnel may depend on it.
+    const shown = await page
+      .locator('[data-block="mark-field"]')
+      .evaluate((el) => getComputedStyle(el).display !== "none");
+    expect(shown).toBe((await scrollMode(page)) === "strip");
   });
 
   test("makes no percentage claims on any route", async ({ page }) => {
@@ -127,11 +138,16 @@ test.describe("home — desktop filmstrip", () => {
 
     await page.getByRole("link", { name: /Get the playbook/ }).click();
     await expect(page).toHaveURL(/#playbook$/);
+    // A generous budget on purpose. This waits on an *eased* transform — the
+    // strip lerps toward the anchor rather than jumping — and the suite runs
+    // several browsers at once against one preview server. Five seconds passes
+    // alone and times out under that contention, which says nothing about the
+    // behaviour under test.
     await expect
       .poll(
         () =>
           page.locator("#playbook").evaluate((el) => Math.round(el.getBoundingClientRect().left)),
-        { timeout: 5000 },
+        { timeout: 15000 },
       )
       .toBeLessThan(page.viewportSize()!.width);
   });
@@ -281,6 +297,58 @@ test.describe("reduced motion", () => {
   });
 });
 
+test.describe("the mark field", () => {
+  test("keeps the light under the cursor while the panel slides beneath it", async ({ page }) => {
+    // Straight to the section, because the surface deliberately does no work
+    // while it is off screen — the light only tracks what a visitor can see.
+    // Asserting from the top of the page would be measuring a loop that is
+    // correctly asleep.
+    await page.goto("/#who");
+    // The engine stamps the mode after it mounts, so sampling it straight after
+    // `goto` is a race — and losing that race silently *skips* this test rather
+    // than failing it, which is the worst way to lose coverage.
+    await page.waitForFunction(() => Boolean(document.documentElement.dataset.scrollMode));
+    if ((await scrollMode(page)) !== "strip") test.skip();
+
+    await page.locator('[data-block="mark-field"]').waitFor();
+    await page.waitForTimeout(600);
+
+    /** Where the lit circle actually is, in viewport coordinates. */
+    const lightAt = () =>
+      page.locator('[data-block="mark-field"] [style*="--mx"]').evaluate((el) => {
+        const rect = el.getBoundingClientRect();
+        const read = (name: string) => parseFloat((el as HTMLElement).style.getPropertyValue(name));
+        return {
+          x: rect.left + (read("--mx") / 100) * rect.width,
+          y: rect.top + (read("--my") / 100) * rect.height,
+          panelLeft: rect.left,
+        };
+      });
+
+    // Park the cursor and leave it alone for the rest of the test.
+    const CURSOR = { x: 900, y: 480 };
+    await page.mouse.move(CURSOR.x, CURSOR.y, { steps: 10 });
+
+    // Polled, not slept on. The light eases toward the cursor over a handful of
+    // frames, and a fixed wait is a guess about how long that takes on a loaded
+    // machine — which is exactly the kind of assumption that passes alone and
+    // fails in a parallel run.
+    await expect.poll(async () => Math.round((await lightAt()).x)).toBeCloseTo(CURSOR.x, -1);
+    const before = await lightAt();
+
+    // The half that was broken: no pointer event fires here at all. The panel
+    // travels sideways under a still hand, and the light has to stay put on the
+    // screen rather than riding along with the drawing.
+    await page.mouse.wheel(0, 400);
+    await expect
+      .poll(async () => Math.round((await lightAt()).panelLeft))
+      .toBeLessThan(before.panelLeft - 50);
+
+    await expect.poll(async () => Math.round((await lightAt()).x)).toBeCloseTo(CURSOR.x, -1);
+    expect(Math.round((await lightAt()).y)).toBeCloseTo(CURSOR.y, -1);
+  });
+});
+
 test.describe("lead magnet", () => {
   /**
    * Reach the opt-in the way a visitor does. On the filmstrip the panel sits
@@ -291,6 +359,10 @@ test.describe("lead magnet", () => {
   async function openMagnet(page: Page) {
     await page.goto("/");
     await page.getByRole("link", { name: /Get the playbook/ }).click();
+    // The field lives behind the CTA now — one loud button, then one question.
+    // It is a `<details>`, so this is a real click on a real summary rather
+    // than a state flag being flipped.
+    await page.locator("summary", { hasText: /Download it free/ }).click();
     const field = page.getByPlaceholder(/you@/);
     await expect(field).toBeVisible();
     // In vertical flow the panel is taller than a phone screen, so the field
@@ -303,8 +375,8 @@ test.describe("lead magnet", () => {
   test("accepts an email and confirms in place", async ({ page }) => {
     await openMagnet(page);
     await page.getByPlaceholder(/you@/).fill("someone@example.com");
-    await page.getByRole("button", { name: /Send me the guide/ }).click();
-    await expect(page.getByText("On its way.")).toBeVisible();
+    await page.getByRole("button", { name: /Send it/ }).click();
+    await expect(page.getByText("Downloading now.")).toBeVisible();
   });
 
   test("rejects a malformed address server-side", async ({ page }) => {
@@ -315,9 +387,9 @@ test.describe("lead magnet", () => {
       el.value = "not-an-email";
       el.dispatchEvent(new Event("input", { bubbles: true }));
     });
-    await page.getByRole("button", { name: /Send me the guide/ }).click();
+    await page.getByRole("button", { name: /Send it/ }).click();
     // Scoped to the form: Next's own route announcer is also `role="alert"`.
     await expect(page.locator("form").getByRole("alert")).toContainText("email");
-    await expect(page.getByText(/Check your inbox/)).toBeHidden();
+    await expect(page.getByText("Downloading now.")).toBeHidden();
   });
 });

@@ -164,6 +164,174 @@ conversation, which is precedence #1 in §7.1 — so `/work` and `/about` get a
 `page.tsx`. The rule still holds for `/vsl`, `/contact`, `/privacy`, `/terms`
 and `/work/[slug]`, which stay as `.gitkeep`.
 
+### Added mid-sprint, seventh round (owner, 2026-09-02)
+
+- [x] **The three "How it gets built" cells state a claim.** They were a
+      three-line paragraph on the floor of a panel-tall box. Each now leads with
+      a short bold position — "We watch before we build.", "Many small agents,
+      not one big one.", "Nothing new to log into." — over a lime rule, with the
+      detail under it. `title` still names the category in the eyebrow; the
+      claim is what makes someone read the rest.
+- [x] **Lime enters a third place.** One rule per claim, the same `h-1.5 w-10`
+      bar as the lead-magnet cover. Sets aside the brief's "one dot, one active
+      state, a hover underline" reading of _sparingly_ — see below.
+- [x] **Nothing pins below 768px.** The pinned head was a transform running a
+      frame behind native scroll, which shuddered on a phone. `--block-lead` is
+      now a flat `0px` under `PIN_MIN_WIDTH` and the section reads as a stack.
+- [x] **Mobile layout bug in `services-rows`.** The pinned head asked for
+      `col-span-2` at every width; below `md` the grid has one explicit column,
+      so it grew an unsized implicit one and every cell after it flowed into the
+      pair — two cramped columns and a strip of bare ground down the right of
+      every phone. Now `col-span-full`.
+
+### Added mid-sprint, eighth round (owner, 2026-09-02)
+
+- [x] **"How it gets built" holds the strip.** On the filmstrip the section now
+      parks against the leading edge and its three offerings rise past
+      vertically; when the third lands, the page resumes moving left. New engine
+      primitive `--block-hold` (the pin's travel as 0→1) drives the stack —
+      `--block-lead` is a length and CSS cannot divide one length by another.
+- [x] **Schematics are back, above the claim.** `mapping`, `swarm`,
+      `integration` fill the slack over each claim, which is what makes the cell
+      a composition rather than text with air over it. Held, the cell is a
+      window most of a screen wide, so claim and schematic lay out side by side.
+- [x] **`/about`: Build and Tune get line-work backdrops.** `wire-tangle.jpg`
+      works behind `Map` because at 14% it stops being a photograph and reads as
+      pale scribble. `fibre.jpg` (teal starburst) and `trails.jpg` (pastel
+      rainbow) never could — they are colour fields in a paper/ink/lime palette.
+      Replaced with `diagrams/build.svg` (a braced lattice: the tangle resolved)
+      and `diagrams/tune.svg` (many passes converging on one). The three now
+      read as one sentence: tangle → lattice → settled signal.
+
+**The rotating disc: argued against, built anyway, then rejected.** I argued
+the brief forbade it — "No cards. No borders round content, no radius past 8px,
+no shadows anywhere. Seams, not boxes." The owner overruled that (precedence #1,
+`CLAUDE.md` §7.1) and asked to see it, with the brief left untouched pending
+approval. It was built: seats positioned (never rotated) on a 123vw arc, 15°
+apart, with a drawn rim. Shown, and **not approved.** The vertical hold is what
+ships, and `docs/brief.md` never changed — so nothing in the docs was left
+describing a design that does not exist.
+
+**An approach that was built and then dropped.** The first attempt filled the
+cells with generated schematics — a traced process, three clusters handing off,
+a hub wired to four systems (`scripts/generate-service-diagrams.mjs`). It worked
+and it looked right, but the owner's call was that a cell that size should carry
+a **claim**, not an illustration. They were removed for a round and then
+restored in the eighth, once the claim gave them something to sit above rather
+than compete with: `scripts/generate-diagrams.mjs` now draws both those three
+and the two `/about` backdrops.
+
+**A rule is being set aside.** `docs/brief.md` reads the lime accent as "one
+dot, one active state, a hover underline. Never a fill." Three rules in one
+section is more lime than that sentence allows. The owner asked for colour here
+explicitly (precedence #1, `CLAUDE.md` §7.1). The rule is not deleted: the fill
+is still a bar and not a background, there is still no lime behind text, and the
+budget is one per cell — but the brief's wording now understates what ships, and
+the visual-direction row has been updated to match.
+
+### Added mid-sprint, ninth round (owner, 2026-09-02)
+
+- [x] **Media comes out of R2, addressed by id.** `GET /api/media/[id]` streams
+      the bucket through an allowlist (`src/server/media.ts`), with byte-range
+      support so a scrubber can actually seek. The owner uploads to the key named
+      in that table and the site serves it on the next request — no deploy, no
+      code change. Documented in `SECURITY.md` §5a.
+- [x] **The lead magnet is a button, then one question, then the file.** Loud CTA
+      → email → the download starts. Built on `<details>`, so it works with the
+      JS still in flight. A generated stand-in PDF
+      (`npm run gen:placeholder-pdf`) is served until the real guide is uploaded,
+      streamed through the same handler so the placeholder and the real thing are
+      indistinguishable to the browser.
+- [x] **The VSL frame plays on hover and opens into a theatre.** Muted inline
+      loop; click dims the page and opens a dialog with play/pause, ±5s, a
+      scrubber, elapsed time and sound. Portalled to `<body>` — `position: fixed`
+      inside the filmstrip's transformed track resolves against the _track_, so
+      the dialog opened underneath the site's own chrome.
+- [x] **`mark-field`, after the VSL.** The logomark pressed into the page, lit
+      lime under the cursor. The light is anchored in **viewport** space, not to
+      the panel: on the filmstrip the drawing is the half that usually moves, so
+      easing in element coordinates (and listening only for `pointermove`) left
+      the light glued to the mark and riding along with it whenever the page
+      scrolled under a still hand. Both inputs now feed one screen point, and an
+      e2e test parks the cursor and scrolls 400px to prove it stays there.
+      The surface is **lit cloth with the mark pressed into it**, drawn by one
+      fragment shader in raw WebGL: no library, no mesh, no texture download.
+      The height field is a few octaves of stretched value noise minus the
+      mark's blurred silhouette; everything else is Blinn-Phong with a fixed key
+      light for the folds and a second light at the cursor. Because the lime
+      arrives as a _light_ rather than a fill, it takes the fold shading with it.
+      The mark's rectangle is derived from the panel's aspect at draw time — a
+      hard-coded UV rect squashed a 801x1453 logo into a near-square box, because
+      UV is normalised per axis. It renders at 0.65x and upscales: everything it
+      draws is low-frequency, so the difference is invisible and it is roughly
+      half the fragments. It redraws only while something is happening, and the
+      GL context is built lazily on first layout — the block is `stripOnly`, and
+      a hidden element still mounts, so every phone was paying for a context,
+      a shader compile and a rasterised mark it would never show.
+- [x] **"How it gets built" splits 30/70 on the strip.** The pinned head and its
+      lattice take 30%, the offerings 70% — the offerings had been sharing the
+      panel almost evenly with a heading, which left them cramped and pushed the
+      schematics against the right edge.
+- [x] **The schematics are legible.** Darker tone (`#46443e`, from the stills'
+      `#9e9b8f` — past `--color-soft`, short of ink) and roughly double the
+      stroke weight. The weights are the real
+      fix: stroke widths are in **viewBox units** and these render at about half
+      scale in their cell, so a 1.5-unit line was a 0.75px line on screen —
+      present but not readable, which is the worst of both. The figure box also
+      gained inset padding so the outermost strokes never sit against the seam.
+- [x] **Copy: who we are, not what the repository contains.** The section used to
+      say "nothing on this page is stock" — true, inward-looking, and no use to a
+      reader two panels from the contact form. It now says what the company is
+      like. The VSL's hand-off and the anchor were renamed to `#who` to match.
+- [x] **Contact footer: the photograph behind the wordmark is gone.** It was
+      doing one job — lifting the ink ground to a charcoal — so the cell now
+      carries that tone directly. Dropping the photo without it left a hole
+      punched in the page.
+
+**Four surfaces were built before this one.** A soft radial glow on the bare
+logomark (a coloured smudge); SVG-filtered satin with the mark embossed (right
+idea, wrong medium — the emboss was static, so it read as wallpaper); a contact
+sheet of every generated drawing (honest, and dull). The shader is the fourth,
+and it is the first one where the _light_ is real rather than painted: the
+surface responds because it is being lit, not because a mask is being moved
+across it.
+
+**What oddcommon actually ships, measured.** Their fabric is a WebGL2 PBR cloth
+— a `.glb` mesh with a 784 KB normal map, a roughness map and a noise map, one
+of four WebGL canvases on the page, inside ~2.7 MB of media and 135 KB of
+script. It is superb and it is not lightweight; it only feels that way because
+it is smooth. The technique was worth copying and the asset list was not:
+`CLAUDE.md` §4.3 makes bundle weight a business metric here, and a 3D engine is
+a dependency decision for the owner, not one a decorative section makes for
+them. A height field is a function — this one costs about 6 KB of source and
+downloads nothing.
+
+**The reference used a floating yellow blob.** On this palette that would be the
+largest area of accent on the site by an order of magnitude. Revealing _the mark_
+in lime instead keeps the accent inside a shape the brand already owns, and makes
+the interaction about the thing the page is signed with.
+
+### Added mid-sprint, tenth round (owner, 2026-09-03)
+
+- [x] **`page-header`: the photograph was invisible and the headline sat on a
+      grey slab.** The layer was `absolute inset-0 -z-10` at panel level — behind
+      the panel's _own_ background, which `grid-cells` paints hairline because
+      the seams are gaps over a coloured ground. So every header rendered as a
+      page-wide grey rectangle with type on it. The photograph now lives inside
+      the cell, over paper and under the type, at 6% rather than 13%: once it
+      was actually visible it turned out to be high-contrast enough that the
+      printing on the cable was legible behind the headline.
+- [x] **`page-header`: the meta row stopped inventing a third cell.** It was
+      `md:grid-cols-3` against a list that is two items long on every route, so
+      each page had an empty rectangle of seam-ground in the top corner that read
+      as something failing to load. Columns now come from the item count.
+- [x] **The `/about` pillars stopped competing.** Fully desaturated (the wire
+      photograph was still visibly red and blue at `grayscale-[0.4]`, on a page
+      whose palette is paper, ink and one lime) and knocked back — 9% on paper,
+      16% on ink. The `tune` backdrop dropped from twenty converging passes to
+      twelve; behind a word, twenty read as a smear rather than as a signal
+      settling.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`
@@ -206,6 +374,29 @@ Runtime additions, documented in `docs/modules.md`:
 
 ## Open questions for the owner
 
+- [x] **Name the three offerings as claims, not categories?** _Answered by
+      adding a layer rather than renaming._ oddcommon's `/expertise` heads its
+      three principles with positions — "Just Enough Strategy", "Allergic to the
+      grand reveal", "Go big on craft". Ours were "Workflow Mapping", "Agent
+      Swarms", "Systems Integration": accurate, and indistinguishable from any
+      other agency's service list. Both now ship — the category stays in the
+      eyebrow, where it is the thing you file the offering under, and the claim
+      sits in display type above the detail, where it is the thing that earns
+      the read. Renaming would have cost the scannability; stacking them cost a
+      line each.
+
+- [ ] **Their closing CTA is a repeating "Work with us /" marquee,** and
+      enquiries go to a named person with a direct address rather than a
+      `hello@` alias. Both are cheap to build and a bigger change of voice than
+      I would make unasked. Want either?
+
+- [ ] **The brief says "No photography" and the site now ships four
+      photographs.** `docs/brief.md` § Visual direction still carries the
+      original rule; `docs/photo-credits.md`, `PHOTO` in `compositions.ts` and
+      the `/about` pillars contradict it. The code is almost certainly right and
+      the brief is stale, but §7.1 makes the brief the higher authority, so I
+      have not edited that row. Confirm and I will correct it.
+
 - [ ] **Photography (asked for, not built).** Adding Unsplash imagery means
       either hotlinking a third-party origin — which conflicts with
       `SECURITY.md` §8 and complicates the CSP that already blocks launch — or
@@ -221,8 +412,12 @@ Runtime additions, documented in `docs/modules.md`:
       ignore" list. Nothing has been built from it. Is it a candidate logomark,
       a texture, or a leftover?
 - [ ] **Where should lead-magnet submissions actually go?** An email provider, a
-      CRM, or does this trigger the data-layer decision in
-      `docs/data-layer.md`? Until then they are validated and logged.
+      CRM, or does this trigger the data-layer decision in `docs/data-layer.md`?
+      **The download does not answer this.** The visitor now gets the file
+      immediately, but the address is still only validated and logged — so the
+      opt-in currently converts without capturing anything we can act on. That
+      is a bigger hole now that the flow looks finished than it was when it
+      obviously was not.
 - [ ] **Does `/work` need to exist as a route,** or is `#work` on the home page
       enough until there are more than four case studies? Until it is answered,
       the work section's `See more work →` points at `#contact`, which is the

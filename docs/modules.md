@@ -337,6 +337,77 @@ Note that pinning is **layout, not motion**: it survives `prefers-reduced-motion
 where parallax does not. Removing it would leave a section head scrolling away
 from rows that were designed against it.
 
+**Nothing pins below `PIN_MIN_WIDTH` (768px).** `--block-lead` stays at a flat
+`0px` there, so the transform above is the identity and the section reads as an
+ordinary stack. The pin is a transform chasing the scroll position one frame
+behind it: invisible on the filmstrip, where the whole track moves under the
+same lerp, and a visible shudder in vertical flow on a phone — made worse by
+mobile browsers resizing the viewport as the URL bar hides. A block needs no
+branch for this; it writes the same declaration and gets a no-op. The gate is
+`pinLead()` in `scroll-engine.ts`, tested in `tests/unit/scroll-engine.test.ts`.
+
+Because the offset is a no-op rather than an absent property, a **`col-span-*`
+on the pinned element still applies at every width.** Span the explicit grid
+with `col-span-full`, not a hard column count: below the breakpoint where the
+grid declares its columns there is only one, and asking for two grows an
+implicit column that nothing sized.
+
+### Filmstrip-only blocks: `layout.stripOnly`
+
+`visibility` is a breakpoint ladder, and "only on the filmstrip" is not a
+breakpoint: the strip depends on width **and** on the visitor not having asked
+for reduced motion, and only the engine knows the answer. `stripOnly` is that
+gate, applied by the frame as `hidden strip:block` so the block itself stays
+unaware — the same division of labour as every other kind of visibility.
+
+It is `display`, not `visibility`, so an opted-in block costs no layout in
+vertical flow. It stays in the DOM, so reading order is one document either way.
+
+**Only genuinely optional content may use it.** The vertical fallback never
+renders these, so nothing the funnel depends on can live inside one.
+`mark-field` is the only current example: a cursor-lit surface with no cursor to
+light it on a phone.
+
+### Holding: `--block-hold`
+
+The frame publishes the pin's travel twice — once as a length, once as a
+fraction:
+
+| Property       | Type | Use                                             |
+| -------------- | ---- | ----------------------------------------------- |
+| `--block-lead` | px   | Offset a child by it and that child holds still |
+| `--block-hold` | 0→1  | Drive something else with the hold's progress   |
+
+The second exists because **CSS cannot divide a length by a length.** There is
+no way to ask `calc()` what fraction of its range `--block-lead` has covered, so
+a section that wants to move an inner stack by a proportion of its own height
+needs the fraction, not the pixels.
+
+`services-rows` uses both. On the filmstrip it holds its whole group with
+`--block-lead` and runs three full-height offerings past a clipping window with
+`--block-hold`:
+
+```tsx
+// The window: one grid column, panel-tall, clipping.
+<div className="contents strip:block strip:h-full strip:overflow-hidden">
+  {/* The film: three cells each `h-full`, so the stack is 300% of its own box.
+      A percentage translate resolves against the element's own height, so
+      -200% is exactly two windows. */}
+  <div className="contents strip:block strip:h-full
+                  strip:[transform:translate3d(0,calc(var(--block-hold,0)*-200%),0)]">
+```
+
+Two things make that work:
+
+- **The panel is wider than the screen.** A section exactly one viewport wide has
+  no pin budget — it is never past the leading edge while still covering the
+  screen — so `holdProgress` returns 0 for it. `services-rows` asks for
+  `width={2}`: one screen of content, one of scroll budget.
+- **`display: contents` below the strip.** The wrappers vanish from the box tree
+  at every other width, so the same markup is the ordinary grid it always was.
+  Nothing about the hold survives into vertical flow, where the page already
+  scrolls the way the content wants to be read.
+
 ---
 
 ## Laying a composition out horizontally

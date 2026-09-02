@@ -51,6 +51,19 @@ export interface BlockLayout {
    * one transform. See docs/modules.md.
    */
   stickyHead?: boolean;
+  /**
+   * Render only while the page is running as a horizontal filmstrip.
+   *
+   * A *mode* gate, not a breakpoint gate, which is why it is not expressible
+   * through `visibility`: the filmstrip depends on width **and** on the visitor
+   * not having asked for reduced motion, and only the engine knows the answer.
+   * The frame emits the class; the block stays unaware, exactly as with every
+   * other kind of visibility (§3.1).
+   *
+   * A block that opts in must be genuinely optional to the page — the vertical
+   * document never shows it, so nothing the funnel depends on can live here.
+   */
+  stripOnly?: boolean;
   /** Explicit stacking context; used when blocks overlap during transitions. */
   zIndex?: number;
   /** Extra classes merged onto the frame. Escape hatch — prefer the fields above. */

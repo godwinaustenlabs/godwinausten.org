@@ -18,6 +18,7 @@ import { indexList } from "./blocks/index-list/block.config";
 import { pillars } from "./blocks/pillars/block.config";
 import { leadMagnet } from "./blocks/lead-magnet/block.config";
 import { vslPanel } from "./blocks/vsl-panel/block.config";
+import { markField } from "./blocks/mark-field/block.config";
 import { aboutStatement } from "./blocks/about-statement/block.config";
 import { contactFooter } from "./blocks/contact-footer/block.config";
 
@@ -31,6 +32,7 @@ export const blockRegistry = {
   pillars: pillars,
   "lead-magnet": leadMagnet,
   "vsl-panel": vslPanel,
+  "mark-field": markField,
   "about-statement": aboutStatement,
   "contact-footer": contactFooter,
 } as const satisfies Record<string, BlockDefinition>;

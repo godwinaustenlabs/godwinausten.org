@@ -74,6 +74,10 @@ export interface BlockFrameProps {
  * - `--block-lead` — px travelled past the viewport's leading edge, clamped to
  *   the section. Offsetting a child by it pins that child while the rest of the
  *   section moves past (`layout.stickyHead`).
+ * - `--block-hold` — the same travel as 0→1 across the whole pinnable range.
+ *   Unitless, because CSS cannot divide one length by another: a pinned section
+ *   that wants to drive an inner stack by a fraction of its own height needs the
+ *   fraction, not the pixels.
  *
  * Both are measured on whichever axis is live, so the same CSS declaration in a
  * block works whether the page is scrolling down or sideways. `position:
@@ -125,6 +129,10 @@ export function BlockFrame({
         SPACING[layout?.spacing ?? "default"],
         layout?.panel && PANEL[layout.panel],
         layout?.sticky && "sticky top-0",
+        // A mode gate rather than a breakpoint one — see `stickyHead`'s
+        // neighbour in types.ts. Display, not `visibility`, so the block costs
+        // no layout in vertical flow.
+        layout?.stripOnly && "hidden strip:block",
         visibilityClasses(visibility),
         layout?.className,
       )}
@@ -133,7 +141,11 @@ export function BlockFrame({
         // Seeded so a block's CSS reads sane values on the very first paint,
         // before the engine has published anything.
         ...(wantsEngine
-          ? ({ "--block-progress": 0, "--block-lead": "0px" } as React.CSSProperties)
+          ? ({
+              "--block-progress": 0,
+              "--block-lead": "0px",
+              "--block-hold": 0,
+            } as React.CSSProperties)
           : {}),
         // The frame's own parallax depth, for blocks that want to scale their
         // drift off the instance's setting rather than hard-coding a distance.

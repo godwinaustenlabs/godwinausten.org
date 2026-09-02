@@ -10,8 +10,11 @@ const props = {
   body: "The same worksheet we run on day one of every engagement.",
   contents: ["The four questions", "How to price a task", "Three failure modes"],
   cover: { title: "What to automate first", format: "PDF — 9 pages" },
+  cta: "Download it free",
+  prompt: "Where do we send it?",
   placeholder: "you@company.com",
-  submit: "Send me the guide",
+  submit: "Send it",
+  again: "Download again",
   micro: "One email. No call.",
   success: "On its way.",
   successBody: "Check your inbox.",
@@ -27,7 +30,7 @@ describe("lead-magnet", () => {
 
   it("labels the email field and requires it", () => {
     render(<LeadMagnet {...props} />);
-    const field = screen.getByLabelText(props.placeholder);
+    const field = screen.getByLabelText(props.prompt);
     expect(field).toHaveAttribute("type", "email");
     expect(field).toBeRequired();
   });

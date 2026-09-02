@@ -339,3 +339,34 @@ Record all three in `INDEX.md` so a misreading is visible before it becomes code
   and say in one line what you picked and why.
 - **A check fails and you cannot fix it** → say so plainly and show the output.
   Do not disable the check. Do not report the work as done.
+
+---
+
+## 9. The knowledge graph (`graphify-out/`)
+
+The repository is indexed as a knowledge graph in `graphify-out/` — god nodes,
+community structure, and cross-file relationships extracted from the code, the
+docs, and the image assets. **Use it before you grep.** It answers "what does
+this connect to" in a scoped subgraph, which is both cheaper and more accurate
+than a keyword sweep across `src/`.
+
+| You want to…                             | Run…                                |
+| ---------------------------------------- | ----------------------------------- |
+| Answer a question about the codebase     | `graphify query "<question>"`       |
+| Understand how two things relate         | `graphify path "<A>" "<B>"`         |
+| Get a focused explanation of one concept | `graphify explain "<concept>"`      |
+| Review the architecture broadly          | read `graphify-out/GRAPH_REPORT.md` |
+
+Rules:
+
+- For any codebase question, run `graphify query` **first**, whenever
+  `graphify-out/graph.json` exists. Fall back to `grep`/`Glob` only when the
+  graph does not surface enough context.
+- `GRAPH_REPORT.md` is for broad architecture review, not for answering a
+  specific question — `query`/`path`/`explain` return far less to read.
+- After changing code, run `graphify update .` to keep the graph current. This is
+  AST-only: deterministic, no LLM, no API cost.
+- After changing **docs or images**, run `/graphify --update` instead — those need
+  semantic re-extraction, which `graphify update` skips.
+- `graphify-out/` is build output. Never hand-edit `graph.json`,
+  `GRAPH_REPORT.md`, or anything else in it; regenerate instead.

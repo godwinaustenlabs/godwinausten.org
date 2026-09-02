@@ -48,6 +48,41 @@ describe("services-rows", () => {
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
+  it("sets the claim, not the category, as the thing you read first", () => {
+    // `title` names the offering — "Workflow Mapping" — which any agency could
+    // write. The claim is the position under it, and it is the reason someone
+    // reads the paragraph. It carries the heading, so it wins the reading order
+    // even though the eyebrow sits physically above it.
+    const withClaims = {
+      ...props,
+      rows: props.rows.map((row, i) => ({ ...row, claim: `Claim number ${i}.` })),
+    };
+    render(<ServicesRows {...withClaims} />);
+    for (let i = 0; i < props.rows.length; i += 1) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: `Claim number ${i}.` }),
+      ).toBeInTheDocument();
+    }
+  });
+
+  it("leaves the cell alone when a composition supplies no claim", () => {
+    // Optional on purpose: /about runs the same block as a plain list, where a
+    // claim per row would be three assertions about nothing.
+    render(<ServicesRows {...props} />);
+    expect(screen.queryAllByRole("heading", { level: 3 })).toHaveLength(0);
+  });
+
+  it("spends the accent once per claim and nowhere else", () => {
+    // Lime is the site's one accent and the brief rations it. One rule per
+    // claim is the whole budget for this section — see docs/brief.md.
+    const withClaims = {
+      ...props,
+      rows: props.rows.map((row) => ({ ...row, claim: "A claim." })),
+    };
+    const { container } = render(<ServicesRows {...withClaims} />);
+    expect(container.querySelectorAll(".bg-signal")).toHaveLength(props.rows.length);
+  });
+
   it("hands off to the next section", () => {
     render(<ServicesRows {...props} />);
     // Every panel ends by naming what follows it. A section that simply stops

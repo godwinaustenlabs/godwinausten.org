@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" fill="none" role="presentation">
+<!-- Godwin Austen Labs — "schematic: agent swarms". Generated: npm run gen:diagrams -->
+<g stroke="#46443e" fill="none">
+  <path d="M192 192Q435 176.8 632 320M632 320Q541.6 533.3 336 640M336 640Q183.4 441.9 192 192" stroke-width="3.4" opacity="0.7"/>
+  <path d="M192 192L260.7 195M192 192L238.4 257.9M192 192L128.1 287.6M192 192L76.4 204.6M192 192L125.8 132.4M192 192L172.8 90.7M192 192L289.6 154.2M632 320L715.4 358.4M632 320L672.5 380.2M632 320L589.2 408.4M632 320L508.8 320.4M632 320L546.3 261.5M632 320L650.3 211.6M632 320L696.1 279.5M336 640L419.9 652.5M336 640L369 742.1M336 640L286.4 705.1M336 640L264.3 665.5M336 640L254.8 557.9M336 640L350.9 550M336 640L446.3 585.5" stroke-width="2.2" opacity="0.55"/>
+  <g fill="#46443e" stroke="none" opacity="0.85"><circle cx="260.7" cy="195" r="5"/><circle cx="238.4" cy="257.9" r="5"/><circle cx="128.1" cy="287.6" r="5"/><circle cx="76.4" cy="204.6" r="5"/><circle cx="125.8" cy="132.4" r="5"/><circle cx="172.8" cy="90.7" r="5"/><circle cx="289.6" cy="154.2" r="5"/><circle cx="715.4" cy="358.4" r="5"/><circle cx="672.5" cy="380.2" r="5"/><circle cx="589.2" cy="408.4" r="5"/><circle cx="508.8" cy="320.4" r="5"/><circle cx="546.3" cy="261.5" r="5"/><circle cx="650.3" cy="211.6" r="5"/><circle cx="696.1" cy="279.5" r="5"/><circle cx="419.9" cy="652.5" r="5"/><circle cx="369" cy="742.1" r="5"/><circle cx="286.4" cy="705.1" r="5"/><circle cx="264.3" cy="665.5" r="5"/><circle cx="254.8" cy="557.9" r="5"/><circle cx="350.9" cy="550" r="5"/><circle cx="446.3" cy="585.5" r="5"/></g>
+  <g fill="#46443e" stroke="none" opacity="1"><circle cx="192" cy="192" r="9.5"/><circle cx="632" cy="320" r="9.5"/><circle cx="336" cy="640" r="9.5"/></g>
+</g>
+</svg>
