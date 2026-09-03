@@ -507,6 +507,13 @@ the rule `docs/adr/0003` already sets for this reference.
       placeholders into black rectangles — the exact failure a placeholder is
       for. It is `src/components/ui/Reel.tsx` now, plays on visibility, and all
       three blocks use it.
+- [x] **The reel is the row on `/work`.** It was a 15rem thumbnail in a
+      four-column row — index, thumbnail, copy, record — which made the one thing
+      with a moving picture in it the smallest thing on the page. It takes 55% of
+      the row now and holds a true 16:9 at every width (52% of a 1440 screen,
+      53% of 1920, 90% of a phone). The record moved under the copy to pay for
+      it: three columns of text beside a wide frame is not a layout, it is two
+      columns of text and a gutter.
 - [x] **A stand-in file per asset, not one shared.** `reel-picasso` pointed at
       the VSL's film. Sharing saved 300 KB and quietly coupled the slots:
       dropping a real reel over it would have replaced the film as well. The

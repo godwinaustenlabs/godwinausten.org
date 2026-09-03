@@ -33,19 +33,30 @@ export default function IndexList({ heading, entries }: IndexListProps) {
           href={entry.href}
           className="cell group px-gutter py-[clamp(2rem,6vh,3.5rem)] transition-colors hover:bg-hairline/30"
         >
-          <div className="flex flex-col gap-6 md:flex-row md:gap-10">
+          <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-10">
             <Label tone="ink" className="shrink-0 pt-2 opacity-30 md:w-10">
               {entry.index}
             </Label>
 
-            {/* The same reel the home page shows, at row scale: it holds still
-                until the pointer is on the row, so a list of them does not turn
-                into a wall of movement. */}
-            <div className="aspect-video w-full shrink-0 overflow-hidden md:w-[15rem] lg:w-[19rem]">
+            {/*
+              The reel is the row.
+
+              It used to be a 15rem thumbnail in a four-column row — index,
+              thumbnail, copy, record — which made the one thing with a moving
+              picture in it the smallest thing on the page. An index of builds
+              that have shipped is a page about the builds; the footage is the
+              claim and the prose is the caption, so it takes over half the row
+              and holds a true 16:9 at every width.
+
+              The record moved under the copy to pay for it. Three columns of
+              text beside a wide frame is not a layout, it is two columns of
+              text and a gutter.
+            */}
+            <div className="aspect-video w-full shrink-0 overflow-hidden md:w-[55%]">
               <Reel label={entry.runtime} src={entry.src} playOn="hover" />
             </div>
 
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <h3 className="font-display text-[clamp(1.5rem,3.4vw,2.75rem)] leading-[1.02] font-medium text-ink">
                 {entry.title}
                 <span
@@ -58,26 +69,27 @@ export default function IndexList({ heading, entries }: IndexListProps) {
               <p className="mt-4 max-w-[58ch] font-sans text-base leading-relaxed text-soft lg:text-lg">
                 {entry.summary}
               </p>
-            </div>
 
-            {/* The record. Mono, low contrast, and the same two fields on every
-                row — which is what makes a list of one still read as an index. */}
-            <dl className="w-full shrink-0 border-t border-hairline pt-4 md:w-[24ch] md:border-s md:border-t-0 md:ps-8 md:pt-0">
-              <div className="flex flex-col gap-1.5">
-                <Label className="opacity-50">client:</Label>
-                <dd className="font-sans text-sm text-ink">{entry.client}</dd>
-              </div>
-              <div className="mt-5 flex flex-col gap-1.5">
-                <Label className="opacity-50">services:</Label>
-                <dd className="flex flex-wrap gap-x-3 gap-y-1.5">
-                  {entry.services.map((service) => (
-                    <span key={service} className="font-sans text-sm text-ink">
-                      {service}
-                    </span>
-                  ))}
-                </dd>
-              </div>
-            </dl>
+              {/* The record. Mono, low contrast, and the same two fields on
+                  every row — which is what makes a list of one still read as an
+                  index. */}
+              <dl className="mt-6 border-t border-hairline pt-5">
+                <div className="flex flex-col gap-1.5">
+                  <Label className="opacity-50">client:</Label>
+                  <dd className="font-sans text-sm text-ink">{entry.client}</dd>
+                </div>
+                <div className="mt-5 flex flex-col gap-1.5">
+                  <Label className="opacity-50">services:</Label>
+                  <dd className="flex flex-wrap gap-x-3 gap-y-1.5">
+                    {entry.services.map((service) => (
+                      <span key={service} className="font-sans text-sm text-ink">
+                        {service}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </SiteLink>
       ))}
