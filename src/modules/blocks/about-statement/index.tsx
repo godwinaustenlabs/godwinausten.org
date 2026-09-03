@@ -22,7 +22,7 @@ export default function AboutStatement({
   meta,
 }: AboutStatementProps) {
   return (
-    <Panel className="grid-rows-[1fr_auto]">
+    <Panel className={meta ? "grid-rows-[1fr_auto]" : "grid-rows-[1fr]"}>
       <Cell eyebrow={eyebrow} index={index} tone="ink" bodyClassName="justify-center gap-7">
         <h2 className="max-w-[18ch] font-display text-[clamp(2rem,5vw,4.75rem)] leading-[0.92] font-bold">
           {headline}
@@ -32,13 +32,15 @@ export default function AboutStatement({
         </p>
       </Cell>
 
-      <div className="cell cell-ink flex-row items-center gap-3 px-gutter py-3.5">
-        {/* The lime dot — one of the two places the accent appears. */}
-        <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-signal" />
-        <Label tone="paper" className="opacity-70">
-          {meta}
-        </Label>
-      </div>
+      {meta ? (
+        <div className="cell cell-ink flex-row items-center gap-3 px-gutter py-3.5">
+          {/* The lime dot — one of the two places the accent appears. */}
+          <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-signal" />
+          <Label tone="paper" className="opacity-70">
+            {meta}
+          </Label>
+        </div>
+      ) : null}
     </Panel>
   );
 }

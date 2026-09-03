@@ -120,15 +120,6 @@ const homeCopySchema = z.object({
     headline: z.string(),
     body: z.string(),
     videoLabel: z.string(),
-    /**
-     * What the film covers, in order — with no timecodes.
-     *
-     * It used to carry `00:00 / 01:05 / …`. Those were invented, and they would
-     * still be on the page pointing at the wrong moments the day a real cut is
-     * uploaded. The order is the useful part; the timings are a maintenance
-     * liability.
-     */
-    covers: z.array(z.string()).min(1),
     src: z.string().optional(),
     next: nextSchema,
   }),
@@ -226,15 +217,9 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
   vsl: {
     index: "04",
     eyebrow: "The long version",
-    headline: "Watch us replace a hiring plan.",
-    body: "The workflow we mapped, what we built, and what it costs to run. No slides.",
+    headline: "The part where we convince you.",
+    body: "The workflow we mapped, what we built, what we left to a human, and what it costs to run. No slides.",
     videoLabel: "Demo reel",
-    covers: [
-      "The workflow, on a whiteboard",
-      "What we automated, and what we left",
-      "The handoff to a human",
-      "What it costs to run",
-    ],
     next: { index: "05", label: "Who's behind it", href: "#who" },
   },
 

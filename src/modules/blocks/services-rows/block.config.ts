@@ -34,8 +34,12 @@ export const servicesRowsSchema = z.object({
       }),
     )
     .min(1),
-  /** The hand-off to the next section. */
-  next: z.object({ index: z.string(), label: z.string(), href: z.string() }),
+  /**
+   * The hand-off to the next section. Optional: it earns its row on the
+   * filmstrip, where the next section is off-screen sideways, and is clutter on
+   * a sub-route where the next section is simply the next thing you scroll to.
+   */
+  next: z.object({ index: z.string(), label: z.string(), href: z.string() }).optional(),
   /**
    * Show the morphing lattice above the headline.
    *

@@ -47,6 +47,7 @@ Requires Node ≥ 20.9 and a Cloudflare login (`npx wrangler login`).
 | `npm run gen:stills`              | Regenerate the work-tile placeholder stills                  |
 | `npm run gen:diagrams`            | Regenerate the service schematics and stage backdrops        |
 | `npm run gen:placeholder-pdf`     | Rebuild the stand-in guide the opt-in serves                 |
+| `npm run gen:placeholder-video`   | Rebuild the stand-in film empty video slots play             |
 | `npm run gen:photos`              | Re-download the stock photographs and rewrite the credits    |
 | `npm run gen:favicon`             | Rebuild `src/app/icon.svg` from the loader's path data       |
 | `npm run ci`                      | Everything CI runs, locally                                  |
@@ -204,20 +205,29 @@ Every visual asset is produced by a script in this repo. Nothing here is drawn
 by hand, so nothing here should be edited by hand — change the script and
 re-run it.
 
-| Command                       | Produces                                 | Deterministic |
-| ----------------------------- | ---------------------------------------- | ------------- |
-| `npm run gen:figure`          | `public/assets/figure.svg`               | yes           |
-| `npm run gen:stills`          | `public/assets/tiles/*.svg`              | yes           |
-| `npm run gen:diagrams`        | `public/assets/diagrams/*.svg`           | yes           |
-| `npm run gen:placeholder-pdf` | `public/assets/playbook-placeholder.pdf` | yes           |
-| `npm run gen:favicon`         | `src/app/icon.svg`                       | yes           |
-| `npm run gen:photos`          | `public/assets/photo/*.jpg` + credits    | network       |
+| Command                         | Produces                                 | Deterministic |
+| ------------------------------- | ---------------------------------------- | ------------- |
+| `npm run gen:figure`            | `public/assets/figure.svg`               | yes           |
+| `npm run gen:stills`            | `public/assets/tiles/*.svg`              | yes           |
+| `npm run gen:diagrams`          | `public/assets/diagrams/*.svg`           | yes           |
+| `npm run gen:placeholder-pdf`   | `public/assets/playbook-placeholder.pdf` | yes           |
+| `npm run gen:favicon`           | `src/app/icon.svg`                       | yes           |
+| `npm run gen:placeholder-video` | `public/assets/film-placeholder.mp4`     | no            |
+| `npm run gen:photos`            | `public/assets/photo/*.jpg` + credits    | network       |
 
 The deterministic five regenerate byte-identically from an unchanged script;
 tune the parameters in the script, never the SVG. `gen:photos` reaches the
 network and is the one exception to "nothing third-party ships" — see
 `docs/photo-credits.md` for what it fetched and `docs/adr/0003-…` for the rule
 it bends.
+
+`gen:placeholder-video` is the one that is _not_ byte-identical: it draws the
+frames on a canvas and encodes them with the `MediaRecorder` inside Playwright's
+Chromium — an encoder the repo already installs for the e2e suite, so no ffmpeg
+and no new dependency — and a real-time capture through a rate controller varies
+run to run. Regenerate it when the design changes, not routinely, and expect the
+diff. It is what makes the film transport live before the owner has uploaded a
+cut; see `docs/adr/0005-generated-placeholder-film.md`.
 
 `gen:favicon` reads `src/components/layout/loader-mark.ts`, the same path data
 the loading curtain draws, and crops it square to the mark's own bounding box —

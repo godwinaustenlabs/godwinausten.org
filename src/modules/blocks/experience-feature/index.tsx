@@ -34,10 +34,38 @@ export default function ExperienceFeature({
       </div>
 
       <Cell className="col-span-full md:col-span-1" bodyClassName="justify-center gap-6">
-        {/* The accent mark. A small square inside the cell, not a column of its
-            own: as a grid child it stretched to the full row height and read as
-            a highlighter stripe down the middle of the panel. */}
-        <span aria-hidden="true" className="size-10 shrink-0 bg-signal" />
+        {/*
+          The accent mark, drawn rather than filled.
+
+          Inside the cell, not a column of its own: as a grid child it stretched
+          to the full row height and read as a highlighter stripe down the
+          middle of the panel.
+
+          An apostrophe rather than a square — a round cap tapering to the
+          baseline, which is how a geometric sans draws one. It is the same
+          amount of lime in the same place, but it belongs to the type rather
+          than sitting beside it, and this panel is the one that speaks in the
+          first person.
+        */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 44 50"
+          fill="currentColor"
+          className="h-11 w-[2.4rem] shrink-0 text-signal"
+        >
+          {/*
+            A ball with a tail: the curly apostrophe, not the straight one. The
+            straight form is a round cap tapering to a point, and on its own —
+            no letters either side to give it a baseline — it reads as a
+            droplet. The tail is what makes it punctuation.
+
+            The outline runs ball-first: an arc clockwise over the top and down
+            the right, then the tail's inner edge to the tip and its outer edge
+            back up. That last edge finishes *inside* the ball, so the closing
+            chord is buried under fill rather than cutting across the shape.
+          */}
+          <path d="M10.2 18A15 15 0 1 1 31.8 28.2C29 36.5 19.5 42.5 8.5 45.6L5 45C13 39 17.5 30 17.8 22.5Z" />
+        </svg>
 
         <h2 className="font-display text-[clamp(1.9rem,4vw,4rem)] leading-[0.92] font-bold text-ink">
           {headline}

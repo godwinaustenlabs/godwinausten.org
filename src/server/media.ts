@@ -36,17 +36,25 @@ export const MEDIA_ASSETS = {
     contentType: "video/mp4",
     filename: null,
     /**
-     * No stand-in: there is no encoder in this repo and a stock clip would put
-     * someone else's footage on the page (docs/adr/0003). Absent, the panel
-     * runs `PlaceholderReel` instead — see `src/components/ui/FilmFrame.tsx`.
+     * A generated stand-in, not stock footage — `npm run gen:placeholder-video`
+     * draws it here (docs/adr/0005). It exists so `FilmFrame`'s transport is
+     * live before the real cut is uploaded: without a `src` every control is
+     * disabled, which made the one control-heavy component on the funnel
+     * impossible to use or test.
      */
-    fallback: null,
+    fallback: "/assets/film-placeholder.mp4",
   },
   "reel-picasso": {
     key: "reels/picasso.mp4",
     contentType: "video/mp4",
     filename: null,
-    fallback: null,
+    /**
+     * The same stand-in the VSL uses. One generated film covers every empty
+     * slot: it says across the top of every frame that it is a placeholder, so
+     * there is nothing to gain from cutting a second one that says it twice,
+     * and a second file is another half-megabyte in the repo.
+     */
+    fallback: "/assets/film-placeholder.mp4",
   },
 } as const;
 
@@ -80,12 +88,19 @@ export async function hasMedia(id: MediaId): Promise<boolean> {
 }
 
 /**
- * `mediaHref` when the asset exists, `undefined` when it does not.
+ * `mediaHref` when there is something to play, `undefined` when there is not.
  *
- * The shape blocks want: a `src` prop that is either a real film or absent, so
- * the block itself never has to know that R2 is involved.
+ * The shape blocks want: a `src` prop that is either a URL or absent, so the
+ * block itself never has to know that R2 is involved.
+ *
+ * "Something to play" includes the shipped stand-in, and that is the whole
+ * point — the route already resolves object-then-fallback, so an asset with a
+ * fallback can never 404 and withholding its `src` only left the player
+ * disabled in front of a file it would have served. It also saves the `head`:
+ * the answer cannot change the URL, so there is nothing to ask R2.
  */
 export async function mediaSrc(id: MediaId): Promise<string | undefined> {
+  if (MEDIA_ASSETS[id].fallback) return mediaHref(id);
   return (await hasMedia(id)) ? mediaHref(id) : undefined;
 }
 

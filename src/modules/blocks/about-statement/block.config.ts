@@ -6,7 +6,11 @@ export const aboutStatementSchema = z.object({
   eyebrow: z.string().min(1),
   headline: z.string().min(1),
   body: z.string().min(1),
-  meta: z.string().min(1),
+  /**
+   * A plain closing line along the foot. Optional — the bar is a whole row of
+   * the panel, so an empty one is a strip of ink with a dot in it.
+   */
+  meta: z.string().min(1).optional(),
 });
 
 export type AboutStatementProps = z.infer<typeof aboutStatementSchema>;

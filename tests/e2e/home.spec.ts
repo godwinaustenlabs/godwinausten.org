@@ -344,8 +344,12 @@ test.describe("the mark field", () => {
       .poll(async () => Math.round((await lightAt()).panelLeft))
       .toBeLessThan(before.panelLeft - 50);
 
+    // Both axes polled, for the same reason the first one is: the chain eases
+    // toward the cursor over a handful of frames, and how many milliseconds
+    // that takes depends on what else the machine is doing. A bare `expect` on
+    // the second axis was a fixed deadline hiding inside a polled test.
     await expect.poll(async () => Math.round((await lightAt()).x)).toBeCloseTo(CURSOR.x, -1);
-    expect(Math.round((await lightAt()).y)).toBeCloseTo(CURSOR.y, -1);
+    await expect.poll(async () => Math.round((await lightAt()).y)).toBeCloseTo(CURSOR.y, -1);
   });
 });
 
@@ -391,5 +395,96 @@ test.describe("lead magnet", () => {
     // Scoped to the form: Next's own route announcer is also `role="alert"`.
     await expect(page.locator("form").getByRole("alert")).toContainText("email");
     await expect(page.getByText("Downloading now.")).toBeHidden();
+  });
+});
+
+test.describe("the film", () => {
+  /**
+   * Open the theatre the way a visitor does.
+   *
+   * `#watch` rather than a scroll: on the filmstrip the panel sits off-screen
+   * horizontally inside a fixed track, and the anchor is the one route that
+   * lands on it in both scroll modes — same reasoning as `openMagnet` above.
+   */
+  async function openTheatre(page: Page) {
+    await page.goto("/#watch");
+    await page.getByRole("button", { name: /Watch it/ }).click();
+    const film = page.locator('div[role="dialog"] video');
+    await expect(film).toBeAttached();
+    // Metadata, not data: everything below is about the *transport*, and the
+    // transport needs a duration before it can mean anything.
+    await page.waitForFunction(
+      () =>
+        (document.querySelector('div[role="dialog"] video') as HTMLVideoElement)?.readyState >= 1,
+    );
+    return film;
+  }
+
+  const at = (film: ReturnType<typeof openTheatre> extends Promise<infer T> ? T : never) =>
+    film.evaluate((el: HTMLVideoElement) => el.currentTime);
+
+  test("plays, pauses and seeks before a real cut is uploaded", async ({ page }) => {
+    const film = await openTheatre(page);
+
+    /*
+     * There is always something in the slot.
+     *
+     * Until the owner uploads a cut the media route serves the generated
+     * stand-in (`npm run gen:placeholder-video`), and that is what makes this
+     * test possible at all: with no `src` every control below is `disabled`,
+     * so the transport could only ever have been checked by hand, once, by
+     * whoever had a file lying around.
+     */
+    const duration = await film.evaluate((el: HTMLVideoElement) => el.duration);
+    expect(duration).toBeGreaterThan(1);
+    expect(Number.isFinite(duration)).toBe(true);
+
+    // Autoplay-with-sound is a policy decision the browser makes, not one this
+    // page can rely on, so settle the state rather than assuming it.
+    const pause = page.getByRole("button", { name: "Pause" });
+    if (await pause.isVisible()) await pause.click();
+    await expect(page.getByRole("button", { name: "Play" })).toBeVisible();
+
+    // Play: the clock has to actually move.
+    const before = await at(film);
+    await page.getByRole("button", { name: "Play" }).click();
+    await expect.poll(() => at(film)).toBeGreaterThan(before + 0.3);
+
+    // Pause: and then stop moving.
+    await page.getByRole("button", { name: "Pause" }).click();
+    const held = await at(film);
+    await page.waitForTimeout(500);
+    expect(await at(film)).toBeCloseTo(held, 1);
+
+    // ±5s move five seconds, and back to where they started. Clamped at 0 and
+    // at the runtime, so this walks down first to leave room to walk up.
+    await page.getByRole("button", { name: "Back 5 seconds" }).click();
+    await page.getByRole("button", { name: "Back 5 seconds" }).click();
+    const low = await at(film);
+    await page.getByRole("button", { name: "Forward 5 seconds" }).click();
+    await expect.poll(() => at(film)).toBeCloseTo(low + 5, 1);
+    await page.getByRole("button", { name: "Back 5 seconds" }).click();
+    await expect.poll(() => at(film)).toBeCloseTo(low, 1);
+  });
+
+  test("the scrubber seeks where it is clicked", async ({ page }) => {
+    const film = await openTheatre(page);
+    const seek = page.getByRole("slider", { name: "Seek" });
+    await expect(seek).toBeEnabled();
+
+    /*
+     * Clicked, not `fill()`-ed.
+     *
+     * A range input is a *pointer* control first, and its hit target used to be
+     * the four pixels of the hairline it draws — visually right, and not
+     * grabbable. Driving it with the mouse is the only version of this test
+     * that would have failed then.
+     */
+    const box = (await seek.boundingBox())!;
+    expect(box.height).toBeGreaterThan(16);
+    await page.mouse.click(box.x + box.width * 0.6, box.y + box.height / 2);
+
+    const duration = await film.evaluate((el: HTMLVideoElement) => el.duration);
+    await expect.poll(() => at(film)).toBeCloseTo(duration * 0.6, 0);
   });
 });

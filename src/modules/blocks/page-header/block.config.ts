@@ -2,7 +2,12 @@ import { z } from "zod";
 import { defineBlock } from "@/modules";
 
 export const pageHeaderSchema = z.object({
-  eyebrow: z.string().min(1),
+  /**
+   * Mono label in the masthead's top bar. Optional: a page whose headline
+   * already says what the page is does not need a second, quieter label saying
+   * it again, and the bar is a visible band rather than a free annotation.
+   */
+  eyebrow: z.string().min(1).optional(),
   headline: z.string().min(1),
   lead: z.string().optional(),
   /** Small mono facts set along the bottom rule. Plain text, never metrics. */

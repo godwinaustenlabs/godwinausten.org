@@ -7,8 +7,6 @@ export const vslPanelSchema = z.object({
   headline: z.string().min(1),
   body: z.string().min(1),
   videoLabel: z.string().min(1),
-  /** What the film covers, in order. Deliberately untimed — see the copy module. */
-  covers: z.array(z.string().min(1)).min(1),
   src: z.string().optional(),
   /** The hand-off to the next section. */
   next: z.object({ index: z.string(), label: z.string(), href: z.string() }),

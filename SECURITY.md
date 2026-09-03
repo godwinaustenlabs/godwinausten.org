@@ -180,6 +180,12 @@ Rules:
   `Content-Type` from the table, never one derived from the object.
 - `Content-Disposition: attachment` is set only for assets that declare a
   `filename` — a film must not download instead of playing.
+- The stand-in path answers `Range` too, and it does so by buffering the whole
+  file to slice it. That is safe **only** because a `fallback` is a fixed path
+  written in `MEDIA_ASSETS` and shipped in `public/` — a small file we chose. It
+  would not be safe against a request-supplied path or an object of unknown
+  size, which is another reason the previous rule is absolute. Range parsing is
+  the same `parseRange` the R2 path uses; do not write a second one.
 
 **The lead magnet's gate is the form, not this route.** Anyone who finds the
 download path can fetch the guide without giving us an address. That is the same

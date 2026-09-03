@@ -51,9 +51,41 @@ export async function GET(
     const stand = await fetch(new URL(asset.fallback, request.url));
     if (!stand.ok || !stand.body) return new Response("Not found", { status: 404 });
 
-    return new Response(stand.body, {
-      headers: fileHeaders(asset, stand.headers.get("content-length"), wantsDownload),
-    });
+    /*
+     * Buffered, and ranged like the real object.
+     *
+     * Streaming the body straight through is enough for the PDF and not enough
+     * for the film: the stand-in is a fragmented MP4 whose seek index sits in
+     * the `mfra` box at the very end, so a player that cannot ask for the tail
+     * cannot scrub. Answering `Range` here is what makes the transport work
+     * before anything has been uploaded — and it keeps the promise the
+     * `Accept-Ranges` header below was already making.
+     *
+     * The stand-ins are small and shipped in `public/`, so holding one in
+     * memory to slice it is cheaper than the alternatives. The real object
+     * above is never buffered; R2 ranges it at source.
+     */
+    const body = new Uint8Array(await stand.arrayBuffer());
+    const standRange = parseRange(request.headers.get("range"), body.byteLength);
+    if (standRange === "unsatisfiable") {
+      return new Response(null, {
+        status: 416,
+        headers: { "Content-Range": `bytes */${body.byteLength}`, "Accept-Ranges": "bytes" },
+      });
+    }
+
+    const slice = standRange
+      ? body.subarray(standRange.start, standRange.start + standRange.length)
+      : body;
+    const headers = fileHeaders(asset, String(slice.byteLength), wantsDownload);
+    if (standRange) {
+      headers.set(
+        "Content-Range",
+        `bytes ${standRange.start}-${standRange.end}/${body.byteLength}`,
+      );
+    }
+
+    return new Response(slice, { status: standRange ? 206 : 200, headers });
   }
 
   const range = parseRange(request.headers.get("range"), head.size);

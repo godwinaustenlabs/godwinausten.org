@@ -12,10 +12,8 @@ import { z } from "zod";
 const aboutCopySchema = z.object({
   meta: z.object({ title: z.string(), description: z.string() }),
   header: z.object({
-    eyebrow: z.string(),
     headline: z.string(),
     lead: z.string(),
-    meta: z.array(z.string()),
     photo: z.object({ src: z.string(), alt: z.string() }).optional(),
   }),
   /** Three tiles, before a word of prose. Read from oddcommon's /expertise. */
@@ -36,7 +34,6 @@ const aboutCopySchema = z.object({
     eyebrow: z.string(),
     headline: z.string(),
     rows: z.array(z.object({ index: z.string(), title: z.string(), detail: z.string() })).min(1),
-    next: z.object({ index: z.string(), label: z.string(), href: z.string() }),
   }),
   method: z.object({
     index: z.string(),
@@ -57,7 +54,6 @@ const aboutCopySchema = z.object({
     eyebrow: z.string(),
     headline: z.string(),
     body: z.string(),
-    meta: z.string(),
   }),
 });
 
@@ -69,10 +65,8 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
     description: "A small engineering team in Pakistan building AI systems that ship.",
   },
   header: {
-    eyebrow: "Who we are",
     headline: "Small team. Big appetite for automation.",
     lead: "We're a handful of engineers who got tired of watching good people do repetitive work. So we build the software that does it instead. No decks, no six-month roadmaps — just systems that ship.",
-    meta: ["Pakistan", "Est. 2024"],
     photo: {
       src: "/assets/photo/wire-dark.jpg",
       alt: "A pile of black wires resting on each other",
@@ -124,7 +118,6 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
           "Wired into the CRM, the helpdesk and the spreadsheet you already use. Nobody should have to copy anything between two screens.",
       },
     ],
-    next: { index: "02", label: "How we work", href: "#how-we-work" },
   },
   method: {
     index: "02",
@@ -170,6 +163,5 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
     eyebrow: "The short version",
     headline: "No decks. No discovery phase that costs more than the build.",
     body: "We're engineers, not a consultancy with an engineering department. The first thing you get from us is a map of your own workflow you did not have before, and the second is something running.",
-    meta: "Pakistan — since 2024",
   },
 } satisfies AboutCopy);

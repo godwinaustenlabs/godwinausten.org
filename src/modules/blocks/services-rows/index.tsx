@@ -97,7 +97,10 @@ export default function ServicesRows({
         */}
         <Cell
           className="z-20 col-span-full [transform:translate3d(0,var(--block-lead,0px),0)] bg-paper will-change-transform md:col-span-1 strip:[transform:none]"
-          bodyClassName={lattice ? "justify-between gap-6" : "justify-end"}
+          // Without the lattice there is nothing above the headline to hold it
+          // down, so bottom-aligning it left the cell top-heavy with empty
+          // paper. Centred, it sits in the middle of the space it is given.
+          bodyClassName={lattice ? "justify-between gap-6" : "justify-center"}
         >
           {/* The lattice, in the space above the headline: a stack of dots that
               becomes a cube, a knot, then a network. It runs on the *hold*, so
@@ -245,9 +248,11 @@ export default function ServicesRows({
           </div>
         </div>
 
-        <div className="cell col-span-full hidden md:flex">
-          <NextCell next={next} />
-        </div>
+        {next ? (
+          <div className="cell col-span-full hidden md:flex">
+            <NextCell next={next} />
+          </div>
+        ) : null}
       </div>
     </Panel>
   );

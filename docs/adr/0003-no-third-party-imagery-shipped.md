@@ -1,7 +1,8 @@
 # 0003 — Generated placeholder artwork instead of shipping the reference images
 
 **Date:** 2026-09-01
-**Status:** accepted
+**Status:** accepted — amended by [0005](0005-generated-placeholder-film.md),
+which adds a generated placeholder _film_ under the same rule
 
 ## Context
 

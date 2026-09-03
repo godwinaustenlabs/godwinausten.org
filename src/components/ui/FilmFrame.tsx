@@ -29,26 +29,27 @@ import { cn } from "@/lib/utils";
  *
  * ## Before there is a film
  *
- * `src` is absent until the owner puts an object in R2 (see
- * `src/server/media.ts`), so this has to be complete and honest with nothing to
- * play. It runs `PlaceholderReel` in both states — the drawn loop rather than a
- * black rectangle — and the theatre says plainly that the transport arrives
- * with the film. The day the bucket has the object, `src` is a string and every
- * control below is live. Nothing else changes.
+ * There is always something to play. Until the owner puts a cut in R2 the media
+ * route serves a generated stand-in instead (`src/server/media.ts`,
+ * `npm run gen:placeholder-video`), so the transport below is live from the
+ * first day rather than a row of disabled buttons — a player nobody can press
+ * is a player nobody has checked.
+ *
+ * `src` can still be absent, if the route has neither an object nor a stand-in.
+ * That path is kept honest rather than pretty: `PlaceholderReel` in both states
+ * — the drawn loop rather than a black rectangle — and a transport that says it
+ * is waiting instead of miming.
  */
 export function FilmFrame({
   src,
   label,
-  captions = [],
   className,
   openLabel = "Play",
 }: {
-  /** Absent until the film is in the bucket. */
+  /** Absent only if the route has neither an object nor a stand-in. */
   src?: string;
   /** Mono caption on the frame — the reel's name or runtime. */
   label: string;
-  /** Cycled by the placeholder, and listed under the film in the theatre. */
-  captions?: string[];
   className?: string;
   openLabel?: string;
 }) {
@@ -96,7 +97,7 @@ export function FilmFrame({
             className="size-full object-cover motion-reduce:[&]:![animation:none]"
           />
         ) : (
-          <PlaceholderReel runtime={label} captions={captions} playOn="hover" />
+          <PlaceholderReel runtime={label} playOn="hover" />
         )}
 
         {/*
@@ -123,7 +124,7 @@ export function FilmFrame({
 
       {open
         ? createPortal(
-            <Theatre src={src} label={label} captions={captions} onClose={() => setOpen(false)} />,
+            <Theatre src={src} label={label} onClose={() => setOpen(false)} />,
             document.body,
           )
         : null}
@@ -134,17 +135,7 @@ export function FilmFrame({
 /** Seconds the skip controls jump. */
 const SKIP = 5;
 
-function Theatre({
-  src,
-  label,
-  captions,
-  onClose,
-}: {
-  src?: string;
-  label: string;
-  captions: string[];
-  onClose: () => void;
-}) {
+function Theatre({ src, label, onClose }: { src?: string; label: string; onClose: () => void }) {
   const video = useRef<HTMLVideoElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -232,15 +223,25 @@ function Theatre({
               onPause={() => setPlaying(false)}
               onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
               onLoadedMetadata={(e) => {
-                setDuration(e.currentTarget.duration);
+                // Guarded, not assigned: a stream whose length the container
+                // does not declare reports `Infinity`, and an `<input
+                // type="range">` with an infinite max renders as a dead track.
+                // Zero means "no scrubbing yet", which is what `disabled` below
+                // already reads.
+                const seconds = e.currentTarget.duration;
+                setDuration(Number.isFinite(seconds) ? seconds : 0);
                 setMuted(e.currentTarget.muted);
+              }}
+              onDurationChange={(e) => {
+                const seconds = e.currentTarget.duration;
+                if (Number.isFinite(seconds)) setDuration(seconds);
               }}
               className="size-full object-contain"
             >
               <track kind="captions" />
             </video>
           ) : (
-            <PlaceholderReel runtime={label} captions={captions} />
+            <PlaceholderReel runtime={label} />
           )}
         </div>
 
@@ -279,7 +280,13 @@ function Theatre({
               const el = video.current;
               if (el) el.currentTime = Number(e.target.value);
             }}
-            className="h-1 min-w-24 grow appearance-none bg-paper/25 accent-signal disabled:opacity-40"
+            // The track, the thumb and the hit target are in `globals.css` —
+            // a range input cannot be styled from utilities alone, because the
+            // thumb only exists behind a vendor pseudo-element.
+            style={
+              { "--played": `${duration ? (time / duration) * 100 : 0}%` } as React.CSSProperties
+            }
+            className="scrubber min-w-24 grow disabled:opacity-40"
           />
 
           <Label tone="paper" className="tabular-nums opacity-70">

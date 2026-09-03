@@ -331,6 +331,50 @@
   }
 
   /*
+   * The film transport's scrubber.
+   *
+   * `appearance: none` is what lets the track be a hairline in the site's own
+   * palette instead of the platform's blue capsule. It also removes the
+   * platform *thumb*, so both track and thumb are drawn here.
+   *
+   * The element's height is the hit target, not the track. Four pixels is
+   * honest to a design made of hairlines and very nearly impossible to grab
+   * with a mouse, so the control is a comfortable 1.5rem tall and the track is
+   * painted as a centred background — one line to look at, a real target to
+   * hit. `--played` is the fraction already watched, set by the transport.
+   */
+  .scrubber {
+    appearance: none;
+    height: 1.5rem;
+    cursor: pointer;
+    background-color: transparent;
+    background-image: linear-gradient(
+      to right,
+      var(--color-signal) 0 var(--played, 0%),
+      color-mix(in srgb, var(--color-paper) 25%, transparent) var(--played, 0%) 100%
+    );
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 2px;
+  }
+
+  .scrubber::-webkit-slider-thumb {
+    appearance: none;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background-color: var(--color-signal);
+  }
+
+  .scrubber::-moz-range-thumb {
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 0;
+    border-radius: 9999px;
+    background-color: var(--color-signal);
+  }
+
+  /*
    * Corner "+" tick marks (docs/inspiration/raw/07-liminal-brand-board.jpg).
    * A recurring registration-mark detail, drawn with a gradient pair so it
    * costs no extra elements.

@@ -365,6 +365,127 @@ the interaction about the thing the page is signed with.
       trap for whoever uses it next. `docs/inspiration/raw/` still says Lahore —
       that is the owner's folder (`CLAUDE.md` §7.2) and agents do not edit it.
 
+### Added mid-sprint, twelfth round (owner, 2026-09-03)
+
+> "Change the copy of VSL … use smh more catchy in which we says that we're
+> gonna explain you or convince you, also the 4 blocks under VSL … totally
+> remove them and make sure the video is working like put an actual placeholder
+> video and make sure it's controls actually works in the video player"
+
+- [x] **The VSL headline names what the section is for.** "Watch us replace a
+      hiring plan" described a case study the film does not promise; it is now
+      "The part where we convince you" — which is what the panel is, sitting
+      after the ask with "The long version" over it. The body absorbed the one
+      thing the chapter tiles were carrying: what we left to a human.
+- [x] **The four chapter cells under the film are gone.** An index of a film
+      nobody has watched is a second thing to scan on a panel whose only job is
+      to get the film played. `covers` is out of the copy module, the block
+      schema and `FilmFrame` — the last of which had no other consumer, so the
+      prop went with it.
+- [x] **There is a real film in the slot.** `npm run gen:placeholder-video`
+      draws a 20-second stand-in and encodes it to H.264 with the `MediaRecorder`
+      inside Playwright's Chromium — an encoder already installed for the e2e
+      suite, so no ffmpeg and no new dependency. It ships as
+      `MEDIA_ASSETS.vsl.fallback`, the real cut still takes over the moment
+      `vsl/main.mp4` lands in R2, and nothing on the site is sourced from
+      anywhere (`docs/adr/0005`, amending `0003`).
+- [x] **The transport works, and is now tested.** Three things were wrong and
+      all three were invisible while the panel had nothing to play:
+      `mediaSrc()` withheld the `src` whenever R2 was empty, ignoring the
+      stand-in the route would have served, so the player stayed disabled in
+      front of a file it already had; `/api/media/[id]` ignored `Range` on the
+      fallback path while advertising `Accept-Ranges`, and a player that cannot
+      request a byte range cannot seek; and the scrubber's hit target was the
+      four pixels of the hairline it draws — visually right, not grabbable. The
+      track is now painted as a centred background inside a 1.5rem control, with
+      the played portion in `--color-signal`. Two e2e tests drive play, pause,
+      ±5s and a click-to-seek on both projects.
+
+### Added mid-sprint, thirteenth round (owner, 2026-09-03)
+
+> "See oddcommon.com how they are wrapping their cloth and putting a logo
+> underneath it which looks real and a trail of blob that follows, copy that as
+> much as you want go close to it"
+
+The reference was read from the live site rather than from a still: the fabric
+panel sits several screens along oddcommon's own horizontal strip, and the trail
+only exists while the pointer is moving, so it was captured in motion and at
+rest. `docs/inspiration/INDEX.md` records what changed since it was last read.
+Nothing was lifted — the gesture is rebuilt from parameters we control, which is
+the rule `docs/adr/0003` already sets for this reference.
+
+- [x] **The mark is under the cloth, not pressed into it.** It is _added_ to the
+      height field now, through a `smoothstep` that squares the blurred
+      silhouette into a flat top with a defined shoulder, with the folds damped
+      across that top and a little fabric gathering at the edge. Raised and
+      pressed are lit from opposite sides; the brief is an object lying under a
+      sheet. The texture blur came down from 4.5% to 2.6% to give the shoulder
+      an edge to have.
+- [x] **The surface reads as fabric.** Two noise fields stretched hard along
+      different axes, nudged by a third — anisotropy is what makes a fold a fold
+      rather than a lump, and a warp strong enough to be seen turns the whole
+      panel into weather. A ridged octave puts the sharp valleys in, weighted by
+      a low-frequency field so the crumple gathers in places instead of
+      corrugating the panel evenly.
+- [x] **A blob that follows the cursor and collapses when it stops.** A chain of
+      followers, unioned in the shader as capsules between consecutive links. It
+      is a tint rather than a light, so the folds run through it and it reads as
+      painted on. Capsules rather than smooth-minimum'd circles: `smin` pulls its
+      result below both inputs, so fourteen of them stacked up and a chain
+      sitting still rendered as a swollen lobed shape instead of one circle.
+- [x] **The panel no longer renders while nobody can see it.** It is one of seven
+      on the filmstrip and off screen most of the time, and every scroll woke it,
+      so the most expensive surface on the site was drawing continuously behind
+      whatever the visitor was actually reading. Tracking still runs off screen —
+      the blob is anchored in the viewport and a frozen chain would be wrong on
+      arrival — but drawing is gated on being on screen, under a ceiling on
+      fragments per frame.
+- [x] **The chain eases against the clock.** A fixed fraction per frame is a
+      different animation at every frame rate: the same settle took 300ms at
+      sixty frames a second and four seconds at five, so the blob dragged worst
+      on the hardware least able to hide it. Half-lives now, derived per frame
+      from the elapsed time. This is also what was making the mark-field e2e test
+      fail in a parallel run — it was measuring a real lag, not flaking.
+- [x] **`sin` is out of the noise hash.** Four transcendentals per noise sample,
+      dozens of samples per pixel, three height taps: affordable at two-thirds
+      resolution with three flat octaves, and not affordable at full resolution
+      with drapery. The arithmetic hash is indistinguishable in the output.
+
+### Added mid-sprint, fourteenth round (owner, 2026-09-03)
+
+- [x] **The trail stretches when the panel moves, not only when the cursor
+      does.** The chain was eased in viewport coordinates, so a filmstrip panel
+      sliding under a motionless hand left the blob a circle even though it was
+      visibly travelling across the fabric. The pointer stays a screen position —
+      it has to, because no event fires while the page scrolls — but the chain is
+      panel-local now, and `tick` converts between the two once a frame. The
+      panel's own motion is a change in the target, so the links fall behind it
+      exactly as they do under a moving cursor. The blob is painted on the cloth,
+      and the cloth is what it lags against.
+- [x] **The accent mark on "We have shipped this" is an apostrophe.** A ball with
+      a tail, drawn as one path. The straight form was tried first and reads as a
+      droplet: with no letters either side to give it a baseline, a round cap
+      tapering to a point is just a shape. The tail is what makes it punctuation.
+- [x] **The case-study reel plays the stand-in film too.** `reel-picasso` had no
+      `fallback` and sat on the drawn `PlaceholderReel`. It points at the same
+      generated file the VSL uses — one film covers every empty slot, since it
+      says it is a placeholder across every frame and a second cut would only be
+      another half-megabyte. Renamed `vsl-placeholder.mp4` to
+      `film-placeholder.mp4` to stop the name lying about its scope.
+- [x] **The about masthead loses its eyebrow and its meta row.** "Who we are"
+      restated the headline more quietly, and "Pakistan / Est. 2024" was a bar of
+      facts above a page that says both things properly further down. `eyebrow`
+      is optional on `page-header` now; `meta` already defaulted to empty.
+- [x] **The about page loses two more small bars.** The "next — how we work"
+      hand-off (it earns its row on the filmstrip, where the next section is off
+      screen sideways, and is clutter on a document you simply scroll) and the
+      "Pakistan — since 2024" line under the closing statement. Both fields are
+      optional on their blocks rather than deleted, because `/work/[slug]` still
+      uses the statement's.
+- [x] **"Three ways we plug in." is centred in its cell.** Without the lattice
+      there is nothing above the headline to hold it down, so bottom-aligning it
+      left the cell top-heavy with empty paper.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

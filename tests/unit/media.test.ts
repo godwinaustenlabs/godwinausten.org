@@ -35,12 +35,15 @@ describe("the media allowlist", () => {
     expect(MEDIA_ASSETS.vsl.filename).toBeNull();
   });
 
-  it("only stands in for an asset that has somewhere to stand in from", () => {
-    // The guide ships a placeholder so the funnel works today. The film cannot:
-    // there is no encoder here and a stock clip would be someone else's
-    // footage (docs/adr/0003), so its absence is honest rather than papered over.
-    expect(MEDIA_ASSETS.playbook.fallback).toBeTruthy();
-    expect(MEDIA_ASSETS.vsl.fallback).toBeNull();
+  it("stands in for both steps of the funnel, from assets generated here", () => {
+    // The guide and the film are the two things a visitor is promised, so both
+    // ship a stand-in and the funnel works end to end before anything is
+    // uploaded. Each stand-in is a file this repo generates — never sourced,
+    // never stock (docs/adr/0003, docs/adr/0005) — which is what `/assets/`
+    // asserts: it is the output directory of the `gen:*` scripts.
+    for (const id of ["playbook", "vsl"] as const) {
+      expect(MEDIA_ASSETS[id].fallback).toMatch(/^\/assets\//);
+    }
   });
 });
 
