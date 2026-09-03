@@ -454,19 +454,35 @@ float height(vec2 uv, float aspect) {
 void main() {
   float aspect = uRes.x / uRes.y;
   vec2 uv = vUv;
-  vec2 e = vec2(1.4) / uRes;
+  /*
+   * The finite-difference step, in **uv**, and deliberately not in pixels.
+   *
+   * It used to be 1.4 / uRes -- one-and-a-bit device pixels. That makes the
+   * whole surface resolution-dependent: on a low-resolution render the
+   * difference is taken across a wide slice of the mark's bevel and averages it
+   * flat, and on a HiDPI one it samples the same bevel finely and comes out
+   * sharp. The identical page rendered the logomark as a solid pressed shape on
+   * one screen and a faint outline on another.
+   *
+   * A fixed uv step samples the same shape everywhere, whatever the device is
+   * rasterising it at. EPS / aspect on x, so the step covers the same physical
+   * distance on both axes rather than being stretched by the panel's shape.
+   */
+  const float EPS = 0.0016;
+  vec2 e = vec2(EPS / aspect, EPS);
 
   float h  = height(uv, aspect);
   float hx = height(uv + vec2(e.x, 0.0), aspect);
   float hy = height(uv + vec2(0.0, e.y), aspect);
 
   /*
-   * Finite-difference normal. The coefficient is bump strength, and it is the
-   * single most sensitive number here: the gradient is already scaled by the
-   * resolution, so small changes swing the surface between flat paper and
+   * The normal, from the gradient per unit of aspect-corrected space, so the
+   * same slope reads the same whatever the panel's shape. BUMP is the single
+   * most sensitive number here: it swings the surface between flat paper and
    * hammered metal.
    */
-  vec3 n = normalize(vec3((h - hx) * uRes.x * 0.30, (h - hy) * uRes.y * 0.30, 1.0));
+  const float BUMP = 0.85;
+  vec3 n = normalize(vec3(((h - hx) / EPS) * BUMP, ((h - hy) / EPS) * BUMP, 1.0));
 
   vec3 view = vec3(0.0, 0.0, 1.0);
 

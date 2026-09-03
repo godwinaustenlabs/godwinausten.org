@@ -103,7 +103,14 @@ export default function ServicesRows({
               becomes a cube, a knot, then a network. It runs on the *hold*, so
               every phase happens while the heading is stuck and visible — and
               now while the offerings are travelling up past it. */}
-          {lattice ? <ScrollMorph className="min-h-0 flex-1" /> : null}
+          {/*
+            Hidden below `md`, where it is dead weight rather than decoration:
+            the lattice is driven by the *pin*, and `--block-lead` is a flat 0
+            under `PIN_MIN_WIDTH` (768px), so on a phone it renders one frozen
+            frame and never moves. `display: none` also parks its
+            `IntersectionObserver`, so it costs nothing there.
+          */}
+          {lattice ? <ScrollMorph className="hidden min-h-0 flex-1 md:block" /> : null}
 
           <h2 className="shrink-0 font-display text-[clamp(1.85rem,3.2vw,3.25rem)] leading-[0.95] font-bold text-ink">
             {headline}
@@ -238,7 +245,7 @@ export default function ServicesRows({
           </div>
         </div>
 
-        <div className="cell col-span-full">
+        <div className="cell col-span-full hidden md:flex">
           <NextCell next={next} />
         </div>
       </div>

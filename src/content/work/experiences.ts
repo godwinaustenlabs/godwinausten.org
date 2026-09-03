@@ -131,7 +131,7 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
         eyebrow: "What happens next",
         headline: "The second one is faster.",
         body: "The mapping week is the same for everyone, but the agent scaffolding, the escalation logic and the integration patterns carry across. If you have a workflow that looks anything like this, most of the answer already exists.",
-        meta: "Lahore, PK — since 2024",
+        meta: "Pakistan — since 2024",
       },
     },
   },

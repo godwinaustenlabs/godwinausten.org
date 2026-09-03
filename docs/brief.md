@@ -12,7 +12,7 @@ Synthesised from `docs/inspiration/raw/GODWIN-AUSTEN-LABS-BUILD-PROMPT.md`
 ## Positioning
 
 Godwin Austen Labs builds custom AI agents for enterprise sales, support and ops
-teams. Lahore, PK. Est. 2024.
+teams. Pakistan. Est. 2024.
 
 The site it replaces was dark, jargon-heavy and metric-obsessed — "sub-10ms
 latency", "agentic infrastructure". The new one reads like a **creative studio**,

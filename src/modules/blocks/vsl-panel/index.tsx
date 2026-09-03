@@ -75,7 +75,7 @@ export default function VslPanel({
         ))}
       </div>
 
-      <div className="cell col-span-full">
+      <div className="cell col-span-full hidden md:flex">
         <NextCell next={next} />
       </div>
     </Panel>

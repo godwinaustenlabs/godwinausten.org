@@ -47,9 +47,12 @@ export function PlaceholderReel({
 }) {
   const step = LOOP_SECONDS / Math.max(captions.length, 1);
   // Paused until the pointer arrives, resumed by the parent's `group` hover.
+  // `pointer-coarse` because a hover gate is a gate that never opens on a phone:
+  // the reel would hold its first frame forever, which looks like a broken
+  // player rather than a considered one. Touch gets the loop unconditionally.
   const gate =
     playOn === "hover"
-      ? "[animation-play-state:paused] group-hover:[animation-play-state:running]"
+      ? "[animation-play-state:paused] group-hover:[animation-play-state:running] pointer-coarse:[animation-play-state:running]"
       : "";
 
   return (

@@ -112,7 +112,7 @@ export default function LeadMagnet({
         <PlaybookForm {...form} />
       </Cell>
 
-      <div className="cell col-span-full">
+      <div className="cell col-span-full hidden md:flex">
         <NextCell next={next} tone="ink" />
       </div>
     </Panel>

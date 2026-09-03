@@ -66,13 +66,13 @@ export type AboutCopy = z.infer<typeof aboutCopySchema>;
 export const aboutCopy: AboutCopy = aboutCopySchema.parse({
   meta: {
     title: "About",
-    description: "A small engineering team in Lahore building AI systems that ship.",
+    description: "A small engineering team in Pakistan building AI systems that ship.",
   },
   header: {
     eyebrow: "Who we are",
     headline: "Small team. Big appetite for automation.",
     lead: "We're a handful of engineers who got tired of watching good people do repetitive work. So we build the software that does it instead. No decks, no six-month roadmaps — just systems that ship.",
-    meta: ["Lahore, PK", "Est. 2024"],
+    meta: ["Pakistan", "Est. 2024"],
     photo: {
       src: "/assets/photo/wire-dark.jpg",
       alt: "A pile of black wires resting on each other",
@@ -170,6 +170,6 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
     eyebrow: "The short version",
     headline: "No decks. No discovery phase that costs more than the build.",
     body: "We're engineers, not a consultancy with an engineering department. The first thing you get from us is a map of your own workflow you did not have before, and the second is something running.",
-    meta: "Lahore, PK — since 2024",
+    meta: "Pakistan — since 2024",
   },
 } satisfies AboutCopy);

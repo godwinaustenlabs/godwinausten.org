@@ -332,6 +332,39 @@ the interaction about the thing the page is signed with.
       twelve; behind a word, twenty read as a smear rather than as a signal
       settling.
 
+### Added mid-sprint, eleventh round (owner, 2026-09-03)
+
+- [x] **The case-study clip was zero pixels tall on a phone.** `flex-1`
+      distributes _free space_, and a panel whose height comes from its content
+      has none to give — so in vertical flow the video box collapsed and the
+      experience card simply had no picture. `aspect-video` in flow, `flex-1` on
+      the strip: each mode gets the rule that suits it, because `aspect-video` on
+      the strip claims its height first and pushes the notes off a panel that
+      cannot grow.
+- [x] **The placeholder reel plays on touch.** It was gated on `group-hover`,
+      which is a gate that never opens on a phone — the reel held its first frame
+      forever and read as a broken player. `pointer-coarse` runs it
+      unconditionally.
+- [x] **Hand-off cells are hidden below `md`.** They earn their place on the
+      filmstrip, where the next section is off-screen sideways; on a phone the
+      next section is simply the next thing you scroll to, and the row is
+      clutter between two blocks of reading.
+- [x] **The lattice is hidden below `md`.** It is driven by the pin, and
+      `--block-lead` is a flat 0 under `PIN_MIN_WIDTH`, so on a phone it rendered
+      one frozen frame. `display: none` also parks its `IntersectionObserver`.
+- [x] **The logomark rendered differently on different screens.** The shader's
+      finite-difference step was `1.4 / uRes` — one-and-a-bit _device_ pixels —
+      which makes the whole surface resolution-dependent: a low-resolution render
+      averages the bevel flat, a HiDPI one samples it sharply. The same page
+      showed a solid pressed mark on one screen and a faint outline on another.
+      The step is now a fixed distance in aspect-corrected uv, so the same shape
+      is sampled everywhere. Verified identical at 1x and 2x DPR and across
+      aspect ratios.
+- [x] **"Lahore" is "Pakistan" throughout.** `site.city` was also renamed to
+      `place`: it had no consumers, and a country in a field called `city` is a
+      trap for whoever uses it next. `docs/inspiration/raw/` still says Lahore —
+      that is the owner's folder (`CLAUDE.md` §7.2) and agents do not edit it.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

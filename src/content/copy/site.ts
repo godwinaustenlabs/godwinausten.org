@@ -44,7 +44,7 @@ export const siteCopy: SiteCopy = siteCopySchema.parse({
     { label: "Playbook", href: "/#playbook" },
     { label: "Contact", href: "/contact" },
   ],
-  meta: { place: "Lahore, PK", founded: "Est. 2024" },
+  meta: { place: "Pakistan", founded: "Est. 2024" },
   skipToContent: "Skip to content",
   contact: {
     index: "05",

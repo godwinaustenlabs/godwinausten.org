@@ -7,7 +7,7 @@ const props = {
   eyebrow: "Who we are",
   headline: "Small team. Big appetite for automation.",
   body: "We're a handful of engineers who got tired of watching good people do repetitive work.",
-  meta: "Est. 2024 — Lahore, PK",
+  meta: "Est. 2024 — Pakistan",
 };
 
 describe("about-statement", () => {

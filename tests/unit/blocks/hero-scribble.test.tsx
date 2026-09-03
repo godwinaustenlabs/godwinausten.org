@@ -8,7 +8,7 @@ const props = {
   subhead: "AI systems for sales, service & ops.",
   primary: { label: "See the work", href: "#experience" },
   secondary: { label: "Get the playbook", href: "#playbook" },
-  place: "Lahore, PK",
+  place: "Pakistan",
   scrollHint: "Scroll",
   figure: "/assets/figure.svg",
 };

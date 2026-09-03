@@ -53,7 +53,7 @@ export const contactCopy: ContactCopy = contactCopySchema.parse({
     eyebrow: "Let's talk",
     headline: "Tell us what you're doing by hand.",
     lead: "We'll tell you if an agent can take it — and if it can't, we'll say so. One email is enough to start; there is no form to fill in and nothing to book.",
-    meta: ["Lahore, PK", "Replies within two working days"],
+    meta: ["Pakistan", "Replies within two working days"],
     photo: { src: "/assets/photo/fibre.jpg", alt: "Blue fibre-optic strands radiating outward" },
   },
   expectations: {
@@ -81,7 +81,7 @@ export const contactCopy: ContactCopy = contactCopySchema.parse({
         index: "03",
         title: "Two working days",
         paragraphs: [
-          "We are a small team in Lahore, so allow for the time difference. If it has been longer than that, the message went somewhere it should not have — send it again and say so.",
+          "We are a small team in Pakistan, so allow for the time difference. If it has been longer than that, the message went somewhere it should not have — send it again and say so.",
         ],
       },
     ],

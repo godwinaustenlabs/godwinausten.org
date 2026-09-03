@@ -47,7 +47,7 @@ export default function ExperienceFeature({
 
       <ExperienceCard {...card} />
 
-      <div className="cell col-span-full">
+      <div className="cell col-span-full hidden md:flex">
         <NextCell next={next} />
       </div>
     </Panel>

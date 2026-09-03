@@ -31,7 +31,7 @@ export const workCopy: WorkCopy = workCopySchema.parse({
     eyebrow: "Work",
     headline: "Systems in production.",
     lead: "We would rather show you one build in full than four thumbnails you cannot judge. Each of these is running inside a real company right now — open one to see how it was decided, built, and what we left alone.",
-    meta: ["Lahore, PK", "Est. 2024"],
+    meta: ["Pakistan", "Est. 2024"],
     photo: { src: "/assets/photo/trails.jpg", alt: "Long-exposure light trails in blue" },
   },
   indexHeading: "Selected work /",

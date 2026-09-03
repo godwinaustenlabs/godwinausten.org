@@ -46,14 +46,19 @@ export function ExperienceCard({
       </div>
 
       {/*
-        The clip takes whatever height is left after the text, rather than
-        claiming a fixed aspect.
-        
-        With `aspect-video` it set its own height first and the notes underneath
-        fell off the bottom of the panel — a panel does not grow, so something
-        has to give, and it should be the picture rather than the facts.
+        A fixed aspect in vertical flow, the leftover height on the filmstrip.
+
+        `flex-1` alone distributes *free space*, and a panel whose height comes
+        from its own content has none to give — so on a phone the clip resolved
+        to **zero pixels tall** and the case study simply had no picture. On the
+        strip the panel is band-height, the free space is real, and `aspect-video`
+        is the wrong answer there: it claims its height first and pushes the
+        notes off the bottom of a panel that cannot grow.
+
+        Each mode gets the rule that suits it rather than one rule that is wrong
+        in one of them.
       */}
-      <div className="relative min-h-0 flex-1 overflow-hidden">
+      <div className="relative aspect-video w-full overflow-hidden strip:aspect-auto strip:min-h-0 strip:flex-1">
         <ExperienceVideo label={videoLabel} src={src} />
       </div>
 

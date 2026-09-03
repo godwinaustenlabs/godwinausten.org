@@ -51,7 +51,7 @@ export default function MarkField({ index, eyebrow, headline, body, hint, next }
         </div>
       </div>
 
-      <div className="cell col-span-full">
+      <div className="cell col-span-full hidden md:flex">
         <NextCell next={next} />
       </div>
     </Panel>

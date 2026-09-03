@@ -6,7 +6,7 @@ const props = {
   eyebrow: "Selected work",
   headline: "Agents, in production.",
   lead: "Four systems doing work that used to sit in somebody's inbox.",
-  meta: ["Lahore, PK", "Est. 2024"],
+  meta: ["Pakistan", "Est. 2024"],
 };
 
 describe("page-header", () => {

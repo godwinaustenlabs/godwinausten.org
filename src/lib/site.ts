@@ -5,7 +5,8 @@ export const site = {
   description:
     "We build AI agents for sales, service and ops teams — wired into the tools you already use.",
   locale: "en_US",
-  city: "Lahore, PK",
+  /** Where the team is. Not a city — the copy says "Pakistan". */
+  place: "Pakistan",
   founded: "2024",
   email: {
     work: "hello@godwinausten.org",

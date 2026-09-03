@@ -142,7 +142,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     subhead: "AI systems for sales, service & ops.",
     primary: { label: "See the work", href: "#experience" },
     secondary: { label: "Get the playbook", href: "#playbook" },
-    place: "Lahore, PK",
+    place: "Pakistan",
     scrollHint: "Scroll",
   },
 
@@ -242,7 +242,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     index: "05",
     eyebrow: "Who's behind it",
     headline: "We would rather be useful than impressive.",
-    body: "A handful of engineers in Lahore who like the unglamorous half of the work: the week spent watching, the handoff nobody wrote down, the thing that breaks on a Tuesday. We build what survives being used every day by people who did not ask for it — and we will tell you when a problem does not need us.",
+    body: "A handful of engineers in Pakistan who like the unglamorous half of the work: the week spent watching, the handoff nobody wrote down, the thing that breaks on a Tuesday. We build what survives being used every day by people who did not ask for it — and we will tell you when a problem does not need us.",
     hint: "Move your cursor",
     next: { index: "06", label: "Talk to us", href: "#contact" },
   },
