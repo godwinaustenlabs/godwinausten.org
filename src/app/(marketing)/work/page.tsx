@@ -3,6 +3,7 @@ import { block, composePage, ModuleRenderer, ScrollStage } from "@/modules";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { workCopy } from "@/content/copy/work";
 import { experiences } from "@/content/work/experiences";
+import { mediaSrc } from "@/server/media";
 import { MAIN_ID, contactBlock } from "@/content/compositions";
 
 /**
@@ -23,34 +24,44 @@ export const metadata: Metadata = {
   description: workCopy.meta.description,
 };
 
-const work = composePage("work", [
-  block("header", "page-header", workCopy.header),
-  block(
-    "index",
-    "index-list",
-    {
-      heading: workCopy.indexHeading,
-      entries: experiences.map((experience) => ({
-        index: experience.index,
-        title: experience.name,
-        summary: experience.summary,
-        client: experience.client,
-        services: experience.services,
-        href: `/work/${experience.slug}`,
-        runtime: experience.runtime,
-        ...(experience.src ? { src: experience.src } : {}),
-      })),
-    },
-    { anchor: "index" },
-  ),
-  contactBlock(),
-]);
+/**
+ * Built per request rather than at module load, because each row's reel is a
+ * question for the media layer: is there an object at this experience's key yet,
+ * and if not is there a stand-in? Same reason the home page composes in a
+ * function — see `src/app/page.tsx`.
+ */
+async function workComposition() {
+  const reels = await Promise.all(experiences.map((experience) => mediaSrc(experience.media)));
 
-export default function WorkPage() {
+  return composePage("work", [
+    block("header", "page-header", workCopy.header),
+    block(
+      "index",
+      "index-list",
+      {
+        heading: workCopy.indexHeading,
+        entries: experiences.map((experience, i) => ({
+          index: experience.index,
+          title: experience.name,
+          summary: experience.summary,
+          client: experience.client,
+          services: experience.services,
+          href: `/work/${experience.slug}`,
+          runtime: experience.runtime,
+          ...(reels[i] ? { src: reels[i] } : {}),
+        })),
+      },
+      { anchor: "index" },
+    ),
+    contactBlock(),
+  ]);
+}
+
+export default async function WorkPage() {
   return (
     <ScrollStage mainId={MAIN_ID} overlay={<SiteChrome mainId={MAIN_ID} />}>
       <span id="top" className="sr-only" />
-      <ModuleRenderer composition={work} />
+      <ModuleRenderer composition={await workComposition()} />
     </ScrollStage>
   );
 }

@@ -49,12 +49,14 @@ export const MEDIA_ASSETS = {
     contentType: "video/mp4",
     filename: null,
     /**
-     * The same stand-in the VSL uses. One generated film covers every empty
-     * slot: it says across the top of every frame that it is a placeholder, so
-     * there is nothing to gain from cutting a second one that says it twice,
-     * and a second file is another half-megabyte in the repo.
+     * Its own stand-in, not the VSL's.
+     *
+     * A file per asset is what makes the `fallback` column useful: the owner
+     * drops a real cut over this one and only the case-study reel changes.
+     * Sharing one file between the two slots saved 300 KB and meant replacing
+     * the reel silently replaced the film as well.
      */
-    fallback: "/assets/film-placeholder.mp4",
+    fallback: "/assets/reel-placeholder.mp4",
   },
 } as const;
 

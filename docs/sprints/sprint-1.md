@@ -486,6 +486,34 @@ the rule `docs/adr/0003` already sets for this reference.
       there is nothing above the headline to hold it down, so bottom-aligning it
       left the cell top-heavy with empty paper.
 
+### Added mid-sprint, fifteenth round (owner, 2026-09-03)
+
+> "The picasso placeholder video should be synced across all pages where it
+> belongs not just home, this should be done so whenever I want to change the
+> video I only change one in public folder and it changes everywhere"
+
+- [x] **One media id, resolved the same way on every page.** There were two
+      mechanisms: the home page hard-coded `mediaSrc("reel-picasso")`, while
+      `/work` and `/work/[slug]` read an optional `experience.src` that nothing
+      ever set. So the film played on one page out of three and there were two
+      places to change it. The experience now declares `media: "reel-picasso"` —
+      an id, not a URL — and all three routes resolve it through `mediaSrc()`.
+      `/work` composes in a function for it, the same reason the home page
+      already did.
+- [x] **One `Reel`, shared.** `ExperienceVideo` lived inside `experience-feature`
+      and was the only reel that actually played: `page-header` and `index-list`
+      each had a hand-rolled `<video preload="none">` with nothing to start it.
+      Those branches had never run, so supplying a `src` would have turned two
+      placeholders into black rectangles — the exact failure a placeholder is
+      for. It is `src/components/ui/Reel.tsx` now, plays on visibility, and all
+      three blocks use it.
+- [x] **A stand-in file per asset, not one shared.** `reel-picasso` pointed at
+      the VSL's film. Sharing saved 300 KB and quietly coupled the slots:
+      dropping a real reel over it would have replaced the film as well. The
+      generator writes one file per asset now, and a unit test asserts no two
+      entries in `MEDIA_ASSETS` name the same file — the `fallback` column only
+      means something if replacing one asset changes one asset.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

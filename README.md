@@ -205,15 +205,15 @@ Every visual asset is produced by a script in this repo. Nothing here is drawn
 by hand, so nothing here should be edited by hand — change the script and
 re-run it.
 
-| Command                         | Produces                                 | Deterministic |
-| ------------------------------- | ---------------------------------------- | ------------- |
-| `npm run gen:figure`            | `public/assets/figure.svg`               | yes           |
-| `npm run gen:stills`            | `public/assets/tiles/*.svg`              | yes           |
-| `npm run gen:diagrams`          | `public/assets/diagrams/*.svg`           | yes           |
-| `npm run gen:placeholder-pdf`   | `public/assets/playbook-placeholder.pdf` | yes           |
-| `npm run gen:favicon`           | `src/app/icon.svg`                       | yes           |
-| `npm run gen:placeholder-video` | `public/assets/film-placeholder.mp4`     | no            |
-| `npm run gen:photos`            | `public/assets/photo/*.jpg` + credits    | network       |
+| Command                         | Produces                                    | Deterministic |
+| ------------------------------- | ------------------------------------------- | ------------- |
+| `npm run gen:figure`            | `public/assets/figure.svg`                  | yes           |
+| `npm run gen:stills`            | `public/assets/tiles/*.svg`                 | yes           |
+| `npm run gen:diagrams`          | `public/assets/diagrams/*.svg`              | yes           |
+| `npm run gen:placeholder-pdf`   | `public/assets/playbook-placeholder.pdf`    | yes           |
+| `npm run gen:favicon`           | `src/app/icon.svg`                          | yes           |
+| `npm run gen:placeholder-video` | `public/assets/{film,reel}-placeholder.mp4` | no            |
+| `npm run gen:photos`            | `public/assets/photo/*.jpg` + credits       | network       |
 
 The deterministic five regenerate byte-identically from an unchanged script;
 tune the parameters in the script, never the SVG. `gen:photos` reaches the
@@ -226,8 +226,17 @@ frames on a canvas and encodes them with the `MediaRecorder` inside Playwright's
 Chromium — an encoder the repo already installs for the e2e suite, so no ffmpeg
 and no new dependency — and a real-time capture through a rate controller varies
 run to run. Regenerate it when the design changes, not routinely, and expect the
-diff. It is what makes the film transport live before the owner has uploaded a
-cut; see `docs/adr/0005-generated-placeholder-film.md`.
+diff. It writes one file per media asset that needs a stand-in — never one shared
+between two, so replacing a reel does not silently replace the film. It is what
+makes the film transport live before the owner has uploaded a cut; see
+`docs/adr/0005-generated-placeholder-film.md`.
+
+**Swapping a video.** Every page that shows a given clip resolves it from one
+media id: `src/content/work/experiences.ts` names the id, `mediaSrc()` turns it
+into a URL, and `/`, `/work` and `/work/[slug]` all go through it. So there is
+one thing to replace — overwrite the stand-in in `public/assets/`, or upload the
+real cut to that asset's key in `site-media`, where the bucket wins
+automatically.
 
 `gen:favicon` reads `src/components/layout/loader-mark.ts`, the same path data
 the loading curtain draws, and crops it square to the mark's own bounding box —

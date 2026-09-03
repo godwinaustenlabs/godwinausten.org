@@ -33,12 +33,18 @@ Generate one, and keep it in the repo's own visual language.
 
 `scripts/generate-placeholder-video.mjs` (`npm run gen:placeholder-video`) draws
 the frames on a canvas and encodes them to H.264/MP4 — 1280×720, 25fps, 20
-seconds, about 500 KB — writing `public/assets/film-placeholder.mp4`. It is the `fallback` for both video
-assets — the VSL and the case-study reel — so the media route serves it until the
-owner puts an object at the real key, at which point the real cut takes over with
-no deploy and nothing else changed. One file covers both slots: it says it is a
-placeholder across every frame, so a second cut saying the same thing again would
-only be another half-megabyte.
+seconds, about 500 KB — writing one file per asset that needs a stand-in:
+`public/assets/film-placeholder.mp4` for the VSL and
+`public/assets/reel-placeholder.mp4` for the case-study reel. Each is the
+`fallback` for exactly one entry in `MEDIA_ASSETS`, so the media route serves it
+until the owner puts an object at that key, at which point the real cut takes
+over with no deploy and nothing else changed.
+
+**A file each, not one shared between them.** Sharing was tried first and saved
+300 KB, and it silently coupled the two slots: dropping a real reel over the
+placeholder would also have replaced the film. The `fallback` column only means
+anything if replacing one asset changes one asset, so a unit test now asserts no
+two entries point at the same file.
 
 **The encoder is one already in the repo.** Playwright is a devDependency for
 the e2e suite, and its bundled Chromium supports `video/mp4;codecs=avc1` in

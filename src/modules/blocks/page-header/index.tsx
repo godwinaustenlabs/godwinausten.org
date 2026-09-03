@@ -1,7 +1,7 @@
 import { Label } from "@/components/ui/Label";
 import { Panel } from "@/components/ui/Panel";
 import { Cell, MediaCell } from "@/components/ui/Cell";
-import { PlaceholderReel } from "@/components/ui/PlaceholderReel";
+import { Reel } from "@/components/ui/Reel";
 import type { PageHeaderProps } from "./block.config";
 
 /**
@@ -61,18 +61,13 @@ export default function PageHeader({
 
       {reel ? (
         <MediaCell className="aspect-[21/9] w-full">
-          {reel.src ? (
-            <video
-              src={reel.src}
-              muted
-              loop
-              playsInline
-              preload="none"
-              className="size-full object-cover"
-            />
-          ) : (
-            <PlaceholderReel runtime={reel.runtime} />
-          )}
+          {/*
+            One `Reel` rather than a `<video>` here and a placeholder there. The
+            hand-rolled pair this replaces had a `preload="none"` video with
+            nothing to start it, so a masthead that finally got a `src` would
+            have gone black.
+          */}
+          <Reel label={reel.runtime} src={reel.src} playOn="always" />
         </MediaCell>
       ) : null}
 

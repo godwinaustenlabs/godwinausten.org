@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/Label";
 import { SiteLink } from "@/modules";
-import { ExperienceVideo } from "./ExperienceVideo";
+import { Reel } from "@/components/ui/Reel";
 
 /**
  * One experience, as a card in someone else's grid.
@@ -59,7 +59,7 @@ export function ExperienceCard({
         in one of them.
       */}
       <div className="relative aspect-video w-full overflow-hidden strip:aspect-auto strip:min-h-0 strip:flex-1">
-        <ExperienceVideo label={videoLabel} src={src} />
+        <Reel label={videoLabel} src={src} />
       </div>
 
       <div className="flex shrink-0 flex-col gap-4 px-gutter py-4">

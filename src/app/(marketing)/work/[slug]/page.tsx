@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { block, composePage, ModuleRenderer, ScrollStage } from "@/modules";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { experienceBySlug, experiences } from "@/content/work/experiences";
+import { mediaSrc } from "@/server/media";
 import { MAIN_ID, contactBlock } from "@/content/compositions";
 
 /**
@@ -41,6 +42,10 @@ export default async function ExperiencePage({ params }: { params: Promise<{ slu
   if (!experience) notFound();
 
   const { detail } = experience;
+  // The reel resolves from the experience's own media id, same as `/work` and
+  // the home page. One entry in `experiences.ts`, one file in the bucket or in
+  // `public/`, three pages showing it.
+  const reel = await mediaSrc(experience.media);
 
   const page = composePage(`work/${experience.slug}`, [
     block("header", "page-header", {
@@ -48,7 +53,7 @@ export default async function ExperiencePage({ params }: { params: Promise<{ slu
       headline: detail.headline,
       lead: detail.lead,
       meta: detail.meta,
-      reel: { runtime: experience.runtime, ...(experience.src ? { src: experience.src } : {}) },
+      reel: { runtime: experience.runtime, ...(reel ? { src: reel } : {}) },
     }),
     block("build", "prose-sections", detail.build, { anchor: "how" }),
     block("closing", "about-statement", detail.closing),

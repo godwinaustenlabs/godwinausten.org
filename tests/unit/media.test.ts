@@ -35,15 +35,23 @@ describe("the media allowlist", () => {
     expect(MEDIA_ASSETS.vsl.filename).toBeNull();
   });
 
-  it("stands in for both steps of the funnel, from assets generated here", () => {
-    // The guide and the film are the two things a visitor is promised, so both
-    // ship a stand-in and the funnel works end to end before anything is
-    // uploaded. Each stand-in is a file this repo generates — never sourced,
-    // never stock (docs/adr/0003, docs/adr/0005) — which is what `/assets/`
-    // asserts: it is the output directory of the `gen:*` scripts.
-    for (const id of ["playbook", "vsl"] as const) {
-      expect(MEDIA_ASSETS[id].fallback).toMatch(/^\/assets\//);
+  it("gives every asset a stand-in, generated here", () => {
+    // Everything a visitor is promised ships a stand-in, so the funnel works end
+    // to end before anything is uploaded. Each one is a file this repo generates
+    // — never sourced, never stock (docs/adr/0003, docs/adr/0005) — which is
+    // what `/assets/` asserts: it is the output of the `gen:*` scripts.
+    for (const asset of Object.values(MEDIA_ASSETS)) {
+      expect(asset.fallback).toMatch(/^\/assets\//);
     }
+  });
+
+  it("never shares one stand-in between two assets", () => {
+    // The `fallback` column is what lets the owner drop a real cut over one slot
+    // and change only that slot. Two assets pointing at the same file quietly
+    // couples them: replacing the case-study reel also replaces the VSL, and
+    // nothing on the page says so.
+    const files = Object.values(MEDIA_ASSETS).map((asset) => asset.fallback);
+    expect(new Set(files).size).toBe(files.length);
   });
 });
 

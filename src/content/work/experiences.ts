@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { MediaId } from "@/server/media";
 
 /**
  * The experiences — one module's worth of content per build we have shipped.
@@ -28,7 +29,22 @@ const experienceSchema = z.object({
   status: z.string().min(1),
   /** Placeholder artwork until real footage lands. */
   still: z.string().min(1),
-  src: z.string().optional(),
+  /**
+   * Which reel in the media allowlist this build's footage lives at.
+   *
+   * An **id**, not a URL, and that is the whole point: `/`, `/work` and
+   * `/work/[slug]` all resolve it through `mediaSrc()`, so one entry here is
+   * what every page on the site shows. Before this it was an optional `src`
+   * that nothing set, while the home page separately hard-coded
+   * `mediaSrc("reel-picasso")` — so the film appeared on one page out of three
+   * and there were two places to change it.
+   *
+   * `z.custom` rather than an enum built from `MEDIA_ASSETS`: the type is
+   * imported for compile-time checking only, so this content module never pulls
+   * server code (and the Cloudflare bindings behind it) into a bundle. A wrong
+   * id is caught by `tsc` where `mediaSrc(experience.media)` is called.
+   */
+  media: z.custom<MediaId>((value) => typeof value === "string" && value.length > 0),
   /**
    * Label for the placeholder reel. Not a duration — there is no film yet, and
    * a timecode would be a number we invented, which this site does not do.
@@ -82,6 +98,7 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
     ],
     status: "In production",
     still: "/assets/tiles/picasso.svg",
+    media: "reel-picasso",
     runtime: "Demo reel",
     detail: {
       headline: "The Picasso Experience.",

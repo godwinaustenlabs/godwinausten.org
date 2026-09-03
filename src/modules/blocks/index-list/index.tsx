@@ -1,6 +1,6 @@
 import { SiteLink } from "@/modules";
 import { Label } from "@/components/ui/Label";
-import { PlaceholderReel } from "@/components/ui/PlaceholderReel";
+import { Reel } from "@/components/ui/Reel";
 import type { IndexListProps } from "./block.config";
 
 /**
@@ -42,18 +42,7 @@ export default function IndexList({ heading, entries }: IndexListProps) {
                 until the pointer is on the row, so a list of them does not turn
                 into a wall of movement. */}
             <div className="aspect-video w-full shrink-0 overflow-hidden md:w-[15rem] lg:w-[19rem]">
-              {entry.src ? (
-                <video
-                  src={entry.src}
-                  muted
-                  loop
-                  playsInline
-                  preload="none"
-                  className="size-full object-cover"
-                />
-              ) : (
-                <PlaceholderReel runtime={entry.runtime} playOn="hover" />
-              )}
+              <Reel label={entry.runtime} src={entry.src} playOn="hover" />
             </div>
 
             <div className="flex-1">

@@ -46,7 +46,7 @@
  *
  *   npm run gen:placeholder-video
  *
- * Output: public/assets/film-placeholder.mp4
+ * Output: public/assets/film-placeholder.mp4, public/assets/reel-placeholder.mp4
  */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -55,18 +55,39 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT = resolve(ROOT, "public/assets/film-placeholder.mp4");
 const ORBIT = resolve(ROOT, "public/assets/tiles/orbit.svg");
+
+/**
+ * One file per media id that needs a stand-in.
+ *
+ * A file each, not one shared between them, and that is the point rather than
+ * an oversight: `MEDIA_ASSETS` names a `fallback` per asset so the owner can
+ * drop a real cut over any one of them and change only the slot it belongs to.
+ * Sharing a file would mean replacing the case-study reel also replaced the VSL,
+ * which is a trap disguised as a saving.
+ *
+ * The reel is shorter and quieter: it plays muted in a card with no transport on
+ * it, so a runtime long enough to scrub through is length nobody uses.
+ */
+const FILMS = [
+  {
+    out: "public/assets/film-placeholder.mp4",
+    seconds: 20,
+    label: "Demo reel",
+    caption: "The demo reel goes here.",
+  },
+  {
+    out: "public/assets/reel-placeholder.mp4",
+    seconds: 12,
+    label: "Case-study reel",
+    caption: "The case-study reel goes here.",
+  },
+];
 
 /** 720p is the largest the panel ever shows it, and the content is flat. */
 const W = 1280;
 const H = 720;
 const FPS = 25;
-/**
- * Long enough that ±5s and the scrubber have somewhere to go, short enough that
- * the file stays a placeholder. Twenty seconds is four skips end to end.
- */
-const SECONDS = 20;
 /** Flat vector-ish frames are cheap; this lands around a megabyte. */
 const BITRATE = 500_000;
 
@@ -82,7 +103,20 @@ const SIGNAL = "#c6ff3e";
  * the whole recorder: draw a frame per `requestAnimationFrame` against a real
  * clock, let `captureStream` pull them, and resolve with the encoded bytes.
  */
-function recorderPage({ w, h, fps, seconds, bitrate, orbit, paper, ink, soft, signal }) {
+function recorderPage({
+  w,
+  h,
+  fps,
+  seconds,
+  bitrate,
+  orbit,
+  paper,
+  ink,
+  soft,
+  signal,
+  label: name,
+  caption,
+}) {
   return `<!doctype html>
 <meta charset="utf-8">
 <style>html,body{margin:0;background:${ink}}canvas{display:block}</style>
@@ -91,6 +125,7 @@ function recorderPage({ w, h, fps, seconds, bitrate, orbit, paper, ink, soft, si
 const W = ${w}, H = ${h}, FPS = ${fps}, SECONDS = ${seconds};
 const PAPER = ${JSON.stringify(paper)}, INK = ${JSON.stringify(ink)};
 const SOFT = ${JSON.stringify(soft)}, SIGNAL = ${JSON.stringify(signal)};
+const NAME = ${JSON.stringify(name)}, CAPTION = ${JSON.stringify(caption)};
 const MONO = 'ui-monospace, Menlo, Consolas, monospace';
 const SANS = 'Helvetica Neue, Helvetica, Arial, sans-serif';
 
@@ -181,7 +216,7 @@ function frame(ctx, t) {
   ctx.font = '500 26px ' + SANS;
   ctx.fillStyle = SOFT;
   ctx.textAlign = 'center';
-  ctx.fillText('The demo reel goes here.', W / 2, H - 132);
+  ctx.fillText(CAPTION, W / 2, H - 132);
   ctx.restore();
 
   // Progress, in signal. Matches the scrubber underneath it exactly.
@@ -191,7 +226,7 @@ function frame(ctx, t) {
   ctx.fillStyle = SIGNAL;
   ctx.fillRect(barX, barY, barW * p, 2);
 
-  label(ctx, 'Demo reel', barX, barY + 34, 16, PAPER, 'left');
+  label(ctx, NAME, barX, barY + 34, 16, PAPER, 'left');
   label(ctx, clock(t) + ' / ' + clock(SECONDS), W - 48, barY + 34, 16, PAPER, 'right');
 }
 
@@ -250,41 +285,49 @@ async function main() {
   // serve it from and no temp file to clean up afterwards.
   const orbit = `data:image/svg+xml;base64,${(await readFile(ORBIT)).toString("base64")}`;
 
+  // One browser for all of them. Launching Chromium is the slowest thing here
+  // and none of the state survives `setContent`, so there is nothing to isolate.
   const browser = await chromium.launch();
   try {
-    const page = await browser.newPage({ viewport: { width: W, height: H } });
-    await page.setContent(
-      recorderPage({
-        w: W,
-        h: H,
-        fps: FPS,
-        seconds: SECONDS,
-        bitrate: BITRATE,
-        orbit,
-        paper: PAPER,
-        ink: INK,
-        soft: SOFT,
-        signal: SIGNAL,
-      }),
-    );
+    for (const film of FILMS) {
+      const page = await browser.newPage({ viewport: { width: W, height: H } });
+      await page.setContent(
+        recorderPage({
+          w: W,
+          h: H,
+          fps: FPS,
+          seconds: film.seconds,
+          bitrate: BITRATE,
+          orbit,
+          paper: PAPER,
+          ink: INK,
+          soft: SOFT,
+          signal: SIGNAL,
+          label: film.label,
+          caption: film.caption,
+        }),
+      );
 
-    process.stdout.write(`Recording ${SECONDS}s at ${W}x${H}, ${FPS}fps…\n`);
-    const base64 = await page.evaluate(() => window.record(), null, {
-      timeout: (SECONDS + 30) * 1000,
-    });
+      process.stdout.write(`Recording ${film.seconds}s at ${W}x${H}, ${FPS}fps -> ${film.out}\n`);
+      const base64 = await page.evaluate(() => window.record(), null, {
+        timeout: (film.seconds + 30) * 1000,
+      });
+      await page.close();
 
-    const bytes = Buffer.from(base64, "base64");
-    if (bytes.length < 1024) throw new Error(`Encoder returned ${bytes.length} bytes`);
-    // `ftyp` is the first box of every ISO base media file. If Chromium handed
-    // back a WebM because the mp4 mime was quietly ignored, this catches it here
-    // rather than as a silent no-play in Safari.
-    if (bytes.subarray(4, 8).toString("latin1") !== "ftyp") {
-      throw new Error("Encoder did not return an MP4 (no ftyp box)");
+      const bytes = Buffer.from(base64, "base64");
+      if (bytes.length < 1024) throw new Error(`Encoder returned ${bytes.length} bytes`);
+      // `ftyp` is the first box of every ISO base media file. If Chromium handed
+      // back a WebM because the mp4 mime was quietly ignored, this catches it
+      // here rather than as a silent no-play in Safari.
+      if (bytes.subarray(4, 8).toString("latin1") !== "ftyp") {
+        throw new Error("Encoder did not return an MP4 (no ftyp box)");
+      }
+
+      const out = resolve(ROOT, film.out);
+      await mkdir(dirname(out), { recursive: true });
+      await writeFile(out, bytes);
+      process.stdout.write(`Wrote ${out} (${(bytes.length / 1024).toFixed(0)} KB)\n`);
     }
-
-    await mkdir(dirname(OUT), { recursive: true });
-    await writeFile(OUT, bytes);
-    process.stdout.write(`Wrote ${OUT} (${(bytes.length / 1024).toFixed(0)} KB)\n`);
   } finally {
     await browser.close();
   }
