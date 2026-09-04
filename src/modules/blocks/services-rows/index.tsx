@@ -271,12 +271,24 @@ export default function ServicesRows({
                   <div
                     aria-hidden="true"
                     /*
-                      `min-h-28` below `md`, `min-h-0` above it. In vertical flow
-                      the cell is only as tall as its text, leaving this a ~60px
-                      sliver — and `contain` fits the drawing to the *short* side,
-                      so it would render at 60px square and read as a smudge. On
-                      the strip the cell is a whole window tall, the slack is
-                      real, and the floor comes off.
+                      A floor below `md`, none above it. In vertical flow the cell
+                      is only as tall as its text, leaving this a ~60px sliver —
+                      and `contain` fits the drawing to the *short* side, so it
+                      would render 60px square and read as a smudge. On the strip
+                      the cell is a whole window tall, the slack is real, and the
+                      floor comes off.
+
+                      The floor is most of the column's width rather than a fixed
+                      112px: `contain` scales to whichever side runs out first, so
+                      a tall box is the only way a schematic gets to be the size
+                      of the card it explains. The cap stops it turning into a
+                      full screen of line art on a tablet held in portrait.
+
+                      It keeps the page gutter. A negative margin was tried, and
+                      full bleed is wrong for these specifically — several of the
+                      drawings run a line right to their own viewBox edge, so
+                      with nothing either side they read as cropped rather than
+                      as complete.
                     */
                     /*
                     `py` on the strip so the drawing never runs to the top or
@@ -285,7 +297,7 @@ export default function ServicesRows({
                     the outermost strokes hard against the seam, which reads as
                     a crop even though nothing is cropped.
                   */
-                    className="pointer-events-none min-h-28 flex-1 bg-contain bg-center bg-no-repeat md:min-h-0 strip:order-2 strip:w-[50%] strip:flex-none strip:self-stretch strip:py-[6%]"
+                    className="pointer-events-none min-h-[min(76vw,24rem)] flex-1 bg-contain bg-center bg-no-repeat md:min-h-0 strip:order-2 strip:w-[50%] strip:flex-none strip:self-stretch strip:py-[6%]"
                     style={{ backgroundImage: `url(${row.figure})` }}
                   />
                 ) : null}

@@ -53,7 +53,16 @@ export default function HeroScribble({
         headline sits under the figure and the slack falls to the foot of the
         hero, which is where a page is expected to have some.
       */}
-      <div className="relative order-2 flex min-h-0 flex-1 flex-col justify-start px-gutter py-[clamp(1rem,3vh,2rem)] md:order-1 md:basis-[54%] md:justify-center lg:basis-[56%]">
+      {/*
+        `flex-none` on a phone, so the copy is exactly as tall as the copy.
+
+        Both columns were `flex-1`, which split the band between them and left
+        whatever the words did not need as a ~190px hole under the last link —
+        read, correctly, as a gap between sections rather than as air. Now only
+        the figure's column grows, and growing it makes the drawing bigger rather
+        than making the page longer.
+      */}
+      <div className="relative order-2 flex min-h-0 flex-none flex-col justify-start px-gutter py-[clamp(1rem,3vh,2rem)] md:order-1 md:flex-1 md:basis-[54%] md:justify-center lg:basis-[56%]">
         <h1 className="font-display text-[clamp(2rem,5.6vw,6rem)] leading-[0.88] font-bold text-ink">
           {headlineLines.map((line) => (
             <span key={line} className="block">

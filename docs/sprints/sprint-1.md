@@ -938,6 +938,43 @@ The ADR drafted along the way was deleted with the last of those — ink needs n
 decision recorded, and an ADR describing a ground the site does not have is worse
 than none.
 
+### Added mid-sprint, twenty-eighth round (owner, 2026-09-04)
+
+> A phone pass: 5% over the scribble · the VSL edge to edge with no black bands
+> · the card schematics bigger · "remove the huge white spaces between sections".
+
+- [x] **5% over the scribble.** Taken as height, not as a margin: the box is
+      anchored to the floor and its height is what the drawing scales against, so
+      95% of the column both lets the figure down off the top edge and keeps it
+      meeting the copy with no gap. `mt` would have done nothing at all — an
+      absolutely positioned box with `bottom-0` and a height ignores it.
+- [x] **The VSL is the film, edge to edge, with nothing round it.** `flex-1` was
+      the cause of both complaints. In the row it becomes from `md` up it does
+      real work; stacked in a column it grew the box _vertically_, and a definite
+      height is what makes `aspect-ratio` ignorable — the box came out 350×476 on
+      a phone with the film letterboxed to 350×197 inside it and the panel's own
+      ink showing as bands above and below. `md:flex-1` restores the aspect, and
+      a negative gutter lets the one thing in the panel that should touch the
+      screen actually touch it.
+- [x] **The card schematics are the size of the card.** `contain` scales to
+      whichever side runs out first, so a taller box was the only way to make
+      them bigger. They keep the page gutter: full bleed was tried and is wrong
+      for these specifically — several run a line to their own viewBox edge, so
+      with nothing either side they read as cropped rather than as complete.
+- [x] **The white space between sections is gone.** Two blocks were holding a
+      full band on a phone and paying for it in blank paper: the hero split it
+      between two `flex-1` columns and left ~190px under the last link, and the
+      VSL held a 744px floor for 580px of content. The hero's copy column is
+      `flex-none` below `md` now, so the drawing takes the slack instead of the
+      page getting longer, and the VSL's band is a `md:` floor.
+
+**And the consequence of that last one**, which is the interesting part: giving
+the slack to the figure's column made the column tall, and the mask was sized
+`auto 100%` — it filled that height and pushed the drawing wider than the phone,
+so the raised hand went off one edge and the low arm off the other. Fixing the
+white space broke the drawing. It fits by width at both shapes now, anchored to
+the floor, so slack falls _above_ the figure where it reads as air under the nav.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

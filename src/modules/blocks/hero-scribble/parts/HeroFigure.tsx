@@ -161,16 +161,31 @@ export function HeroFigure({ src, className }: HeroFigureProps) {
          * the floor, so it overflows the top and bleeds — a crop of something
          * larger rather than a picture placed in a box.
          *
-         * Narrow, it is stacked *above* the copy in a short, wide column, and
-         * both halves of that go wrong. The 8% overflow clips the raised hand
-         * against the top of the hero, and `contain` on a box wider than the
-         * drawing's own near-square aspect fits by width and leaves a band of
-         * empty paper under the figure — read together as "the drawing is cut
-         * and there is a hole beneath it", which is exactly what it looks like.
-         * `auto 100%` fills the column's height instead, so the drawing meets
-         * the copy with no gap, and the full height means nothing is clipped.
+         * Narrow, it is stacked *above* the copy, and the 8% overflow clips the
+         * raised hand against the top of the hero. So the overflow goes and the
+         * box is 95% of its column, which is also the margin the owner asked for
+         * over the drawing.
+         *
+         * `contain` at both shapes, and the mask is anchored `center bottom`,
+         * which is what makes that safe. `auto 100%` was here for a while — it
+         * fills the column's height, and when the column was short that was the
+         * only way to avoid a band of empty paper under the figure. Once the
+         * copy stopped absorbing the band's slack the column became tall, and
+         * filling *that* height pushed the drawing wider than the phone: the
+         * raised hand went off one edge and the low arm off the other. Fitting
+         * by width and sitting on the floor puts any slack above the figure,
+         * where it reads as air under the nav rather than as a hole in the page.
          */
-        "h-full [--figure-mask-size:auto_100%] md:h-[108%] md:[--figure-mask-size:contain]",
+        /*
+          The 5% on a phone is a top margin, taken as height.
+
+          The box is anchored to the floor, and its height is what the drawing is
+          scaled against — so 95% of the column both lets the figure down off the
+          top edge and keeps it meeting the copy underneath with no gap. A `top`
+          would have done the first without the second, and `mt` nothing at all:
+          an absolutely positioned box with `bottom-0` and a height ignores it.
+        */
+        "h-[95%] [--figure-mask-size:contain] md:h-[108%]",
         className,
       )}
       style={{ "--pointer-x": 0, "--pointer-y": 0 } as React.CSSProperties}

@@ -44,7 +44,12 @@ export default function VslPanel({
        * visible at once.
        */
       width={1}
-      className="min-h-[var(--band)] grid-rows-[auto_1fr_auto] strip:min-h-0"
+      /*
+        The band is a floor from `md` up only. On a phone the panel is a heading,
+        a paragraph and a 16:9 film — about 580px of content in a 744px box, and
+        the 160px left over sat under the film as a blank page.
+      */
+      className="grid-rows-[auto_1fr_auto] md:min-h-[var(--band)] strip:min-h-0"
     >
       <div className="cell col-span-full flex-row items-center gap-4 px-gutter py-3">
         <Label tone="ink" className="opacity-40">
@@ -75,9 +80,25 @@ export default function VslPanel({
         </div>
 
         {/*
-          16:9 at every width. `aspect-video` on the box rather than a height:
-          the film is the evidence and it is shown whole, never cropped to
-          whatever shape the row came out as.
+          16:9 at every width, and edge to edge on a phone.
+
+          `flex-1` is the reason it was neither. In the row this becomes from
+          `md` up it is doing real work — the claim takes its third and the film
+          takes the rest. Stacked in a column it was growing the box *vertically*
+          instead, which gave it a definite height, and a definite height is what
+          makes `aspect-ratio` ignorable: the box came out 350×476 on a phone
+          with the film letterboxed to 350×197 inside it and the panel's own ink
+          showing as bands above and below. It is `md:flex-1` now, so the
+          aspect holds where nothing is competing with it.
+
+          The negative gutter is the other half: the cell pads its body by a page
+          gutter, and the film is the one thing in this panel that should touch
+          the screen. `w-auto` with it, because a `w-full` pulled left by a
+          gutter is simply the same width hanging off the other edge.
+
+          `aspect-video` on the box rather than a height: the film is the
+          evidence and it is shown whole, never cropped to whatever shape the row
+          came out as.
 
           `src` is resolved from R2 at compose time, so it is a string once the
           owner has uploaded the cut and absent until then — see
@@ -85,7 +106,7 @@ export default function VslPanel({
           runs the drawn placeholder reel rather than sitting black behind a
           label, because an empty player reads as broken.
         */}
-        <div className="aspect-video w-full min-w-0 flex-1 overflow-hidden bg-ink">
+        <div className="-mx-gutter aspect-video w-auto min-w-0 overflow-hidden bg-ink md:mx-0 md:w-full md:flex-1">
           <FilmFrame src={src} label={videoLabel} openLabel="Watch it" />
         </div>
       </Cell>
