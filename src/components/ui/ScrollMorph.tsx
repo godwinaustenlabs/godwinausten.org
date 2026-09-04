@@ -6,16 +6,18 @@ import { cn } from "@/lib/utils";
 /**
  * The morphing lattice — ported from the animation on the live godwinausten.org.
  *
- * Twenty-seven nodes on a 3×3×3 grid, moving through three states while the
+ * Twenty-seven nodes on a 3×3×3 grid, moving through four states while the
  * section's heading is pinned:
  *
- *   stacked dots  →  cube  →  turning dish
+ *   stacked dots  →  cube  →  turning dish  →  network
  *
- * The original had a fourth state — the cube scattering into a loose network.
- * It is cut here: this sits beside three adjacent cards that are themselves a
- * set of related things, and a network on top of them said the same thing
- * twice. The dish is a better last frame anyway, because it is the only phase
- * that keeps moving once it arrives.
+ * **There is one state per card, and that is the whole timing rule.** The
+ * network was in the owner's original and was cut when this sat beside three
+ * cards: a fourth state meant one phase had no card to land on, and the dish —
+ * the only phase that keeps moving after it arrives — made the better last
+ * frame. There are four offerings now, so the network is back and the stops are
+ * evenly spaced again. If the count changes, `STOPS` changes with it; a lattice
+ * that finishes before the cards do, or after, reads as a stutter.
  *
  * The maths is the owner's, taken from the `ecoCanvas` routine on the live site
  * and kept intact: the same grid, the same per-phase targets, the same
@@ -49,16 +51,22 @@ interface Stop {
 }
 
 /**
- * The scroll stops, spread across the pin.
+ * The scroll stops, one per card, spread evenly across the pin.
  *
- * `morph` never passes 1, which is the dish — the original's scatter phase sat
- * beyond it and is cut. The three that remain get the whole travel rather than
- * the first half of it, so each one is on screen long enough to read.
+ * `at` is where in the pin each state is fully arrived, and it matches where
+ * the cards land: the stack beside this travels `(count - 1) × -100%` over the
+ * same 0→1, so card *n* is centred at `n / (count - 1)`. Four cards, four
+ * stops, thirds — the lattice reaches each shape exactly as the offering it
+ * belongs to arrives, and the last one lands rather than passing.
+ *
+ * `morph` is the shape axis and runs the full 0→1 across the four states, so
+ * each blend below owns a third of it.
  */
 const STOPS: Stop[] = [
   { at: 0, morph: 0, rotation: 0, intensity: 0, scale: 0.8 },
-  { at: 0.35, morph: 0.3, rotation: Math.PI * 0.35, intensity: 0.45, scale: 1.05 },
-  { at: 1, morph: 1, rotation: Math.PI * 2, intensity: 0.85, scale: 1.1 },
+  { at: 1 / 3, morph: 1 / 3, rotation: Math.PI * 0.5, intensity: 0.4, scale: 1.02 },
+  { at: 2 / 3, morph: 2 / 3, rotation: Math.PI * 1.25, intensity: 0.7, scale: 1.1 },
+  { at: 1, morph: 1, rotation: Math.PI * 2, intensity: 0.9, scale: 1.06 },
 ];
 
 const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
@@ -86,7 +94,23 @@ function stateAt(progress: number) {
   };
 }
 
-export function ScrollMorph({ className }: { className?: string }) {
+export function ScrollMorph({
+  className,
+  drive = "pin",
+}: {
+  className?: string;
+  /**
+   * What moves the morph.
+   *
+   * `"pin"` reads the section's travel while its head is stuck, which is the
+   * services block and the reason this component exists. `"viewport"` reads the
+   * element's own crossing of the screen instead, for a section that does not
+   * pin at all — the pin driver returns a flat 0 there, so the lattice would sit
+   * on its first frame forever and read as a broken canvas rather than a still
+   * one.
+   */
+  drive?: "pin" | "viewport";
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -145,6 +169,18 @@ export function ScrollMorph({ className }: { className?: string }) {
         ? [rect.left, rect.width, window.innerWidth]
         : [rect.top, rect.height, window.innerHeight];
 
+      if (drive === "viewport") {
+        /*
+         * The element's own crossing, 0 as its leading edge reaches the far
+         * side of the screen and 1 as its trailing edge leaves the near side.
+         * The span is added at both ends so a panel that is exactly one screen
+         * has travel rather than a single value.
+         */
+        const total = extent + span;
+        if (total <= 0) return 0;
+        return clamp01((span - start) / total);
+      }
+
       // How far the section can travel while its head stays pinned.
       const travel = extent - span;
       if (travel <= 0) return 0;
@@ -165,10 +201,11 @@ export function ScrollMorph({ className }: { className?: string }) {
       const spin = rotation;
 
       const points = nodes.map((node) => {
-        // Two blends, the second starting where the first finished:
-        // dots→cube, then cube→dish.
-        const toCube = clamp01(morph * 2);
-        const toDish = clamp01(morph * 2 - 1);
+        // Three blends, each owning a third of `morph` and each starting where
+        // the one before it finished: dots→cube, cube→dish, dish→network.
+        const toCube = clamp01(morph * 3);
+        const toDish = clamp01(morph * 3 - 1);
+        const toNet = clamp01(morph * 3 - 2);
 
         // Phase 0: a single column of dots stacked on the Y axis.
         const stackedY = 0.8 * node.gridY;
@@ -178,13 +215,31 @@ export function ScrollMorph({ className }: { className?: string }) {
         let z = 0 * (1 - toCube) + node.gridZ * toCube;
 
         if (toDish > 0) {
-          // The last phase: a slowly travelling Lissajous ring. It keeps
-          // turning after it arrives, which is why it makes a better final
-          // frame than the scatter it replaced.
+          // A slowly travelling Lissajous ring, and the one phase that keeps
+          // moving after it arrives.
           const phase = 0.015 * ticks + 0.4 * node.id;
           x = x * (1 - toDish) + 0.85 * Math.cos(phase) * toDish;
           y = y * (1 - toDish) + 0.85 * Math.sin(0.5 * phase) * toDish;
           z = z * (1 - toDish) + 0.85 * Math.sin(phase) * toDish;
+        }
+
+        if (toNet > 0) {
+          /*
+           * The last phase: the ring opening out into a loose network.
+           *
+           * Deterministic per node rather than random — the same node has to go
+           * to the same place on every frame or the whole thing boils. It also
+           * breathes, on a slower and differently-phased wobble than the dish,
+           * so arriving here does not look like stopping.
+           */
+          const seed = node.id * 2.399963;
+          const drift = 0.008 * ticks;
+          const nx = Math.cos(seed) * (1.05 + 0.16 * Math.sin(drift + seed));
+          const ny = Math.sin(seed * 1.7) * (0.95 + 0.16 * Math.cos(drift + seed * 0.5));
+          const nz = Math.cos(seed * 2.3) * (1.0 + 0.16 * Math.sin(drift * 0.7 + seed));
+          x = x * (1 - toNet) + nx * toNet;
+          y = y * (1 - toNet) + ny * toNet;
+          z = z * (1 - toNet) + nz * toNet;
         }
 
         // Rotate about Y, then about X, then project.
@@ -287,7 +342,7 @@ export function ScrollMorph({ className }: { className?: string }) {
       visibility.disconnect();
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [drive]);
 
   return (
     <canvas

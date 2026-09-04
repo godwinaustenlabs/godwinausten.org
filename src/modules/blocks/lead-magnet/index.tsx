@@ -1,6 +1,7 @@
 import { Label } from "@/components/ui/Label";
 import { Panel } from "@/components/ui/Panel";
 import { Cell, NextCell } from "@/components/ui/Cell";
+import { ScrollMorph } from "@/components/ui/ScrollMorph";
 import { PlaybookForm } from "./parts/PlaybookForm";
 import type { LeadMagnetProps } from "./block.config";
 
@@ -47,7 +48,6 @@ export default function LeadMagnet({
   kicker,
   headline,
   body,
-  contents,
   cover,
   anchor,
   next,
@@ -78,38 +78,67 @@ export default function LeadMagnet({
           {headline}
         </h2>
 
-        <p className="max-w-[40ch] font-sans text-base text-paper/65">{body}</p>
+        <p className="max-w-[34ch] font-sans text-base text-paper/65 lg:text-lg">{body}</p>
 
-        <ul className="flex flex-col gap-2">
-          {contents.map((item) => (
-            <li key={item} className="flex items-baseline gap-3 font-sans text-sm text-paper/85">
-              <span aria-hidden="true" className="mt-1.5 size-1 shrink-0 rounded-full bg-signal" />
-              {item}
-            </li>
-          ))}
-        </ul>
+        {/*
+          The button lives with the offer, not beside the cover.
+
+          A three-bullet contents list used to sit here. It was answering a
+          question nobody asks of something free: the kicker says the price and
+          the headline says what it is, and everything after that is reading
+          between a visitor and a download they have already decided on. What is
+          left is one claim, one line, one control.
+        */}
+        <div className="mt-1 w-full max-w-[24rem]">
+          <PlaybookForm {...form} />
+        </div>
       </Cell>
 
-      <Cell tone="ink" className="col-span-full md:col-span-1" bodyClassName="justify-center gap-7">
+      <Cell
+        tone="ink"
+        className="relative col-span-full overflow-hidden md:col-span-1"
+        bodyClassName="justify-center items-center"
+      >
         {/*
-          The cover. Not a real document image — a drawn one, with the title and
-          the format on it, so the offer is a thing on the page rather than a
-          sentence about a thing.
+          The lattice, behind the cover.
+
+          The same morph the services section runs, on the viewport driver
+          because this panel does not pin — the pin driver measures travel a
+          panel exactly one screen wide does not have, and would hold the first
+          frame forever.
+        */}
+        {/*
+          `text-paper`, because the lattice draws in `currentColor` and its own
+          default is ink — right on the paper sections it was built for, and
+          invisible here, on the only ink panel of the page.
+        */}
+        <ScrollMorph
+          drive="viewport"
+          className="pointer-events-none absolute inset-0 text-paper opacity-45"
+        />
+
+        {/*
+          The cover, as frosted glass over it.
+
+          Not a real document image — a drawn one, with the title and the format
+          on it, so the offer is a thing on the page rather than a sentence about
+          a thing. Glass rather than a flat fill because there is something
+          moving behind it worth seeing: the pane reads as an object lying on the
+          panel instead of a rectangle drawn on it, and the motion still comes
+          through where the type is not.
         */}
         <div
           aria-hidden="true"
-          className="flex w-full max-w-[22rem] flex-col justify-between gap-8 border border-paper/20 bg-paper/[0.04] p-5"
+          className="glass relative flex aspect-[3/4] w-full max-w-[16rem] flex-col justify-between rounded-lg p-6 sm:max-w-[18rem]"
         >
-          <span className="h-1.5 w-10 bg-signal" />
+          <span className="h-1.5 w-10 rounded-full bg-signal" />
           <span className="font-display text-[clamp(1.15rem,1.8vw,1.6rem)] leading-[1.05] font-bold text-paper">
             {cover.title}
           </span>
-          <Label tone="paper" className="opacity-50">
+          <Label tone="paper" className="opacity-60">
             {cover.format}
           </Label>
         </div>
-
-        <PlaybookForm {...form} />
       </Cell>
 
       <div className="cell col-span-full hidden md:flex">

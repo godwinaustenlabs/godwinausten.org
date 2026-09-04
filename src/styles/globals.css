@@ -343,6 +343,32 @@
    * painted as a centred background — one line to look at, a real target to
    * hit. `--played` is the fraction already watched, set by the transport.
    */
+  /*
+   * Frosted glass.
+   *
+   * A pane that takes its colour from whatever is moving behind it. Used on the
+   * ink panels, where there is something worth seeing through — the morphing
+   * lattice under the playbook's cover. On flat paper it would be an expensive
+   * way to draw a grey rectangle.
+   *
+   * `backdrop-filter` is the whole effect and it is not universal, so the
+   * fallback is not "no blur" but a heavier fill: unblurred translucency over a
+   * moving canvas is unreadable, and the point of the pane is that the text on
+   * it can be read.
+   */
+  .glass {
+    background-color: color-mix(in srgb, var(--color-paper) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-paper) 16%, transparent);
+    backdrop-filter: blur(20px) saturate(1.15);
+    -webkit-backdrop-filter: blur(20px) saturate(1.15);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass {
+      background-color: color-mix(in srgb, var(--color-ink) 82%, transparent);
+    }
+  }
+
   .scrubber {
     appearance: none;
     height: 1.5rem;

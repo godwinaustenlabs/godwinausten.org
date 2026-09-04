@@ -28,12 +28,22 @@ export function Panel({
   width = 1,
   id,
   className,
+  style,
   children,
 }: {
   width?: number;
   /** DOM id, when a block owns an anchor its composition does not. */
   id?: string;
   className?: string;
+  /**
+   * Inline properties, merged over the panel's own `--panel-width`.
+   *
+   * For custom properties a block needs to read back out of its own grid — a
+   * column count derived from how many things it was given, say. Not for
+   * styling: a block that reaches for `style` to set a colour or a size is
+   * writing markup the class system already covers.
+   */
+  style?: React.CSSProperties;
   children: React.ReactNode;
 }) {
   return (
@@ -54,7 +64,7 @@ export function Panel({
         "strip:h-full strip:w-[calc(var(--panel-width)*100vw)]",
         className,
       )}
-      style={{ "--panel-width": width } as React.CSSProperties}
+      style={{ "--panel-width": width, ...style } as React.CSSProperties}
     >
       {children}
     </div>

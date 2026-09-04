@@ -363,18 +363,25 @@ test.describe("lead magnet", () => {
   async function openMagnet(page: Page) {
     await page.goto("/");
     await page.getByRole("link", { name: /Get the playbook/ }).click();
-    // The field lives behind the CTA now — one loud button, then one question.
-    // It is a `<details>`, so this is a real click on a real summary rather
-    // than a state flag being flipped.
-    await page.locator("summary", { hasText: /Download it free/ }).click();
-    const field = page.getByPlaceholder(/you@/);
-    await expect(field).toBeVisible();
-    // In vertical flow the panel is taller than a phone screen, so the field
-    // may still be below the fold — normal, and Playwright scrolls a document.
-    // What the horizontal case needed was the anchor to bring the whole panel
-    // on screen, which it now does because the panel is exactly one screen wide.
-    await field.scrollIntoViewIfNeeded();
+    /*
+     * The field lives behind the CTA — one loud button, then one question — and
+     * arrives in a dialog portalled to `<body>`. That portal is why nothing here
+     * needs scrolling into view any more: the form is no longer inside the panel
+     * at all, so neither the filmstrip's horizontal offset nor a phone's fold
+     * can put it out of reach.
+     */
+    await page.getByRole("button", { name: /Download it free/ }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page.getByPlaceholder(/you@/)).toBeVisible();
   }
+
+  test("asks for nothing until the offer is accepted", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("link", { name: /Get the playbook/ }).click();
+    // A visible field is a question; a button is an offer.
+    await expect(page.getByRole("button", { name: /Download it free/ })).toBeVisible();
+    await expect(page.getByPlaceholder(/you@/)).toBeHidden();
+  });
 
   test("accepts an email and confirms in place", async ({ page }) => {
     await openMagnet(page);
@@ -392,8 +399,12 @@ test.describe("lead magnet", () => {
       el.dispatchEvent(new Event("input", { bubbles: true }));
     });
     await page.getByRole("button", { name: /Send it/ }).click();
-    // Scoped to the form: Next's own route announcer is also `role="alert"`.
-    await expect(page.locator("form").getByRole("alert")).toContainText("email");
+    // Scoped to the dialog's form: Next's own route announcer is also
+    // `role="alert"`, and the dialog stays open on an error precisely so the
+    // message lands next to the field that caused it.
+    await expect(page.getByRole("dialog").locator("form").getByRole("alert")).toContainText(
+      "email",
+    );
     await expect(page.getByText("Downloading now.")).toBeHidden();
   });
 });

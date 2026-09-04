@@ -97,25 +97,31 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
   services: {
     index: "01",
     eyebrow: "What we do",
-    headline: "Three ways we plug in.",
+    headline: "Four ways we plug in.",
     rows: [
       {
         index: "01",
-        title: "Workflow Mapping",
+        title: "Agentic AI Systems",
         detail:
-          "We sit with the work before we automate it. Half of what teams ask us to build turns out not to be the thing that is costing them.",
+          "The whole operation, not a chatbot on top of it. Agents that hold context, take decisions inside your rules, and hand off to each other and to a person when the call is not theirs to make.",
       },
       {
         index: "02",
-        title: "Agent Swarms",
+        title: "Micro Agents & Bots",
         detail:
-          "Chat, voice, outbound. Several narrow agents that hand off to each other, built on your playbooks rather than a generic prompt.",
+          "One task, done properly, live in a week. The cheapest thing we build and usually the first — small enough to add without a project and to remove without one.",
       },
       {
         index: "03",
-        title: "Systems Integration",
+        title: "AI-Powered Pipelines",
         detail:
-          "Wired into the CRM, the helpdesk and the spreadsheet you already use. Nobody should have to copy anything between two screens.",
+          "Work that arrives in a queue and leaves finished: enrich, classify, draft, route. The volume nobody wants to look at, handled before anyone has to.",
+      },
+      {
+        index: "04",
+        title: "Custom for SaaS & Enterprise",
+        detail:
+          "Inside your product or inside your stack. AI features your customers use, or systems wired through the CRM, the helpdesk and the compliance path you already run.",
       },
     ],
   },

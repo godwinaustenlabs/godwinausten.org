@@ -90,7 +90,6 @@ const homeCopySchema = z.object({
     kicker: z.string(),
     headline: z.string(),
     body: z.string(),
-    contents: z.array(z.string()).min(1),
     /** Set on the cover tile, so the offer reads as an object you receive. */
     cover: z.object({ title: z.string(), format: z.string() }),
     /** The loud button, shown before the field. */
@@ -160,30 +159,38 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
   services: {
     index: "02",
     eyebrow: "How it gets built",
-    headline: "Three ways we plug in.",
+    headline: "Four ways we plug in.",
     rows: [
       {
         index: "01",
-        title: "Workflow Mapping",
+        title: "Agentic AI Systems",
         detail:
-          "We sit with the work before we automate it. Half of what teams ask for turns out not to be the thing costing them.",
-        claim: "We watch before we build.",
-        figure: "/assets/diagrams/mapping.svg",
-      },
-      {
-        index: "02",
-        title: "Agent Swarms",
-        detail:
-          "Chat, voice, outbound. Narrow agents that hand off to each other, built on your playbooks rather than a generic prompt.",
-        claim: "Many small agents, not one big one.",
+          "The whole operation, not a chatbot on top of it. Agents that hold context, take decisions inside your rules, and hand off to each other and to a person.",
+        claim: "A system, not an assistant.",
         figure: "/assets/diagrams/swarm.svg",
       },
       {
-        index: "03",
-        title: "Systems Integration",
+        index: "02",
+        title: "Micro Agents & Bots",
         detail:
-          "Wired into the CRM and helpdesk you already use. Nobody should copy anything between two screens.",
-        claim: "Nothing new to log into.",
+          "One task, done properly, live in a week. The cheapest thing we build and usually the first — small enough to add without a project and to remove without one.",
+        claim: "One job each, and they stop.",
+        figure: "/assets/diagrams/micro.svg",
+      },
+      {
+        index: "03",
+        title: "AI-Powered Pipelines",
+        detail:
+          "Work that arrives in a queue and leaves finished: enrich, classify, draft, route. The volume nobody wants to look at, handled before anyone has to.",
+        claim: "In one end, done at the other.",
+        figure: "/assets/diagrams/pipeline.svg",
+      },
+      {
+        index: "04",
+        title: "Custom for SaaS & Enterprise",
+        detail:
+          "Inside your product or inside your stack. AI features your customers use, or systems wired through the CRM, the helpdesk and the compliance path you already run.",
+        claim: "Built into what you already have.",
         figure: "/assets/diagrams/integration.svg",
       },
     ],
@@ -195,12 +202,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     eyebrow: "Free guide",
     kicker: "Free — no call, no sequence",
     headline: "Steal our day-one worksheet.",
-    body: "The four questions we ask before writing a line of code. Most teams find the expensive thing is not the one they were about to pay us to fix.",
-    contents: [
-      "The four questions that price a workflow",
-      "How to spot the task that only looks expensive",
-      "The three failure modes that kill agent projects",
-    ],
+    body: "The four questions we ask before writing a line of code.",
     cover: { title: "What to automate first", format: "PDF — 9 pages" },
     cta: "Download it free",
     prompt: "Where do we send it?",

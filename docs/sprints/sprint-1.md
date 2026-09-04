@@ -540,6 +540,48 @@ the rule `docs/adr/0003` already sets for this reference.
       headline is 25px at 390 and 19px at 360; the slack now falls to the foot of
       the hero, where a page is expected to have some.
 
+### Added mid-sprint, seventeenth round (owner, 2026-09-04)
+
+> "don't just mention our process but add our services over there … full Agentic
+> AI systems, Micro Agents/ Bots for particular task automation, AI powered
+> pipelines and custom solutions for SaaS and enterprises … change the design of
+> Free Guide Lead magnet, use eco morph and frosted glass techniques, use less
+> text and visible CTA and after clicking download button the email fetcher form
+> should appear as a pop up window"
+
+- [x] **The services section lists services.** It was the process — watch,
+      then build, then wire up — which is the same thing `/about`'s "How we work"
+      already says at length. Four offerings now, on the home page and on
+      `/about`: agentic systems, micro agents, pipelines, custom for SaaS and
+      enterprise. Two new schematics (`micro`, `pipeline`) join the two that
+      still fit.
+- [x] **Nothing counts to three by hand any more.** The block had `repeat(3, …)`
+      for its columns and a `-200%` strip travel, both correct for exactly three
+      cells: a fourth flowed into an implicit column at `md`, and on the strip
+      the stack moved two windows out of three so the last offering never
+      arrived. Both come from `rows.length` now.
+- [x] **The morph has four states, one per card.** The network phase was in the
+      owner's original and was cut when this sat beside three cards. Four cards,
+      four stops at even thirds, and each shape lands as the offering it belongs
+      to does. `STOPS` carries the rule in a comment: one state per card, or the
+      lattice finishes early and reads as a stutter.
+- [x] **"Agentic" is allowed as a service name and still banned as an
+      adjective.** The brief bans the word and a test enforces it; the owner
+      named a service with it. The test strips an exact-string `NAMES` allowlist
+      before applying the ban, so "Agentic AI Systems" passes and "our agentic
+      approach" still fails — `docs/adr/0006`.
+- [x] **The lead magnet is an offer, not a section.** Kicker, headline, one line,
+      one loud control: the three-bullet contents list went, because it answered
+      a question nobody asks of something free. The cover is frosted glass with
+      the same morph running behind it — on the viewport driver, since this panel
+      does not pin and the pin driver would hold frame one forever.
+- [x] **The field arrives as a dialog, and the file starts on submit.** Portalled
+      to `<body>`, because `position: fixed` inside the filmstrip's transformed
+      track resolves against the track. The native `<details>` is kept as the
+      pre-hydration path, so the offer is never a dead button on the slow phone
+      the brief says most conversions come from; `useSyncExternalStore` picks
+      between them without writing state from an effect.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

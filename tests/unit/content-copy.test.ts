@@ -15,6 +15,21 @@ import { blockRegistry } from "@/modules";
 
 const BANNED = ["agentic", "leverage", "seamless", "cutting-edge", "robust"];
 
+/**
+ * Proper names, removed before the ban is applied.
+ *
+ * The brief bans "agentic" as filler, and its own example of the offence is
+ * "cutting-edge agentic infrastructure leverages robust, enterprise-grade
+ * orchestration". That is an adjective doing no work. It is not the same thing
+ * as the name of a service the owner sells, which is a noun with a definition
+ * under it — and a company that builds agent systems cannot be forbidden from
+ * saying which product is which (docs/adr/0006).
+ *
+ * Exact strings, so the ban still catches every other use. "Our agentic
+ * approach" fails here exactly as it did before.
+ */
+const NAMES = ["Agentic AI Systems"];
+
 function allStrings(value: unknown, out: string[] = []): string[] {
   if (typeof value === "string") out.push(value);
   else if (Array.isArray(value)) for (const v of value) allStrings(v, out);
@@ -25,10 +40,13 @@ function allStrings(value: unknown, out: string[] = []): string[] {
 
 const strings = allStrings([homeCopy, siteCopy, workCopy, aboutCopy, contactCopy]);
 
+/** The same copy with the proper names taken out, for the vocabulary ban only. */
+const prose = strings.map((s) => NAMES.reduce((acc, name) => acc.split(name).join(""), s));
+
 describe("site copy", () => {
   it("avoids the banned vocabulary", () => {
     for (const word of BANNED) {
-      const offenders = strings.filter((s) => s.toLowerCase().includes(word));
+      const offenders = prose.filter((s) => s.toLowerCase().includes(word));
       expect(offenders, `"${word}" appears in: ${offenders.join(" | ")}`).toEqual([]);
     }
   });

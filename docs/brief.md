@@ -52,7 +52,10 @@ Confident, a little dry, human. Short sentences. A studio talking about itself.
 > Wrong: _"Our cutting-edge agentic infrastructure leverages robust,
 > enterprise-grade orchestration to deliver seamless automation at scale."_
 
-**Banned:** agentic, leverage, seamless, cutting-edge, robust.
+**Banned:** agentic, leverage, seamless, cutting-edge, robust — as _adjectives_,
+which is the whole of the offence above. "Agentic AI Systems" is the name of a
+service we sell and is exempt by name in the test; "our agentic approach" is not
+and never will be. See `docs/adr/0006-agentic-as-a-service-name.md`.
 **Banned:** "case study". We call the work **experiences** — the first is _The
 Picasso Experience_, for faayy.shop.
 **Banned:** invented statistics. No "+40% demo bookings" tiles, no metric

@@ -54,7 +54,23 @@ export default function ServicesRows({
   return (
     <Panel
       width={2}
-      className="grid-rows-[auto_auto_1fr_auto] md:grid-cols-[minmax(0,0.8fr)_auto_repeat(3,minmax(0,1fr))] md:grid-rows-[auto_1fr_auto] strip:grid-cols-1 strip:grid-rows-1 strip:bg-paper"
+      /*
+       * Both of the numbers that depend on how many offerings there are come
+       * from `rows.length`, not from a literal.
+       *
+       * They were `repeat(3, ...)` and `-200%`, correct for exactly three cells
+       * and silently wrong for any other count: a fourth offering flowed into an
+       * implicit column at `md`, and on the strip the stack travelled two
+       * windows out of three so the last cell never arrived. Derived, adding one
+       * is a content change again.
+       */
+      style={
+        {
+          "--svc-count": rows.length,
+          "--svc-travel": `${(rows.length - 1) * -100}%`,
+        } as React.CSSProperties
+      }
+      className="grid-rows-[auto_auto_1fr_auto] md:grid-cols-[minmax(0,0.8fr)_auto_repeat(var(--svc-count),minmax(0,1fr))] md:grid-rows-[auto_1fr_auto] strip:grid-cols-1 strip:grid-rows-1 strip:bg-paper"
     >
       {/*
         On the filmstrip the whole section holds still and the offerings move
@@ -159,21 +175,22 @@ export default function ServicesRows({
         {/*
           The travelling stack.
 
-          Below the strip both of these are `display: contents` and the three
-          cells are ordinary grid items — side by side at `md`, stacked on a
+          Below the strip both of these are `display: contents` and the cells are
+          ordinary grid items — side by side at `md`, stacked on a
           phone. On the strip the outer one becomes the window (one grid column,
-          panel-tall, clipping) and the inner one the film: three cells each the
-          full height of that window, so the stack is 300% of its own box.
+          panel-tall, clipping) and the inner one the film: every cell the full
+          height of that window, so the stack is `count x 100%` of its own box.
 
           It is driven by `--block-hold`, the pin's travel as 0→1, which is why
           the engine publishes a unitless number as well as a length. A
           percentage translate resolves against the element's *own* height, so
-          `-200%` of an `h-full` stack is exactly two windows: hold 0 shows the
-          first offering, 0.5 the second, 1 the third — and the moment the third
-          lands the pin runs out and the section leaves to the left.
+          the travel is `(count - 1) x -100%` — one window short of the stack,
+          because the last cell has to land rather than pass. Hold 0 shows the
+          first offering and hold 1 the last, and the moment the last lands the
+          pin runs out and the section leaves to the left.
         */}
         <div className="contents strip:relative strip:block strip:h-full strip:overflow-hidden">
-          <div className="contents strip:block strip:h-full strip:[transform:translate3d(0,calc(var(--block-hold,0)*-200%),0)] strip:will-change-transform">
+          <div className="contents strip:block strip:h-full strip:[transform:translate3d(0,calc(var(--block-hold,0)*var(--svc-travel)),0)] strip:will-change-transform">
             {rows.map((row, i) => (
               <Cell
                 key={row.index}

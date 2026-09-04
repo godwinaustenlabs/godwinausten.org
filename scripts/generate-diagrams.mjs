@@ -6,7 +6,7 @@
  * everything in `generate-tile-stills.mjs` — see
  * docs/adr/0003-no-third-party-imagery-shipped.md.
  *
- * ## 1. Service schematics — `diagrams/{mapping,swarm,integration}.svg`
+ * ## 1. Service schematics — `diagrams/{mapping,swarm,integration,micro,pipeline}.svg`
  *
  * These sit at the head of the three "How it gets built" cells on the home
  * page, above the claim. Each is a literal diagram of the offering under it: a
@@ -450,10 +450,110 @@ function tune() {
   );
 }
 
+/*
+ * 03 — Micro agents. One task each, and that is the whole drawing: a row of
+ * small self-contained units, every one a single input, a single body, a single
+ * output, with nothing running between them. The swarm above is about handoff;
+ * this is about the opposite — a bot that does one thing and stops, which is
+ * what makes it cheap to add and safe to remove.
+ */
+function micro() {
+  const random = rng(0x77c1);
+  const cols = 3;
+  const rows = 2;
+  const cellW = W / cols;
+  const cellH = H / rows;
+
+  const bodies = [];
+  const feeds = [];
+  const dots = [];
+
+  for (let r = 0; r < rows; r += 1) {
+    for (let c = 0; c < cols; c += 1) {
+      const cx = cellW * (c + 0.5);
+      const cy = cellH * (r + 0.5);
+      const w = 116 + random() * 26;
+      const h = 74 + random() * 20;
+
+      bodies.push(box(cx - w / 2, cy - h / 2, w, h));
+      // In on the left, out on the right, and nothing crossing to a neighbour.
+      feeds.push(line(cx - w / 2 - 54, cy, cx - w / 2, cy));
+      feeds.push(line(cx + w / 2, cy, cx + w / 2 + 54, cy));
+      dots.push(node(cx - w / 2 - 54, cy, 6));
+      dots.push(node(cx + w / 2 + 54, cy, 6));
+      // The one moving part inside each: a task, ticking.
+      dots.push(node(cx - 18 + random() * 36, cy, 8.5));
+    }
+  }
+
+  return svg(
+    "schematic: micro agents",
+    `<g stroke="${LINE}" fill="none">
+  <g stroke-width="3.2" opacity="0.85">${bodies.join("")}</g>
+  <path d="${feeds.join("")}" stroke-width="2.2" opacity="0.55"/>
+</g>
+<g fill="${LINE}" stroke="none" opacity="0.85">${dots.join("")}</g>`,
+  );
+}
+
+/*
+ * 04 — AI pipelines. A stage machine read left to right: source, three
+ * transforms, sink, with the work fanning out inside a stage and collapsing
+ * again at its mouth. The fan is the point — a pipeline is not a queue, it is a
+ * place where one record becomes many operations and then one record again.
+ */
+function pipeline() {
+  const random = rng(0x3b90);
+  const y = H * 0.5;
+  const stages = 4;
+  const x0 = W * 0.09;
+  const x1 = W * 0.91;
+  const step = (x1 - x0) / stages;
+
+  const spine = [];
+  const gates = [];
+  const fans = [];
+  const dots = [];
+
+  spine.push(line(x0, y, x1, y));
+
+  for (let i = 0; i <= stages; i += 1) {
+    const x = x0 + step * i;
+    dots.push(node(x, y, i === 0 || i === stages ? 11 : 7.5));
+    if (i === stages) break;
+
+    // Between each pair of gates the stream splits and rejoins.
+    const mid = x + step / 2;
+    const branches = 2 + Math.floor(random() * 2);
+    for (let bIndex = 0; bIndex < branches; bIndex += 1) {
+      const spread = (bIndex - (branches - 1) / 2) * (46 + random() * 18);
+      if (Math.abs(spread) < 1) continue;
+      fans.push(`M${r1(x)} ${r1(y)}Q${r1(mid)} ${r1(y + spread)} ${r1(x + step)} ${r1(y)}`);
+      dots.push(node(mid, y + spread * 0.78, 4.5));
+    }
+
+    // The gate itself: a narrow upright the stream passes through.
+    gates.push(line(x, y - 44, x, y + 44));
+  }
+
+  return svg(
+    "schematic: ai pipelines",
+    `<g stroke="${LINE}" fill="none">
+  <path d="${fans.join("")}" stroke-width="2.1" opacity="0.5"/>
+  <path d="${spine.join("")}" stroke-width="3.6" opacity="0.85"/>
+  <path d="${gates.join("")}" stroke-width="2.4" opacity="0.55"/>
+</g>
+<g fill="${LINE}" stroke="none" opacity="0.9">${dots.join("")}</g>`,
+    `0 ${r1(H * 0.22)} ${W} ${r1(H * 0.56)}`,
+  );
+}
+
 const FILES = [
   ["mapping", mapping],
   ["swarm", swarm],
   ["integration", integration],
+  ["micro", micro],
+  ["pipeline", pipeline],
   ["build", build],
   ["tune", tune],
 ];
