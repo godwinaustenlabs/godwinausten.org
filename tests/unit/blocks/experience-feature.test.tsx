@@ -59,13 +59,16 @@ describe("experience-feature", () => {
     expect(video).toHaveAttribute("preload", "none");
   });
 
-  it("lets the clip take the space the text does not need", () => {
+  it("shows the clip at 16:9 in every mode", () => {
     const { container } = render(<ExperienceFeature {...props} />);
-    // Not a fixed aspect: with one, the clip claimed its height first and the
-    // build facts fell off the bottom of the panel. A panel does not grow, so
-    // something has to give, and it should be the picture rather than the facts.
-    const media = container.querySelector('[class*="flex-1"][class*="min-h-0"]');
+    // Footage is 16:9 and is shown at 16:9 everywhere on this site. The cell
+    // used to take the leftover height on the filmstrip and crop the frame to
+    // whatever shape that produced; now the ratio is fixed and the notes below
+    // absorb the difference. The picture is the evidence, the notes are the
+    // caption, and if anything gives it should be the caption.
+    const media = container.querySelector('[class*="aspect-video"]');
     expect(media).toBeInTheDocument();
+    expect(media?.className).not.toContain("aspect-auto");
   });
 
   it("holds the placeholder reel still until the pointer arrives", () => {

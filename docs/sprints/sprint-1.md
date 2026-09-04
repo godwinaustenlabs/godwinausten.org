@@ -618,6 +618,33 @@ the rule `docs/adr/0003` already sets for this reference.
       browser reproduced faithfully and the schematic rendered two thirds the
       size its box allowed.
 
+### Added mid-sprint, nineteenth round (owner, 2026-09-04)
+
+- [x] **The service name is the big heading — the right heading this time.** The
+      previous round changed the mono eyebrows and left the display type saying
+      "A system, not an assistant." and three more like it. Those `claim` lines
+      are gone: the offering's name is the heading, set in display type, with the
+      index beside it, on the home page and on `/about`. The eyebrow bar went
+      with them — it was repeating in 11px what the heading says in 40 — which
+      also retires the bar-height fix the wrapping titles had needed.
+- [x] **"What we offer." is not a footer.** `justify-between` with a `flex-1`
+      lattice above it pinned the headline to the floor of a band-height panel,
+      where a line of display type across the foot of the page reads as a rule
+      rather than a title. The lattice takes a bounded share of the column now
+      and the pair sits together: the headline lands 40% down, level with the
+      offering beside it. On `/about` the headline is top-aligned in its cell for
+      the same reason.
+- [x] **Every video is a 16:9 _box_, not just a 16:9 picture.** The previous
+      round stopped the cropping with `object-contain`, which fixed the frame and
+      left ink letterbox around it. Both offending cells now hold the ratio
+      themselves: the case-study card is `aspect-video shrink-0` in both modes
+      with the notes taking the slack, and the VSL cell is `aspect-video
+    self-center` — `self-center` being the part that matters, because a
+      stretched grid item has a definite height and `aspect-ratio` is then a
+      suggestion the browser may ignore. Measured across seven page/viewport
+      pairs: every box and every video 1.78, and the case-study panel overflows
+      by 0.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

@@ -46,19 +46,21 @@ export function ExperienceCard({
       </div>
 
       {/*
-        A fixed aspect in vertical flow, the leftover height on the filmstrip.
+        16:9 in both modes, and the slack goes to the notes.
 
         `flex-1` alone distributes *free space*, and a panel whose height comes
-        from its own content has none to give — so on a phone the clip resolved
-        to **zero pixels tall** and the case study simply had no picture. On the
-        strip the panel is band-height, the free space is real, and `aspect-video`
-        is the wrong answer there: it claims its height first and pushes the
-        notes off the bottom of a panel that cannot grow.
+        from its own content has none to give — so on a phone the clip once
+        resolved to **zero pixels tall** and the case study simply had no
+        picture. The fix then was `aspect-video` in flow and `flex-1` on the
+        strip, which cost the strip its ratio: a band-height cell cropped the
+        frame to fill itself.
 
-        Each mode gets the rule that suits it rather than one rule that is wrong
-        in one of them.
+        A fixed ratio everywhere, with `shrink-0` so it keeps its height, and the
+        notes below taking whatever is left. That is the right way round — the
+        picture is the evidence and the notes are the caption, so if anything has
+        to give it is the caption.
       */}
-      <div className="relative aspect-video w-full overflow-hidden strip:aspect-auto strip:min-h-0 strip:flex-1">
+      <div className="relative aspect-video w-full shrink-0 overflow-hidden">
         <Reel label={videoLabel} src={src} />
       </div>
 

@@ -12,19 +12,6 @@ export const servicesRowsSchema = z.object({
         title: z.string().min(1),
         detail: z.string().min(1),
         /**
-         * The offering stated as a claim, in display type, above the detail.
-         *
-         * `title` names the category — "Workflow Mapping" — which is accurate
-         * and indistinguishable from any other agency's service list. This is
-         * the position you could disagree with: what it does for the reader,
-         * short enough to set large.
-         *
-         * Optional, because the cell has to survive without one: on a sub-route
-         * the same block carries a plain list where a claim per row would be
-         * three assertions about nothing.
-         */
-        claim: z.string().optional(),
-        /**
          * Schematic of this offering, drawn in the slack above the claim.
          *
          * Optional and independent of `claim` — see

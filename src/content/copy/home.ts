@@ -74,8 +74,6 @@ const homeCopySchema = z.object({
           index: z.string(),
           title: z.string(),
           detail: z.string(),
-          /** The offering as a claim, set in display type above the detail. */
-          claim: z.string().optional(),
           /** Schematic of this offering. See scripts/generate-diagrams.mjs. */
           figure: z.string().optional(),
         }),
@@ -166,7 +164,6 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
         title: "Full Agentic AI Systems",
         detail:
           "The whole operation, not a chatbot on top of it. Agents that hold context, take decisions inside your rules, and hand off to each other and to a person.",
-        claim: "A system, not an assistant.",
         figure: "/assets/diagrams/swarm.svg",
       },
       {
@@ -174,7 +171,6 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
         title: "Micro Agents / Bots for Particular Task Automation",
         detail:
           "One task, done properly, live in a week. The cheapest thing we build and usually the first — small enough to add without a project and to remove without one.",
-        claim: "One job each, and they stop.",
         figure: "/assets/diagrams/micro.svg",
       },
       {
@@ -182,7 +178,6 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
         title: "AI Powered Pipelines",
         detail:
           "Work that arrives in a queue and leaves finished: enrich, classify, draft, route. The volume nobody wants to look at, handled before anyone has to.",
-        claim: "In one end, done at the other.",
         figure: "/assets/diagrams/pipeline.svg",
       },
       {
@@ -190,7 +185,6 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
         title: "Custom Solutions for SaaS and Enterprises",
         detail:
           "Inside your product or inside your stack. AI features your customers use, or systems wired through the CRM, the helpdesk and the compliance path you already run.",
-        claim: "Built into what you already have.",
         figure: "/assets/diagrams/integration.svg",
       },
     ],

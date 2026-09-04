@@ -53,7 +53,14 @@ export default function VslPanel({
 
       <TileCell tone="ink" label={videoLabel} className="hidden w-16 md:flex" />
 
-      <MediaCell className="col-span-full aspect-video bg-ink md:col-span-1 md:aspect-auto">
+      {/*
+        16:9 at every width. It was `md:aspect-auto` — the cell stretched to fill
+        its `1fr` row and cropped the film to whatever shape that came out as.
+        `self-center` is what lets the ratio hold: a grid item stretches by
+        default, and a stretched item's height is definite, which makes
+        `aspect-ratio` a suggestion the browser is entitled to ignore.
+      */}
+      <MediaCell className="col-span-full aspect-video self-center bg-ink md:col-span-1">
         {/*
           `src` is resolved from R2 at compose time, so it is a string once the
           owner has uploaded the cut and absent until then — see

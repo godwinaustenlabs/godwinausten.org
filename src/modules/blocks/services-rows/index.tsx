@@ -121,7 +121,19 @@ export default function ServicesRows({
           // Without the lattice there is nothing above the headline to hold it
           // down, so bottom-aligning it left the cell top-heavy with empty
           // paper. Centred, it sits in the middle of the space it is given.
-          bodyClassName={lattice ? "justify-between gap-6" : "justify-center"}
+          /*
+            The headline sits under the lattice, not on the floor.
+
+            `justify-between` with a `flex-1` lattice above it pushed the
+            headline to the very bottom of a band-height panel, where a line of
+            display type across the foot of the page reads as a footer rule
+            rather than as the title of what is beside it. The lattice takes a
+            bounded share of the column now and the pair sits together near the
+            top, which is where a heading introduces something.
+          */
+          bodyClassName={
+            lattice ? "justify-start gap-[clamp(1.5rem,4vh,2.75rem)]" : "justify-center"
+          }
         >
           {/* The lattice, in the space above the headline: a stack of dots that
               becomes a cube, a knot, then a network. It runs on the *hold*, so
@@ -134,7 +146,11 @@ export default function ServicesRows({
             frame and never moves. `display: none` also parks its
             `IntersectionObserver`, so it costs nothing there.
           */}
-          {lattice ? <ScrollMorph className="hidden min-h-0 flex-1 md:block" /> : null}
+          {lattice ? (
+            // A share of the column, not all of the slack. `flex-1` let it grow
+            // to whatever was left, which is what put the headline on the floor.
+            <ScrollMorph className="hidden min-h-0 shrink-0 grow-0 basis-[34%] md:block" />
+          ) : null}
 
           <h2 className="shrink-0 font-display text-[clamp(1.85rem,3.2vw,3.25rem)] leading-[0.95] font-bold text-ink">
             {headline}
@@ -199,30 +215,20 @@ export default function ServicesRows({
             {rows.map((row, i) => (
               <Cell
                 key={row.index}
-                eyebrow={row.title}
-                index={row.index}
                 /*
-                  The seam between offerings is the grid's gap in flow, but
-                  inside the clipping window there is no grid — so the second and
-                  third draw their own. The first must not: its top edge is
-                  already against the eyebrow bar's seam.
-                */
-                /*
-                  A common floor under the eyebrow bars.
+                  No eyebrow bar.
 
-                  The offerings are separate grid cells, so each bar is only as
-                  tall as its own title — one line here, three there — and the
-                  body copy underneath then starts at a different height in every
-                  cell. Side by side that reads as four cards that do not line
-                  up. A minimum tall enough for the longest title puts every
-                  bar's seam on the same line and every paragraph on the same
-                  baseline. Only from `md`: stacked on a phone there is no
-                  neighbour to line up with, and the space would just be empty.
+                  The offering's name is the heading now, set in display type
+                  where it can be read, so a mono bar repeating it above was the
+                  same words twice at two sizes. The index moves into the body
+                  beside the heading, which also retires the bar-height problem
+                  those wrapping titles had created.
+
+                  The seam between offerings is the grid's gap in flow, but
+                  inside the clipping window there is no grid — so every one
+                  after the first draws its own.
                 */
-                className={cn(
-                  "strip:h-full md:[&>.cell-bar]:min-h-[4.25rem]",
-                  i > 0 && "strip:border-t strip:border-hairline",
-                )}
+                className={cn("strip:h-full", i > 0 && "strip:border-t strip:border-hairline")}
                 /*
                   Stacked in flow, laid across on the strip.
 
@@ -234,7 +240,7 @@ export default function ServicesRows({
                   rest at full height.
                 */
                 bodyClassName={cn(
-                  row.claim || row.figure ? "justify-between gap-8" : "justify-end",
+                  "justify-between gap-8",
                   "strip:flex-row strip:items-center strip:justify-between strip:gap-[5vw]",
                 )}
               >
@@ -262,20 +268,20 @@ export default function ServicesRows({
                 ) : null}
 
                 <div className="shrink-0 strip:order-1 strip:max-w-[34ch]">
-                  {row.claim ? (
-                    <>
-                      {/*
-                        The accent, and the only colour in the row. Same rule and
-                        proportion as the lead-magnet cover, so the two read as
-                        one system rather than two ideas about where lime is
-                        allowed.
-                      */}
-                      <span aria-hidden="true" className="mb-5 block h-1.5 w-10 bg-signal" />
-                      <h3 className="mb-5 max-w-[14ch] font-display text-[clamp(1.75rem,2.9vw,2.75rem)] leading-[1.02] font-bold text-balance text-ink">
-                        {row.claim}
-                      </h3>
-                    </>
-                  ) : null}
+                  {/*
+                    The accent, and the only colour in the row. Same rule and
+                    proportion as the lead-magnet cover, so the two read as one
+                    system rather than two ideas about where lime is allowed.
+                  */}
+                  <span aria-hidden="true" className="mb-5 block h-1.5 w-10 bg-signal" />
+                  <div className="mb-5 flex items-baseline gap-3">
+                    <Label tone="ink" className="shrink-0 opacity-30">
+                      {row.index}
+                    </Label>
+                    <h3 className="max-w-[16ch] font-display text-[clamp(1.6rem,2.7vw,2.5rem)] leading-[1.02] font-bold text-balance text-ink">
+                      {row.title}
+                    </h3>
+                  </div>
                   <p className="max-w-[32ch] font-sans text-base leading-relaxed text-soft">
                     {row.detail}
                   </p>
@@ -327,7 +333,15 @@ function ServiceSections({
         <Label>{eyebrow}</Label>
       </div>
 
-      <Cell className="col-span-full" bodyClassName="justify-center">
+      {/*
+        The headline opens the list; it does not sit in a band of its own.
+
+        Centred in a full-width cell with a seam under it, it read as a footer
+        rule — a strip of big type between two sections rather than the top of
+        one. Aligned to the top of its cell with the space taken out from under
+        it, it sits directly above the first offering and belongs to it.
+      */}
+      <Cell className="col-span-full" bodyClassName="justify-start pb-0">
         <h2 className="max-w-[18ch] font-display text-[clamp(2rem,4.6vw,3.75rem)] leading-[0.95] font-bold text-ink">
           {headline}
         </h2>

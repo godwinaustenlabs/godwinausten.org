@@ -26,16 +26,13 @@ describe("services-rows", () => {
     }
   });
 
-  it("gives each offering its own cell so the three line up against each other", () => {
+  it("gives each offering its own cell so they line up against each other", () => {
     const { container } = render(<ServicesRows {...props} />);
     // The comparison is the point of the section, and it only works if the
-    // eyebrow bars align, which they only do if each is its own cell.
+    // offerings are siblings on one grid rather than one cell of stacked text.
     expect(container.querySelectorAll(".cell").length).toBeGreaterThanOrEqual(
       props.rows.length + 1,
     );
-    for (const row of props.rows) {
-      expect(screen.getByText(row.title).closest(".cell-bar")).not.toBeNull();
-    }
   });
 
   it("only draws the lattice where a composition asks for it", () => {
@@ -49,39 +46,32 @@ describe("services-rows", () => {
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
-  it("sets the claim, not the category, as the thing you read first", () => {
-    // `title` names the offering — "Workflow Mapping" — which any agency could
-    // write. The claim is the position under it, and it is the reason someone
-    // reads the paragraph. It carries the heading, so it wins the reading order
-    // even though the eyebrow sits physically above it.
-    const withClaims = {
-      ...props,
-      rows: props.rows.map((row, i) => ({ ...row, claim: `Claim number ${i}.` })),
-    };
-    render(<ServicesRows {...withClaims} />);
-    for (let i = 0; i < props.rows.length; i += 1) {
-      expect(
-        screen.getByRole("heading", { level: 3, name: `Claim number ${i}.` }),
-      ).toBeInTheDocument();
+  it("sets the offering's name as the heading, in display type", () => {
+    // The name is the thing the reader came for, so it is the heading and not a
+    // mono caption over one. It used to be both — a bar repeating in 11px what
+    // the heading said in 40 — and the heading itself carried a positioning
+    // line instead, which is a sentence about us where a label was wanted.
+    render(<ServicesRows {...props} />);
+    for (const row of props.rows) {
+      expect(screen.getByRole("heading", { level: 3, name: row.title })).toBeInTheDocument();
     }
   });
 
-  it("leaves the cell alone when a composition supplies no claim", () => {
-    // Optional on purpose: /about runs the same block as a plain list, where a
-    // claim per row would be three assertions about nothing.
-    render(<ServicesRows {...props} />);
-    expect(screen.queryAllByRole("heading", { level: 3 })).toHaveLength(0);
+  it("spends the accent once per offering and nowhere else", () => {
+    // Lime is the site's one accent and the brief rations it. One rule per
+    // offering is the whole budget for this section — see docs/brief.md.
+    const { container } = render(<ServicesRows {...props} />);
+    expect(container.querySelectorAll(".bg-signal")).toHaveLength(props.rows.length);
   });
 
-  it("spends the accent once per claim and nowhere else", () => {
-    // Lime is the site's one accent and the brief rations it. One rule per
-    // claim is the whole budget for this section — see docs/brief.md.
-    const withClaims = {
-      ...props,
-      rows: props.rows.map((row) => ({ ...row, claim: "A claim." })),
-    };
-    const { container } = render(<ServicesRows {...withClaims} />);
-    expect(container.querySelectorAll(".bg-signal")).toHaveLength(props.rows.length);
+  it("lays the offerings out as sections when a composition asks for it", () => {
+    // `/about` is read, not travelled. Four columns of small print made the
+    // services the least prominent thing on the page that describes them.
+    render(<ServicesRows {...props} display="sections" />);
+    for (const row of props.rows) {
+      expect(screen.getByRole("heading", { level: 3, name: row.title })).toBeInTheDocument();
+      expect(screen.getByText(row.detail)).toBeInTheDocument();
+    }
   });
 
   it("hands off to the next section", () => {
