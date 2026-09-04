@@ -44,6 +44,7 @@ const aboutCopySchema = z.object({
         }),
       )
       .min(1),
+    cta: z.object({ label: z.string(), href: z.string() }),
   }),
   method: z.object({
     index: z.string(),
@@ -114,30 +115,31 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
         title: "Full Agentic AI Systems",
         figure: "/assets/diagrams/swarm.svg",
         detail:
-          "The whole operation, not a chatbot on top of it. Agents that hold context, take decisions inside your rules, and hand off to each other and to a person when the call is not theirs to make.",
+          "We will build you the whole operation: agents that hold context, decide inside your rules, and hand off to each other and to a person. A system, not a chatbot on top of one.",
       },
       {
         index: "02",
         title: "Micro Agents & Bots for Task Automation",
         figure: "/assets/diagrams/micro.svg",
         detail:
-          "One task, done properly, live in a week. The cheapest thing we build and usually the first — small enough to add without a project and to remove without one.",
+          "We will take one task off your team and have it live in a week. You get one bot that does that job and stops — cheap to add without a project, simple to remove.",
       },
       {
         index: "03",
         title: "AI Powered Pipelines",
         figure: "/assets/diagrams/pipeline.svg",
         detail:
-          "Work that arrives in a queue and leaves finished: enrich, classify, draft, route. The volume nobody wants to look at, handled before anyone has to.",
+          "We will build the line that takes work in at one end and returns it finished: enriched, classified, drafted, routed. The volume nobody wants to look at, handled.",
       },
       {
         index: "04",
         title: "Custom Solutions for SaaS and Enterprises",
         figure: "/assets/diagrams/integration.svg",
         detail:
-          "Inside your product or inside your stack. AI features your customers use, or systems wired through the CRM, the helpdesk and the compliance path you already run.",
+          "We will build it inside your product or your stack. You get AI features your customers use, wired through the CRM, helpdesk and compliance path you already run.",
       },
     ],
+    cta: { label: "Contact us", href: "/contact" },
   },
   method: {
     index: "02",

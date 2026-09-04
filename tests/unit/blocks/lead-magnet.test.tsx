@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LeadMagnet from "@/modules/blocks/lead-magnet";
+import { MARK_CHROME_PARTS } from "@/components/layout/mark-chrome-parts";
 
 const props = {
   index: "04",
@@ -9,7 +10,6 @@ const props = {
   kicker: "Free, and actually useful",
   headline: "The worksheet we run on day one.",
   body: "The same worksheet we run on day one of every engagement.",
-  cover: { title: "What to automate first", format: "PDF — 9 pages" },
   cta: "Download it free",
   prompt: "Where do we send it?",
   placeholder: "you@company.com",
@@ -57,13 +57,14 @@ describe("lead-magnet", () => {
     expect(field).toBeRequired();
   });
 
-  it("draws the guide as an object, with its title and format on it", () => {
+  it("puts the price first, in the accent", () => {
     render(<LeadMagnet {...props} />);
-    // The offer has to be legible as a *thing you receive* at a glance. As a
-    // mono eyebrow and a sentence it read as another content section.
-    expect(screen.getByText(props.cover.title)).toBeInTheDocument();
-    expect(screen.getByText(props.cover.format)).toBeInTheDocument();
+    // The offer has to be legible as a *thing you receive* at a glance, and the
+    // first thing said about it is that it costs nothing. A drawn "cover" used
+    // to carry the title and format here; it was an imitation of a document
+    // beside a real download, and the copy already says both.
     expect(screen.getByText(props.kicker)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: props.headline })).toBeInTheDocument();
   });
 
   it("makes the submit a filled block, not a text link", async () => {
@@ -71,6 +72,22 @@ describe("lead-magnet", () => {
     // The page's one conversion, and the only filled accent on it.
     const button = screen.getByRole("button", { name: props.submit });
     expect(button.className).toContain("bg-signal");
+  });
+
+  it("paints the mark as one layer per part, out of the accessibility tree", () => {
+    /*
+     * The three shapes are separate files so each can back away from the pointer
+     * on its own. They only reassemble into the mark because every layer is the
+     * same box at the same size — a test that one of them has been given its own
+     * geometry is worth more than a test that three divs exist.
+     */
+    const { container } = render(<LeadMagnet {...props} />);
+    const layers = [...container.querySelectorAll<HTMLElement>('div[style*="mark-chrome"]')];
+    expect(layers).toHaveLength(MARK_CHROME_PARTS.length);
+    expect(new Set(layers.map((layer) => layer.className)).size).toBe(1);
+    for (const layer of layers) {
+      expect(layer.closest('[aria-hidden="true"]')).not.toBeNull();
+    }
   });
 
   it("carries a honeypot no real visitor can reach", async () => {

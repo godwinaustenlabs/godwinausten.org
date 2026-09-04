@@ -416,3 +416,91 @@
       1px 100%;
   }
 }
+
+@layer components {
+  /*
+   * The pointer.
+   *
+   * `data-cursor` is set by `Cursor.tsx` after it has confirmed a fine pointer,
+   * so every rule here is inert until something is actually drawn in the native
+   * cursor's place. No JavaScript, a touch screen, or the component failing to
+   * mount all leave the visitor with an ordinary arrow rather than with nothing.
+   *
+   * The descendant selector is deliberate: plenty of elements set a cursor of
+   * their own — links, buttons, the scrubber — and hiding it on `html` alone
+   * would leave the arrow reappearing over exactly the things worth pointing at.
+   */
+  :root[data-cursor="custom"],
+  :root[data-cursor="custom"] * {
+    cursor: none;
+  }
+
+  /*
+   * Text fields are the exception. A caret says where the next character goes;
+   * a dot hovering near the field does not, and this site asks for an email
+   * address on the one control that has to convert.
+   */
+  :root[data-cursor="custom"] :is(input, textarea, select, [contenteditable]) {
+    cursor: text;
+  }
+
+  .cursor-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms linear;
+
+    /*
+     * The whole trick. Painted white and differenced against the page, the dot
+     * and the ring come out as the inverse of whatever they are over — dark on
+     * paper, light on an ink cell, legible over the film and the photographs —
+     * without anything having to know which is which.
+     */
+    mix-blend-mode: difference;
+  }
+
+  .cursor-layer[data-visible="true"] {
+    opacity: 1;
+  }
+
+  /* Hidden over a text field, where the native caret is doing the work. */
+  .cursor-layer[data-state="text"] {
+    opacity: 0;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 9999px;
+    /* Centred on the point, so the transform can be the raw client coordinate. */
+    translate: -50% -50%;
+    will-change: transform;
+  }
+
+  .cursor-dot {
+    width: 7px;
+    height: 7px;
+    background-color: #ffffff;
+  }
+
+  .cursor-ring {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #ffffff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /*
+     * The ring still draws — it is the shape, not the animation — but it is
+     * pinned to the pointer in JavaScript rather than chasing it, and the
+     * opacity fade goes with everything else the base layer neutralises.
+     */
+    .cursor-layer {
+      transition: none;
+    }
+  }
+}

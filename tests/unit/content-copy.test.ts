@@ -105,7 +105,7 @@ describe("site copy", () => {
   it("hands every panel off to the one after it", () => {
     // The connective tissue. A reader is never at the foot of a section
     // wondering whether the page is over, and the indices run in order.
-    const chain = [homeCopy.experience, homeCopy.services, homeCopy.magnet, homeCopy.vsl];
+    const chain = [homeCopy.services, homeCopy.experience, homeCopy.magnet, homeCopy.vsl];
     for (const [i, section] of chain.entries()) {
       const following = chain[i + 1];
       expect(Number(section.next.index), section.eyebrow).toBe(Number(section.index) + 1);

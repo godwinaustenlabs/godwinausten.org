@@ -1,3 +1,4 @@
+import { SiteLink } from "@/modules";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/Label";
 import { Panel } from "@/components/ui/Panel";
@@ -51,9 +52,12 @@ export default function ServicesRows({
   next,
   lattice,
   display,
+  cta,
 }: ServicesRowsProps) {
   if (display === "sections") {
-    return <ServiceSections index={index} eyebrow={eyebrow} headline={headline} rows={rows} />;
+    return (
+      <ServiceSections index={index} eyebrow={eyebrow} headline={headline} rows={rows} cta={cta} />
+    );
   }
 
   return (
@@ -75,7 +79,18 @@ export default function ServicesRows({
           "--svc-travel": `${(rows.length - 1) * -100}%`,
         } as React.CSSProperties
       }
-      className="grid-rows-[auto_auto_1fr_auto] md:grid-cols-[minmax(0,0.8fr)_auto_repeat(var(--svc-count),minmax(0,1fr))] md:grid-rows-[auto_1fr_auto] strip:grid-cols-1 strip:grid-rows-1 strip:bg-paper"
+      /*
+        The headline track carries a floor.
+
+        `0.8fr` against `repeat(--svc-count, 1fr)` is a *share*, and on a narrow
+        desktop that share is 180px — a column too narrow to set a display word
+        in at any size, where "addresses." broke across the middle of the word.
+        `min(18rem, 26vw)` is the width below which the heading stops being
+        typography; the `min` keeps it from ever claiming more of a small window
+        than the offerings can spare, and above about 1400px the natural share is
+        larger anyway, so nothing on the wide pages moves.
+      */
+      className="grid-rows-[auto_auto_1fr_auto] md:grid-cols-[minmax(min(18rem,26vw),0.8fr)_auto_repeat(var(--svc-count),minmax(0,1fr))] md:grid-rows-[auto_1fr_auto] strip:grid-cols-1 strip:grid-rows-1 strip:bg-paper"
     >
       {/*
         On the filmstrip the whole section holds still and the offerings move
@@ -142,9 +157,27 @@ export default function ServicesRows({
           */}
           {lattice ? <ScrollMorph className="hidden min-h-0 flex-1 md:block" /> : null}
 
-          <h2 className="shrink-0 font-display text-[clamp(2.25rem,4vw,4.25rem)] leading-[0.92] font-bold text-ink">
-            {headline}
-          </h2>
+          {/*
+            The heading is sized by *this column*, not by the window.
+
+            It used to be a plain `4vw` clamp, which is only right when the
+            column is a fixed share of the viewport — and it is not. The track is
+            `0.8fr` against `repeat(--svc-count, 1fr)`, so the same 4vw lands in
+            a 491px column on a page with the offerings and a 294px one on
+            `/contact`. There "addresses." came out 302px wide in a 214px box and
+            hung 88px over the seam into the cell beside it.
+
+            `min(4vw, …cqi)` keeps the window-sized figure wherever the column is
+            roomy and only takes over when it is not, so nothing about the wider
+            pages changes. `break-words` is the backstop: it costs nothing until
+            a single word cannot fit at any size, and then it breaks rather than
+            spills — copy is edited far more often than this file.
+          */}
+          <div className="@container shrink-0">
+            <h2 className="font-display text-[clamp(2rem,min(4vw,19cqi),4.25rem)] leading-[0.92] font-bold break-words text-ink">
+              {headline}
+            </h2>
+          </div>
         </Cell>
 
         {/* The bar the offerings pass behind. */}
@@ -268,18 +301,55 @@ export default function ServicesRows({
                     <Label tone="ink" className="shrink-0 opacity-30">
                       {row.index}
                     </Label>
-                    <h3 className="max-w-[15ch] font-display text-[clamp(2rem,3.6vw,3.4rem)] leading-[0.98] font-bold text-balance text-ink">
-                      {row.title}
-                    </h3>
+                    {/*
+                      Sized by the space it actually has, for the same reason the
+                      section heading is: these tracks are `1fr` of whatever is
+                      left over, so a window-sized figure has no idea how much
+                      room it is in, and "Everything" ran out of its column at
+                      900px.
+
+                      The `@container` is on the wrapper, never on the heading.
+                      An element that declares a container is not its own query
+                      container, and `container-type: inline-size` also stops its
+                      width being decided by its content — put on the `h3` itself
+                      it collapsed to nothing, and `break-words` then set the
+                      title one letter per line.
+                    */}
+                    <div className="@container min-w-0 flex-1">
+                      <h3 className="max-w-[15ch] font-display text-[clamp(1.6rem,min(3.6vw,16cqi),3.4rem)] leading-[0.98] font-bold text-balance break-words text-ink">
+                        {row.title}
+                      </h3>
+                    </div>
                   </div>
-                  <p className="max-w-[34ch] font-sans text-base leading-relaxed text-soft lg:text-lg">
+                  {/* The detail opens with an address, and an address is one
+                      unbreakable token. In a narrow column it hung over the seam
+                      exactly the way the headings did. */}
+                  <p className="max-w-[34ch] font-sans text-base leading-relaxed break-words text-soft lg:text-lg">
                     {row.detail}
                   </p>
+
+                  {/*
+                    One button per offering — and, on a phone, one button.
+
+                    Stacked, the four cells become four sections of a scroll, and
+                    the same "Contact us" four times in a column is a page
+                    nagging rather than offering. Hidden below `md` and rendered
+                    once under the whole section instead. Side by side there is
+                    no repetition to feel: each button belongs to the offering
+                    above it and there is only ever one in view.
+                  */}
+                  {cta ? <ServiceCta cta={cta} className="mt-7 hidden md:inline-flex" /> : null}
                 </div>
               </Cell>
             ))}
           </div>
         </div>
+
+        {cta ? (
+          <div className="cell col-span-full px-gutter py-6 md:hidden">
+            <ServiceCta cta={cta} className="w-full justify-center" />
+          </div>
+        ) : null}
 
         {next ? (
           <div className="cell col-span-full hidden md:flex">
@@ -313,7 +383,8 @@ function ServiceSections({
   eyebrow,
   headline,
   rows,
-}: Pick<ServicesRowsProps, "index" | "eyebrow" | "headline" | "rows">) {
+  cta,
+}: Pick<ServicesRowsProps, "index" | "eyebrow" | "headline" | "rows" | "cta">) {
   return (
     <Panel className="grid-rows-[auto_auto]">
       <div className="cell col-span-full flex-row items-center gap-4 px-gutter py-3">
@@ -358,6 +429,12 @@ function ServiceSections({
             <p className="mt-4 max-w-[52ch] font-sans text-base leading-relaxed text-soft md:ms-[calc(1.5rem+1ch)] lg:text-lg">
               {row.detail}
             </p>
+            {cta ? (
+              <ServiceCta
+                cta={cta}
+                className="mt-6 hidden md:ms-[calc(1.5rem+1ch)] md:inline-flex"
+              />
+            ) : null}
           </div>
 
           {row.figure ? (
@@ -372,6 +449,43 @@ function ServiceSections({
           ) : null}
         </div>
       ))}
+
+      {cta ? (
+        <div className="cell col-span-full px-gutter py-6 md:hidden">
+          <ServiceCta cta={cta} className="w-full justify-center" />
+        </div>
+      ) : null}
     </Panel>
+  );
+}
+
+/**
+ * The offering's call to action.
+ *
+ * Outlined rather than filled: the lead magnet's download is the page's one
+ * filled accent and the brief rations lime to it (docs/brief.md). Four filled
+ * buttons here would take that budget and spend it on the section before the
+ * offer.
+ */
+function ServiceCta({
+  cta,
+  className,
+}: {
+  cta: NonNullable<ServicesRowsProps["cta"]>;
+  className?: string;
+}) {
+  return (
+    <SiteLink
+      href={cta.href}
+      className={cn(
+        "group/cta inline-flex items-center gap-3 border border-ink/25 px-5 py-3 font-sans text-sm font-medium text-ink transition-colors hover:border-ink hover:bg-ink hover:text-paper",
+        className,
+      )}
+    >
+      {cta.label}
+      <span aria-hidden="true" className="transition-transform group-hover/cta:translate-x-0.5">
+        →
+      </span>
+    </SiteLink>
   );
 }

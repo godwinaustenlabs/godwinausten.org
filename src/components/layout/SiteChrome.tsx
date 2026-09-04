@@ -1,6 +1,7 @@
 import { SiteLink } from "@/modules";
 import { Label } from "@/components/ui/Label";
 import { siteCopy } from "@/content/copy/site";
+import { RouteLabel } from "./RouteLabel";
 
 /**
  * The site chrome: a fixed bar at the top and another at the bottom.
@@ -41,7 +42,7 @@ export function SiteChrome({ mainId }: { mainId: string }) {
       </a>
 
       {/*
-       * The top bar carries the wordmark and nothing else.
+       * The top bar carries the wordmark and the route it is on.
        *
        * All navigation is in the bottom rail. Two rows of links competing at
        * opposite ends of the screen is one row too many, and a bar with a single
@@ -49,13 +50,30 @@ export function SiteChrome({ mainId }: { mainId: string }) {
        * point of the top of the page.
        */}
       <header className="fixed inset-x-0 top-0 z-40 flex h-[var(--chrome-top)] items-center justify-between gap-4 border-b border-hairline bg-paper px-gutter">
-        <SiteLink href="/">
-          <Label tone="ink" className="font-medium">
-            {siteCopy.wordmark}
-          </Label>
-        </SiteLink>
+        <div className="flex min-w-0 items-baseline gap-3 sm:gap-4">
+          <SiteLink href="/">
+            {/*
+              Larger than a `Label`'s 11px.
 
-        <span aria-hidden="true" className="size-2 rounded-full bg-signal" />
+              It is the only mark in the bar and it was set at caption size,
+              which made the signature the smallest type on the page. At 20px it
+              still reads as mono chrome rather than as a heading, and it is the
+              first thing the eye finds instead of the last. The tracking comes
+              down as the size goes up — mono letter-spacing that flatters 11px
+              pulls a 20px line apart, and on a phone it would run into the dot.
+            */}
+            <Label
+              tone="ink"
+              className="text-[1.05rem] font-medium tracking-[0.1em] whitespace-nowrap sm:text-[1.25rem] sm:tracking-[0.13em]"
+            >
+              {siteCopy.wordmark}
+            </Label>
+          </SiteLink>
+
+          <RouteLabel />
+        </div>
+
+        <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-signal" />
       </header>
 
       {/* The rail. Every route on the site, evenly spread. Seams are drawn as
@@ -65,14 +83,21 @@ export function SiteChrome({ mainId }: { mainId: string }) {
         aria-label="Primary"
         className="fixed inset-x-0 bottom-0 z-40 h-[var(--chrome-bottom)] border-t border-hairline bg-paper"
       >
+        {/*
+          The gutter is a page margin and it is too wide for a quarter of a
+          narrow screen: four cells each inset by it left the labels with less
+          room than the words needed, and they clipped. The inset scales with
+          the cell here instead, and `truncate` guarantees the failure mode is an
+          ellipsis rather than a letter sliced down the middle.
+        */}
         <ul className="grid h-full grid-cols-2 gap-px bg-hairline sm:grid-cols-4">
           {siteCopy.nav.map((item) => (
-            <li key={item.label} className="bg-paper">
+            <li key={item.label} className="min-w-0 bg-paper">
               <SiteLink
                 href={item.href}
-                className="label flex h-full items-center px-gutter text-soft transition-colors hover:text-ink focus-visible:text-ink"
+                className="label flex h-full items-center px-[clamp(0.85rem,3vw,var(--gutter))] text-soft transition-colors hover:text-ink focus-visible:text-ink"
               >
-                {item.label}
+                <span className="truncate">{item.label}</span>
               </SiteLink>
             </li>
           ))}

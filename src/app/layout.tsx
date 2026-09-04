@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { RouteTransition } from "@/modules";
+import { Cursor } from "@/components/layout/Cursor";
 import { site } from "@/lib/site";
 import { publicEnv } from "@/lib/env";
 import "@/styles/globals.css";
@@ -72,6 +73,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
          * in a route's own tree it would be torn down mid-transition.
          */}
         <RouteTransition>{children}</RouteTransition>
+
+        {/*
+         * Last child of `body`, outside every transform on the page.
+         *
+         * It blends with `difference`, and a blend only sees the backdrop inside
+         * its own stacking context — mounted inside the stage it would invert
+         * against one panel instead of against the page, and a transformed
+         * ancestor would drag it around with the filmstrip.
+         */}
+        <Cursor />
       </body>
     </html>
   );

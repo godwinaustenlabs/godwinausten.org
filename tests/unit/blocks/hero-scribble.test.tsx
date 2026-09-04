@@ -35,12 +35,14 @@ describe("hero-scribble", () => {
     );
   });
 
-  it("paints the figure twice so it reads with depth", () => {
+  it("paints the figure in three passes off one asset", () => {
     const { container } = render(<HeroScribble {...props} />);
-    // Two layers of the *same* asset at different scales and rates. Cutting the
-    // trace into separate depth-plane files broke evenodd hole cancellation and
-    // filled the hand in solid; this costs one fetch and renders correctly.
-    expect(container.querySelectorAll("[data-layer]")).toHaveLength(2);
+    // Two ink passes at different scales and rates for depth, and one gradient
+    // pass over them so colour runs through the tangle. All three are the
+    // *same* asset: cutting the trace into separate files broke evenodd hole
+    // cancellation and filled the hand in solid, so every pass is one mask over
+    // one cached URL and costs one fetch between them.
+    expect(container.querySelectorAll("[data-layer]")).toHaveLength(3);
   });
 
   it("keeps the figure out of the accessibility tree", () => {

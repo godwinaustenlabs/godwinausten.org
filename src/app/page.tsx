@@ -14,11 +14,16 @@ import { experienceBySlug } from "@/content/work/experiences";
  *
  * ## The order is the argument
  *
- * hook → proof → mechanism → **the ask** → the long version → a breath → contact.
+ * hook → mechanism → proof → **the ask** → the long version → a breath → contact.
+ *
+ * Mechanism before proof, at the owner's call. What we offer is the question a
+ * cold reader actually arrives with, and the build then reads as evidence for a
+ * claim they have already been given rather than as a case study for a company
+ * they cannot yet describe.
  *
  * The opt-in is 03 and the video is 04, not the other way round. By the ask the
- * reader has seen one thing we built and how we build it; what we then request
- * is one field with no call attached.
+ * reader has seen how we build and one thing we built; what we then request is
+ * one field with no call attached.
  *
  * This is the only route that runs as a horizontal filmstrip. `/work`,
  * `/about` and `/contact` are ordinary vertical documents — which is also why
@@ -50,20 +55,20 @@ async function homeComposition() {
   return composePage("home", [
     block("hero", "hero-scribble", { ...homeCopy.hero, figure: FIGURE }),
     block(
-      "experience",
-      "experience-feature",
-      { ...homeCopy.experience, card: { ...homeCopy.experience.card, src: reel } },
-      { anchor: "experience" },
-    ),
-    block(
       "services",
       "services-rows",
       { ...homeCopy.services, lattice: true },
       { anchor: "expertise" },
     ),
+    block(
+      "experience",
+      "experience-feature",
+      { ...homeCopy.experience, card: { ...homeCopy.experience.card, src: reel } },
+      { anchor: "experience" },
+    ),
     block("magnet", "lead-magnet", { ...homeCopy.magnet, anchor: "playbook" }),
     block("vsl", "vsl-panel", { ...homeCopy.vsl, src: vsl }, { anchor: "watch" }),
-    block("mark", "mark-field", homeCopy.mark, { anchor: "who" }),
+    block("mark", "mark-field", homeCopy.mark, { anchor: "labs" }),
     contactBlock({ index: "06" }),
   ]);
 }

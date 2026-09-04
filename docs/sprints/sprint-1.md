@@ -673,6 +673,214 @@ self-center` — `self-center` being the part that matters, because a
       gained an outer orbit of traffic that never lands, and its four systems
       have field rules inside them so they read as records rather than plates.
 
+### Added mid-sprint, twenty-first round (owner, 2026-09-04)
+
+> "the part on right, we don't need any animation there and it's not looking
+> good, utilise smh else, maybe our branding like oddcommon is doing on their
+> main page with a chromium logo"
+
+- [x] **The lead magnet's second cell is the mark, not a lattice.** The morph ran
+      there and was motion for its own sake beside the one control on the page
+      that matters. It is the logomark now, extruded into a chrome solid with a
+      contact shadow — read from oddcommon's homepage wordmark, which is an
+      iridescent extrusion sitting in the panel like an object.
+- [x] **Chrome, not an oil slick.** Theirs runs a full rainbow; this site has
+      paper, ink and one accent, and a mark cycling through orange and violet
+      would be the largest area of colour on the page and none of it ours. The
+      surface is polished metal — a greyscale band structure with the lime woven
+      in twice, where the oil slick puts its hue shifts.
+- [x] **Generated, and 14 KB.** `npm run gen:chrome-mark` builds it from
+      `loader-mark.ts`, the same source the loader and the favicon read, so the
+      mark cannot drift between them. The first version emitted the path data
+      once per extrusion slice and came to **294 KB** for a decorative picture;
+      one `<defs>` group and a `<use>` per slice says the same thing in a
+      twentieth of the space. The panel also loses a canvas and a render loop.
+
+### Added mid-sprint, twenty-second round (owner, 2026-09-04)
+
+- [x] **The VSL is one section, not three.** The claim, a vertical "Demo reel"
+      tile and the film were separate grid children, and a seam on this grid is
+      a visible hairline — so the panel read as three adjacent things rather
+      than one offer. The tile is gone and the other two share a cell: claim on
+      the left third, film on the rest, nothing drawn between them. The panel
+      also drops from 1.2 screens to 1, because the extra fifth was room for the
+      three cells and with two it just ran the film off the trailing edge.
+- [x] **The cloth panel is Labs.** It was "Who's behind it", which `/about`
+      already covers at length. It now carries the other half of the company —
+      a room, a budget and no revenue target, "Make something wonderful" — with
+      **"We rarely hire."** set above `jobs@godwinausten.org`. An address, not a
+      form or a careers page: there is no pipeline behind it, and the caveat sits
+      above the address so nobody reads it as an opening. The anchor is `#labs`
+      now and the VSL's hand-off names it.
+- [x] **A "Contact us" on every offering — and one on a phone.** Four of them in
+      a stacked column is a page nagging rather than offering, so the per-card
+      buttons are hidden below `md` and a single one renders under the whole
+      section instead. Side by side there is no repetition to feel: each belongs
+      to the offering above it and only one is ever in view. Outlined rather than
+      filled, because the lead magnet's download is the page's one filled accent
+      and the brief rations lime to it. On both the home columns and `/about`'s
+      sections — same four services, same offer.
+
+### Added mid-sprint, twenty-third round (owner, 2026-09-04)
+
+- [x] **The VSL is one section.** Claim, a vertical "Demo reel" tile and the film
+      were three grid children with two visible hairlines between them. The tile
+      is gone, the other two share a cell, and the panel narrows from 1.2 screens
+      to 1 — the extra fifth was room for three cells and with two it only ran
+      the film off the trailing edge.
+- [x] **The cloth panel is Labs, and the cloth is gone.** It carries the other
+      half of the company: "If you have a skill, we need you", the paragraph, and
+      "Send us your crazy ideas or work" over `jobs@godwinausten.org`. The
+      `ClothCanvas` shader is deleted, not disabled — it was the most technically
+      interesting thing on the site and the least useful, a WebGL context and a
+      render loop behind a paragraph on the one section with nothing to sell.
+      The block is no longer `stripOnly`: that existed for a cursor-lit ornament,
+      and hiding the company's other half from every phone was a consequence of
+      it rather than a decision.
+- [x] **The motto is an overprint, not a watermark.** Two versions were built and
+      both looked cheap — flat ink at a tenth of an opacity is an invoice
+      stamp, and a rainbow gradient behind a turbulence filter is a sticker. It
+      is misregistered screen print now: the same words in three flat passes —
+      lime, a cool grey, ink — each offset a few pixels, `multiply` where they
+      overlap. Sharp edges, the site's own palette, and the same print language
+      as the hairlines and flat fills everywhere else.
+- [x] **A "Contact us" under every offering, and one on a phone.** Four identical
+      buttons down a stacked column is a page nagging; the per-card ones are
+      hidden below `md` and a single one renders under the section. Outlined, not
+      filled — the download is the page's one filled accent.
+- [x] **The service copy states what you get.** "We will build you the whole
+      operation… you get agents that hold context" rather than a description of
+      the category. All four rewritten on both pages, inside the 180-character
+      panel budget the copy test enforces.
+- [x] **The wordmark is 20px and names the route.** It was set at caption size —
+      the signature was the smallest type on the page. `/work`, `/about` and
+      `/contact` appear beside it; the home page shows nothing, because "/" next
+      to a wordmark that is already the home link says nothing.
+- [x] **The hero figure has colour in it.** A third masked pass over the two ink
+      ones, filled with a gradient: the trace is one path so individual strokes
+      cannot be reached, but tinting regions of a tangle produces bands of
+      coloured line running through black ones, which is the same effect for one
+      more element and no second file.
+- [x] **The lead magnet's mark is flat, centred and unccroppable.** The extrusion
+      and contact shadow are gone at the owner's request, and with them the
+      asymmetric padding that made the mark sit off-centre in its own file. It is
+      bounded by the cell's _height_ now — a box with the mark's own very tall
+      proportions overflowed any short panel and got clipped.
+- [x] **The rail's labels cannot clip.** A full page gutter inside each quarter
+      of a narrow screen left less room than the words needed. The inset scales
+      with the cell, and `truncate` makes the worst case an ellipsis rather than
+      a letter cut down the middle.
+
+### Added mid-sprint, twenty-fourth round (owner, 2026-09-04)
+
+> "see the slipping in contact page" · "add some splashing colors around the
+> watermark as well" · "IT SHOULD NOT AT ALL LOOK LIKE A KID STYLE"
+
+- [x] **Nothing on `/contact` hangs over a seam.** Every display heading in
+      `services-rows` was sized with a `vw` figure, and the block's tracks are
+      `0.8fr` for the heading against `repeat(--svc-count, 1fr)` for the
+      offerings — a _share_, not a fixed fraction of the window. The same 4vw
+      landed in a 491px column on `/` and a 294px one on `/contact`, where
+      "addresses." came out 302px wide in a 214px box and hung 88px into the cell
+      beside it. The headings are sized `min(vw, cqi)` against a container now:
+      the window figure still wins wherever the column is roomy, so the wide
+      pages are pixel-identical, and the column figure takes over where it is
+      not. The same applied to the offering titles ("Everything" ran out of its
+      column at 900px) and to the detail paragraphs, which open with an
+      unbreakable email address.
+- [x] **The heading track has a floor.** Below about 1000px its share fell to
+      180px, a column too narrow to set a display word in at any size —
+      "addresses." broke across the middle of the word. `min(18rem, 26vw)` is
+      the width below which the heading stops being typography.
+- [x] **Colour on the Labs watermark, as a print rather than a picture.** Two
+      narrow spot-colour bands crossing at different angles, and ink thrown in
+      from two corners as several dozen specks that thin as they travel. The
+      first attempt at this was big flat corner plates and the owner was right
+      about them: a shape that large has to be _drawn_, and a drawn shape in
+      three primaries is a child's collage. Scale is the whole difference — ink
+      lands in specks a few pixels across, never in slabs.
+- [x] **The print reaches the panel's edges.** It was a grid column and
+      inherited the row's vertical padding, so the bands — drawn long precisely
+      so they never end on screen — were cut off square with paper still showing
+      above and below the cut. It is a positioned layer on the cell now.
+
+### Added mid-sprint, twenty-fifth round (owner, 2026-09-04)
+
+> "remove the Let's talk small row in the contact page" · "add a custom cursor
+> like a small dot ... visible properly on both black and white backgrounds" ·
+> "bring the 'We have shipped this' after the 'What we offer'" · "make the
+> background of 'Steal our day 1 worksheet' the same light colored as in the
+> whole site and keep the background behind the colorful logo same dark"
+
+- [x] **`/contact` opens on its headline.** The header's eyebrow said "Let's
+      talk" directly above "Tell us what you're doing by hand." — the same
+      invitation twice, the second time in 11px mono, on the one page whose
+      subject is already named in the nav beside the wordmark. `page-header`
+      already took the eyebrow as optional; `/contact` no longer sets it.
+- [x] **A pointer of our own.** A dot on the pointer and a ring chasing it, both
+      painted white through `mix-blend-mode: difference` so they come out as the
+      inverse of whatever is behind them — dark on paper, light on an ink cell,
+      legible over the film. Nothing samples the background and nothing has to
+      be told what it is over. The ring opens over anything pressable; text
+      fields keep their native caret and the layer hides there, because a caret
+      says where the next character goes and a dot near a field does not. The
+      native cursor is hidden by an attribute the component sets only after
+      confirming a fine pointer, so no-JS and touch visitors are never left with
+      `cursor: none` and nothing drawn in its place.
+- [x] **Mechanism before proof on the home page.** "What we offer" is 01 and "We
+      have shipped this" is 02. It is the question a cold reader arrives with,
+      and the build then reads as evidence for a claim they have already been
+      given rather than as a case study for a company they cannot yet describe.
+      The indices and the hand-off links renumber with it; both the unit chain
+      test and the e2e order test were updated to the new argument.
+- [x] **The offer sits on paper.** The lead magnet's copy cell was an ink block
+      and is now the site's own paper; the mark's cell beside it stays dark, so
+      the dark is a frame for the one coloured thing on the panel rather than the
+      ground the reader has to read on. The field's colours now take their ground
+      as an argument — it opens in a dark dialog once hydrated but in the paper
+      cell before that, and one palette could not be right in both.
+
+### Added mid-sprint, twenty-sixth round (owner, 2026-09-04)
+
+> "Make the background of logo white as well" · "give it an effect as if the two
+> parts of svg are two seperate blocks and they are magnetically replusive to the
+> cursor so if the cursor comes close it repels them and even if the cursor stays
+> but the canvas moves beneath it the effect reflects"
+
+- [x] **The whole lead magnet is one ground.** The mark's cell is paper too now,
+      so the panel reads edge to edge and the mark is the only colour on it.
+- [x] **The mark got its outline back.** The film is anchored on white, which was
+      free on an ink cell — the light bands were the highlights. On paper they
+      are the _background_, and the shape dissolved into it at the edges. A
+      hairline in the site's own ink, at the weight of every other rule.
+- [x] **Three files, one mark.** `gen:chrome-mark` emits one SVG per shape, each
+      carrying the whole mark's box and identical film geometry, so three layers
+      stacked at one size reassemble it with no seam. Their centres go into a
+      generated TypeScript module beside the shapes, because a component cannot
+      see from three identical boxes where any individual part actually is.
+- [x] **The parts repel the pointer, and keep repelling it when the page moves.**
+      Each shape is pushed along the line from the pointer to its own centre,
+      with a squared falloff and a travel proportional to its own size — the dot
+      does not swing as far as the shape it sits on. The loop re-measures the
+      mark every frame rather than caching it on `pointermove`, which is what
+      makes the effect correct on this site specifically: the home page's
+      composition slides horizontally, so the mark passes _under_ a pointer that
+      has not moved, and a purely pointer-driven version sits frozen while the
+      thing it is repelling walks through it. Eased on the wall clock; inert
+      under `prefers-reduced-motion` and on a coarse pointer; the frame loop only
+      runs while the mark is on screen.
+- [x] **Nothing here has a pixel in it.** The parts' positions are fractions of
+      the painted mark and the loop redoes the `contain` fit itself, so the whole
+      thing is responsive without a breakpoint.
+
+**One bug worth recording.** The pointer starts at negative infinity so nothing
+is repelled before it has been seen — and `Infinity / Infinity` is `NaN`. The
+unit vector came out `NaN`, the eased offset inherited it on the very first frame
+and never recovered, and every transform after that was a string the browser
+rejected outright. The parts sat still, no error was reported anywhere, and the
+loop was running the whole time. Out of range now means zero, not "the direction,
+times zero".
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

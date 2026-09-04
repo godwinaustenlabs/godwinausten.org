@@ -79,6 +79,7 @@ const homeCopySchema = z.object({
         }),
       )
       .min(1),
+    cta: z.object({ label: z.string(), href: z.string() }),
     next: nextSchema,
   }),
   magnet: z.object({
@@ -89,7 +90,6 @@ const homeCopySchema = z.object({
     headline: z.string(),
     body: z.string(),
     /** Set on the cover tile, so the offer reads as an object you receive. */
-    cover: z.object({ title: z.string(), format: z.string() }),
     /** The loud button, shown before the field. */
     cta: z.string(),
     /** Asked once the button has been pressed. */
@@ -108,7 +108,10 @@ const homeCopySchema = z.object({
     eyebrow: z.string(),
     headline: z.string(),
     body: z.string(),
-    hint: z.string(),
+    /** The standing caveat. Separate from `body` so it can be read alone. */
+    note: z.string(),
+    /** Where an application goes. An address, because there is no form. */
+    apply: z.object({ label: z.string(), email: z.string() }),
     next: nextSchema,
   }),
   vsl: z.object({
@@ -135,7 +138,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
   },
 
   experience: {
-    index: "01",
+    index: "02",
     eyebrow: "Proof",
     headline: "We have shipped this.",
     lead: "Not a pilot and not a demo — a system doing real work inside a real company, every day, since we handed it over.",
@@ -151,11 +154,11 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
       videoLabel: "Demo reel",
       cta: { label: "Read the full experience", href: "/work" },
     },
-    next: { index: "02", label: "How it gets built", href: "#expertise" },
+    next: { index: "03", label: "What to automate first", href: "#playbook" },
   },
 
   services: {
-    index: "02",
+    index: "01",
     eyebrow: "How it gets built",
     headline: "What we offer.",
     rows: [
@@ -163,32 +166,33 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
         index: "01",
         title: "Full Agentic AI Systems",
         detail:
-          "The whole operation, not a chatbot on top of it. Agents that hold context, take decisions inside your rules, and hand off to each other and to a person.",
+          "We will build you the whole operation: agents that hold context, decide inside your rules, and hand off to each other and to a person. A system, not a chatbot on top of one.",
         figure: "/assets/diagrams/swarm.svg",
       },
       {
         index: "02",
         title: "Micro Agents & Bots for Task Automation",
         detail:
-          "One task, done properly, live in a week. The cheapest thing we build and usually the first — small enough to add without a project and to remove without one.",
+          "We will take one task off your team and have it live in a week. You get one bot that does that job and stops — cheap to add without a project, simple to remove.",
         figure: "/assets/diagrams/micro.svg",
       },
       {
         index: "03",
         title: "AI Powered Pipelines",
         detail:
-          "Work that arrives in a queue and leaves finished: enrich, classify, draft, route. The volume nobody wants to look at, handled before anyone has to.",
+          "We will build the line that takes work in at one end and returns it finished: enriched, classified, drafted, routed. The volume nobody wants to look at, handled.",
         figure: "/assets/diagrams/pipeline.svg",
       },
       {
         index: "04",
         title: "Custom Solutions for SaaS and Enterprises",
         detail:
-          "Inside your product or inside your stack. AI features your customers use, or systems wired through the CRM, the helpdesk and the compliance path you already run.",
+          "We will build it inside your product or your stack. You get AI features your customers use, wired through the CRM, helpdesk and compliance path you already run.",
         figure: "/assets/diagrams/integration.svg",
       },
     ],
-    next: { index: "03", label: "What to automate first", href: "#playbook" },
+    cta: { label: "Contact us", href: "/contact" },
+    next: { index: "02", label: "What we have shipped", href: "#experience" },
   },
 
   magnet: {
@@ -197,7 +201,6 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     kicker: "Free — no call, no sequence",
     headline: "Steal our day-one worksheet.",
     body: "The four questions we ask before writing a line of code.",
-    cover: { title: "What to automate first", format: "PDF — 9 pages" },
     cta: "Download it free",
     prompt: "Where do we send it?",
     placeholder: "you@company.com",
@@ -216,15 +219,16 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     headline: "The part where we convince you.",
     body: "The workflow we mapped, what we built, what we left to a human, and what it costs to run. No slides.",
     videoLabel: "Demo reel",
-    next: { index: "05", label: "Who's behind it", href: "#who" },
+    next: { index: "05", label: "Labs", href: "#labs" },
   },
 
   mark: {
     index: "05",
-    eyebrow: "Who's behind it",
-    headline: "We would rather be useful than impressive.",
-    body: "A handful of engineers in Pakistan who like the unglamorous half of the work: the week spent watching, the handoff nobody wrote down, the thing that breaks on a Tuesday. We build what survives being used every day by people who did not ask for it — and we will tell you when a problem does not need us.",
-    hint: "Move your cursor",
+    eyebrow: "Labs",
+    headline: "If you have a skill, we need you.",
+    body: "The other half of the company. Labs is where sharp people get a room, a budget and no revenue target — time to build the thing that has no customer yet, take an idea apart, and find out. Some of it becomes work we sell. Most of it does not, and that is the point of having it.",
+    note: "Send us your crazy ideas or work.",
+    apply: { label: "Write to us", email: "jobs@godwinausten.org" },
     next: { index: "06", label: "Talk to us", href: "#contact" },
   },
 } satisfies HomeCopy);

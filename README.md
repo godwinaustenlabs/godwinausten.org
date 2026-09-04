@@ -212,6 +212,7 @@ re-run it.
 | `npm run gen:diagrams`          | `public/assets/diagrams/*.svg`              | yes           |
 | `npm run gen:placeholder-pdf`   | `public/assets/playbook-placeholder.pdf`    | yes           |
 | `npm run gen:favicon`           | `src/app/icon.svg`                          | yes           |
+| `npm run gen:chrome-mark`       | `public/assets/mark-chrome-{1,2,3}.svg`     | yes           |
 | `npm run gen:placeholder-video` | `public/assets/{film,reel}-placeholder.mp4` | no            |
 | `npm run gen:photos`            | `public/assets/photo/*.jpg` + credits       | network       |
 

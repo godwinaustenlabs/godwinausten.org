@@ -13,15 +13,18 @@ test.describe("home — the funnel", () => {
 
     // DOM order is the reading order in both scroll modes — the whole
     // accessibility argument for the filmstrip. It is also the funnel:
-    // hook → cost → proof → mechanism → the ask → the long version → contact.
+    // hook → mechanism → proof → the ask → the long version → a breath → contact.
     const blocks = await page
       .locator("[data-block]")
       .evaluateAll((els) => els.map((el) => el.getAttribute("data-block")));
 
     expect(blocks).toEqual([
       "hero-scribble",
-      "experience-feature",
+      // Mechanism before proof, at the owner's call: "what we offer" is the
+      // question a cold reader arrives with, and the build then reads as
+      // evidence for a claim they have already been given.
       "services-rows",
+      "experience-feature",
       "lead-magnet",
       "vsl-panel",
       // A breath between the film and the ask. Present in the DOM at every
@@ -35,12 +38,15 @@ test.describe("home — the funnel", () => {
     // willingness on a four-minute commitment.
     expect(blocks.indexOf("lead-magnet")).toBeLessThan(blocks.indexOf("vsl-panel"));
 
-    // The ornament is filmstrip-only: a cursor-lit surface with no cursor to
-    // light it is dead weight, and nothing in the funnel may depend on it.
+    // Labs renders in both scroll modes. It used to be filmstrip-only, and
+    // correctly so while it was a cursor-lit cloth — an ornament with no cursor
+    // to drive it is dead weight on a phone. It carries the company's other half
+    // and a way to write to it now, and hiding that from every phone visitor was
+    // a consequence of what used to be drawn there, not a decision about it.
     const shown = await page
       .locator('[data-block="mark-field"]')
       .evaluate((el) => getComputedStyle(el).display !== "none");
-    expect(shown).toBe((await scrollMode(page)) === "strip");
+    expect(shown).toBe(true);
   });
 
   test("makes no percentage claims on any route", async ({ page }) => {
@@ -297,61 +303,15 @@ test.describe("reduced motion", () => {
   });
 });
 
-test.describe("the mark field", () => {
-  test("keeps the light under the cursor while the panel slides beneath it", async ({ page }) => {
-    // Straight to the section, because the surface deliberately does no work
-    // while it is off screen — the light only tracks what a visitor can see.
-    // Asserting from the top of the page would be measuring a loop that is
-    // correctly asleep.
-    await page.goto("/#who");
-    // The engine stamps the mode after it mounts, so sampling it straight after
-    // `goto` is a race — and losing that race silently *skips* this test rather
-    // than failing it, which is the worst way to lose coverage.
-    await page.waitForFunction(() => Boolean(document.documentElement.dataset.scrollMode));
-    if ((await scrollMode(page)) !== "strip") test.skip();
-
-    await page.locator('[data-block="mark-field"]').waitFor();
-    await page.waitForTimeout(600);
-
-    /** Where the lit circle actually is, in viewport coordinates. */
-    const lightAt = () =>
-      page.locator('[data-block="mark-field"] [style*="--mx"]').evaluate((el) => {
-        const rect = el.getBoundingClientRect();
-        const read = (name: string) => parseFloat((el as HTMLElement).style.getPropertyValue(name));
-        return {
-          x: rect.left + (read("--mx") / 100) * rect.width,
-          y: rect.top + (read("--my") / 100) * rect.height,
-          panelLeft: rect.left,
-        };
-      });
-
-    // Park the cursor and leave it alone for the rest of the test.
-    const CURSOR = { x: 900, y: 480 };
-    await page.mouse.move(CURSOR.x, CURSOR.y, { steps: 10 });
-
-    // Polled, not slept on. The light eases toward the cursor over a handful of
-    // frames, and a fixed wait is a guess about how long that takes on a loaded
-    // machine — which is exactly the kind of assumption that passes alone and
-    // fails in a parallel run.
-    await expect.poll(async () => Math.round((await lightAt()).x)).toBeCloseTo(CURSOR.x, -1);
-    const before = await lightAt();
-
-    // The half that was broken: no pointer event fires here at all. The panel
-    // travels sideways under a still hand, and the light has to stay put on the
-    // screen rather than riding along with the drawing.
-    await page.mouse.wheel(0, 400);
-    await expect
-      .poll(async () => Math.round((await lightAt()).panelLeft))
-      .toBeLessThan(before.panelLeft - 50);
-
-    // Both axes polled, for the same reason the first one is: the chain eases
-    // toward the cursor over a handful of frames, and how many milliseconds
-    // that takes depends on what else the machine is doing. A bare `expect` on
-    // the second axis was a fixed deadline hiding inside a polled test.
-    await expect.poll(async () => Math.round((await lightAt()).x)).toBeCloseTo(CURSOR.x, -1);
-    await expect.poll(async () => Math.round((await lightAt()).y)).toBeCloseTo(CURSOR.y, -1);
-  });
-});
+/*
+ * The mark field's cursor-light test lived here.
+ *
+ * It drove a pointer across the panel and asserted the lit circle stayed under
+ * it while the filmstrip travelled — a real invariant, for a cloth shader that
+ * no longer exists. The panel carries a static watermark and an address now, so
+ * there is no light to keep anywhere. Deleted rather than skipped: a disabled
+ * test for a deleted feature is a thing the next person has to work out.
+ */
 
 test.describe("lead magnet", () => {
   /**

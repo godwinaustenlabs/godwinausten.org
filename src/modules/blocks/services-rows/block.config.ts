@@ -49,6 +49,14 @@ export const servicesRowsSchema = z.object({
    * given to be understood in.
    */
   display: z.enum(["columns", "sections"]).default("columns"),
+  /**
+   * The call to action repeated under every offering.
+   *
+   * One definition, not one per row: the button says the same thing beside each
+   * of them, and four copies of the same string in the copy module is four
+   * chances for three of them to go stale.
+   */
+  cta: z.object({ label: z.string().min(1), href: z.string().min(1) }).optional(),
 });
 
 export type ServicesRowsProps = z.infer<typeof servicesRowsSchema>;

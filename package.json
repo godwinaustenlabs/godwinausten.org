@@ -45,6 +45,7 @@
     "gen:placeholder-video": "node scripts/generate-placeholder-video.mjs",
     "gen:photos": "node scripts/fetch-photos.mjs",
     "gen:favicon": "node scripts/generate-favicon.mjs",
+    "gen:chrome-mark": "node scripts/generate-chrome-mark.mjs",
     "db:sync:down": "node scripts/d1-sync.mjs pull",
     "db:sync:up": "node scripts/d1-sync.mjs push",
     "db:studio": "node scripts/d1-sync.mjs studio",

@@ -13,7 +13,16 @@ import { site } from "@/lib/site";
 const contactCopySchema = z.object({
   meta: z.object({ title: z.string(), description: z.string() }),
   header: z.object({
-    eyebrow: z.string(),
+    /*
+      Optional, and `/contact` does not set it.
+
+      The bar read "Let's talk" directly above "Tell us what you're doing by
+      hand." — the same invitation twice, the second time in 11px mono, on a
+      page whose whole subject is already named in the nav beside the wordmark.
+      Every other page's header still uses it to say which section you are in;
+      this is the one page where that is not news.
+    */
+    eyebrow: z.string().min(1).optional(),
     headline: z.string(),
     lead: z.string(),
     meta: z.array(z.string()),
@@ -50,7 +59,6 @@ export const contactCopy: ContactCopy = contactCopySchema.parse({
     description: "Tell us what you're doing by hand that shouldn't be.",
   },
   header: {
-    eyebrow: "Let's talk",
     headline: "Tell us what you're doing by hand.",
     lead: "We'll tell you if an agent can take it — and if it can't, we'll say so. One email is enough to start; there is no form to fill in and nothing to book.",
     meta: ["Pakistan", "Replies within two working days"],

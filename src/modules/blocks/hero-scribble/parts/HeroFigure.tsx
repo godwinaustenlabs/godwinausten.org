@@ -32,8 +32,31 @@ import { cn } from "@/lib/utils";
 const LAYERS = [
   // A faint, slightly larger ghost behind the drawing. Kept low: any more and
   // the offset reads as a printing misregistration rather than as depth.
-  { depth: 6, scale: 1.03, opacity: 0.16 },
-  { depth: 24, scale: 1, opacity: 1 },
+  { depth: 6, scale: 1.03, opacity: 0.16, paint: "currentColor" },
+  { depth: 24, scale: 1, opacity: 1, paint: "currentColor" },
+  /*
+   * A third pass, in colour, at the same depth as the drawing.
+   *
+   * The trace is one path and it is painted through a mask, so there is no way
+   * to reach *individual* strokes — but there is no need to. Laying a gradient
+   * over the ink at the same offset and scale tints whole regions of the figure,
+   * and because the scribble is a tangle, what comes out is bands of coloured
+   * line running through black ones. That is the effect the owner asked for and
+   * it costs one more masked element: no second file, no per-stroke geometry,
+   * and it inherits the same pointer and scroll transform so it never separates
+   * from the drawing under it.
+   *
+   * Partial opacity because the ink beneath is near-black: full strength would
+   * simply replace the drawing with a gradient, and the point is a figure that
+   * has colour in it rather than a coloured figure.
+   */
+  {
+    depth: 24,
+    scale: 1,
+    opacity: 0.62,
+    paint:
+      "linear-gradient(148deg, #c6ff3e 0%, #7fd8b0 18%, transparent 34%, transparent 46%, #6fb7e8 58%, #b39ae0 68%, transparent 78%, #f08d7a 92%, #f3c05a 100%)",
+  },
 ] as const;
 /** Pointer smoothing. Lower is heavier — the figure should lag the cursor. */
 const EASE = 0.07;
@@ -178,7 +201,8 @@ export function HeroFigure({ src, className }: HeroFigureProps) {
               maskPosition: "center bottom",
               WebkitMaskSize: "var(--figure-mask-size)",
               maskSize: "var(--figure-mask-size)",
-              backgroundColor: "currentColor",
+              // A colour for the ink passes, a gradient for the colour one.
+              background: layer.paint,
             } as React.CSSProperties
           }
         />

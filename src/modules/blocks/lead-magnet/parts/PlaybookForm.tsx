@@ -110,15 +110,20 @@ export function PlaybookForm({
 
   if (state.status === "success") {
     return (
+      /*
+        Ink, not paper. This replaces the offer *in the cell*, and the cell is
+        the site's own paper — the dark tones here were correct only while the
+        whole panel was an ink block.
+      */
       <div role="status">
-        <p className="flex items-baseline gap-3 font-display text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-bold text-paper">
+        <p className="flex items-baseline gap-3 font-display text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-bold text-ink">
           <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-signal" />
           {success}
         </p>
-        <p className="mt-4 font-sans text-base text-paper/70">{successBody}</p>
+        <p className="mt-4 font-sans text-base text-soft">{successBody}</p>
         <a
           href={href}
-          className="signal-link mt-4 inline-block font-sans text-base font-medium text-paper"
+          className="signal-link mt-4 inline-block font-sans text-base font-medium text-ink"
         >
           {again}
         </a>
@@ -137,7 +142,17 @@ export function PlaybookForm({
   const buttonClass =
     "flex w-full cursor-pointer list-none items-center justify-between gap-4 rounded-sm bg-signal px-6 py-4 font-sans text-lg font-medium text-ink transition-transform hover:-translate-y-px sm:px-8 sm:py-5 sm:text-xl [&::-webkit-details-marker]:hidden";
 
-  const form = (
+  /*
+   * The field is rendered on two different grounds.
+   *
+   * Hydrated, it opens in the dialog, which dims the page behind it and is dark.
+   * Before hydration it is a native `<details>` that opens *in the cell*, and
+   * the cell is paper. One set of colours cannot be right in both places, and
+   * the version that was wrong was the one a visitor sees while the JavaScript
+   * is still arriving — so it takes the ground as an argument rather than
+   * assuming it.
+   */
+  const renderForm = (onDark: boolean) => (
     <form action={formAction}>
       {/* Honeypot. Hidden from sight and from assistive tech, but a bot filling
           every field in the DOM will still take it. */}
@@ -145,7 +160,10 @@ export function PlaybookForm({
         <input type="text" name="company" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <label htmlFor={fieldId} className="mb-3 block font-sans text-base text-paper/70">
+      <label
+        htmlFor={fieldId}
+        className={`mb-3 block font-sans text-base ${onDark ? "text-paper/70" : "text-soft"}`}
+      >
         {prompt}
       </label>
 
@@ -159,7 +177,11 @@ export function PlaybookForm({
           placeholder={placeholder}
           aria-describedby={state.status === "error" ? messageId : undefined}
           aria-invalid={state.status === "error"}
-          className="min-w-0 grow rounded-sm border border-paper/25 bg-paper/[0.04] px-4 py-3.5 font-sans text-base text-paper outline-none placeholder:text-paper/40 focus:border-paper/60"
+          className={`min-w-0 grow rounded-sm border px-4 py-3.5 font-sans text-base outline-none ${
+            onDark
+              ? "border-paper/25 bg-paper/[0.04] text-paper placeholder:text-paper/40 focus:border-paper/60"
+              : "border-hairline bg-ink/[0.02] text-ink placeholder:text-ink/35 focus:border-ink/50"
+          }`}
         />
         <button
           type="submit"
@@ -171,12 +193,17 @@ export function PlaybookForm({
       </div>
 
       {state.status === "error" ? (
-        <p id={messageId} role="alert" className="mt-3 font-sans text-sm text-signal">
+        // Lime carries an error against the dim; against paper it disappears.
+        <p
+          id={messageId}
+          role="alert"
+          className={`mt-3 font-sans text-sm ${onDark ? "text-signal" : "font-medium text-ink"}`}
+        >
           {state.message}
         </p>
       ) : null}
 
-      <Label as="p" className="mt-5 text-paper/50">
+      <Label as="p" className={`mt-5 ${onDark ? "text-paper/50" : "text-soft"}`}>
         {micro}
       </Label>
     </form>
@@ -187,7 +214,7 @@ export function PlaybookForm({
     return (
       <details className="group">
         <summary className={`${buttonClass} group-open:hidden`}>{button}</summary>
-        <div className="pt-6">{form}</div>
+        <div className="pt-6">{renderForm(false)}</div>
       </details>
     );
   }
@@ -199,7 +226,7 @@ export function PlaybookForm({
       </button>
       {open || pending || state.status === "error" ? (
         <PlaybookDialog label={cta} onClose={() => setOpen(false)}>
-          {form}
+          {renderForm(true)}
         </PlaybookDialog>
       ) : null}
     </>

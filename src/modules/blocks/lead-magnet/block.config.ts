@@ -7,7 +7,6 @@ export const leadMagnetSchema = z.object({
   kicker: z.string().min(1),
   headline: z.string().min(1),
   body: z.string().min(1),
-  cover: z.object({ title: z.string().min(1), format: z.string().min(1) }),
   /** The loud button, shown before the field is asked for. */
   cta: z.string().min(1),
   /** Asked once the button has been pressed. */

@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/Label";
 import { Panel } from "@/components/ui/Panel";
-import { Cell, MediaCell, NextCell, TileCell } from "@/components/ui/Cell";
+import { Cell, NextCell } from "@/components/ui/Cell";
 import { FilmFrame } from "@/components/ui/FilmFrame";
 import type { VslPanelProps } from "./block.config";
 
@@ -34,8 +34,17 @@ export default function VslPanel({
 }: VslPanelProps) {
   return (
     <Panel
-      width={1.2}
-      className="min-h-[var(--band)] grid-rows-[auto_auto_1fr_auto] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1.1fr)] md:grid-rows-[auto_1fr_auto] strip:min-h-0"
+      /*
+       * One screen wide, not 1.2.
+       *
+       * The extra fifth was room for three cells across — the claim, the tile
+       * and the film. With the film now taking two thirds of a single cell, a
+       * panel wider than the screen simply ran it off the trailing edge on the
+       * filmstrip, which is the one section where the whole offer has to be
+       * visible at once.
+       */
+      width={1}
+      className="min-h-[var(--band)] grid-rows-[auto_1fr_auto] strip:min-h-0"
     >
       <div className="cell col-span-full flex-row items-center gap-4 px-gutter py-3">
         <Label tone="ink" className="opacity-40">
@@ -44,32 +53,42 @@ export default function VslPanel({
         <Label>{eyebrow}</Label>
       </div>
 
-      <Cell className="col-span-full md:col-span-1" bodyClassName="justify-center gap-5">
-        <h2 className="font-display text-[clamp(1.85rem,3.6vw,3.5rem)] leading-[0.95] font-bold text-ink">
-          {headline}
-        </h2>
-        <p className="max-w-[34ch] font-sans text-base text-soft">{body}</p>
-      </Cell>
-
-      <TileCell tone="ink" label={videoLabel} className="hidden w-16 md:flex" />
-
       {/*
-        16:9 at every width. It was `md:aspect-auto` — the cell stretched to fill
-        its `1fr` row and cropped the film to whatever shape that came out as.
-        `self-center` is what lets the ratio hold: a grid item stretches by
-        default, and a stretched item's height is definite, which makes
-        `aspect-ratio` a suggestion the browser is entitled to ignore.
+        One cell, not three.
+
+        The claim, a vertical "Demo reel" tile and the film used to be separate
+        grid children, which meant two seams across the panel — and a seam on
+        this grid is a visible hairline, so the section read as three things that
+        happened to be adjacent rather than one offer. The tile is gone and the
+        other two share a cell: the claim takes a third on the left, the film
+        takes the rest, and nothing is drawn between them.
       */}
-      <MediaCell className="col-span-full aspect-video self-center bg-ink md:col-span-1">
+      <Cell
+        className="col-span-full"
+        bodyClassName="justify-center gap-8 md:flex-row md:items-center md:gap-[clamp(2rem,4vw,4.5rem)]"
+      >
+        <div className="shrink-0 md:w-[34%]">
+          <h2 className="font-display text-[clamp(1.85rem,3.4vw,3.25rem)] leading-[0.95] font-bold text-ink">
+            {headline}
+          </h2>
+          <p className="mt-5 max-w-[34ch] font-sans text-base text-soft">{body}</p>
+        </div>
+
         {/*
+          16:9 at every width. `aspect-video` on the box rather than a height:
+          the film is the evidence and it is shown whole, never cropped to
+          whatever shape the row came out as.
+
           `src` is resolved from R2 at compose time, so it is a string once the
           owner has uploaded the cut and absent until then — see
           `src/server/media.ts`. `FilmFrame` is complete either way: the frame
           runs the drawn placeholder reel rather than sitting black behind a
           label, because an empty player reads as broken.
         */}
-        <FilmFrame src={src} label={videoLabel} openLabel="Watch it" />
-      </MediaCell>
+        <div className="aspect-video w-full min-w-0 flex-1 overflow-hidden bg-ink">
+          <FilmFrame src={src} label={videoLabel} openLabel="Watch it" />
+        </div>
+      </Cell>
 
       <div className="cell col-span-full hidden md:flex">
         <NextCell next={next} />
