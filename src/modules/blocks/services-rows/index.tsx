@@ -50,7 +50,12 @@ export default function ServicesRows({
   rows,
   next,
   lattice,
+  display,
 }: ServicesRowsProps) {
+  if (display === "sections") {
+    return <ServiceSections index={index} eyebrow={eyebrow} headline={headline} rows={rows} />;
+  }
+
   return (
     <Panel
       width={2}
@@ -202,7 +207,22 @@ export default function ServicesRows({
                   third draw their own. The first must not: its top edge is
                   already against the eyebrow bar's seam.
                 */
-                className={cn("strip:h-full", i > 0 && "strip:border-t strip:border-hairline")}
+                /*
+                  A common floor under the eyebrow bars.
+
+                  The offerings are separate grid cells, so each bar is only as
+                  tall as its own title — one line here, three there — and the
+                  body copy underneath then starts at a different height in every
+                  cell. Side by side that reads as four cards that do not line
+                  up. A minimum tall enough for the longest title puts every
+                  bar's seam on the same line and every paragraph on the same
+                  baseline. Only from `md`: stacked on a phone there is no
+                  neighbour to line up with, and the space would just be empty.
+                */
+                className={cn(
+                  "strip:h-full md:[&>.cell-bar]:min-h-[4.25rem]",
+                  i > 0 && "strip:border-t strip:border-hairline",
+                )}
                 /*
                   Stacked in flow, laid across on the strip.
 
@@ -271,6 +291,79 @@ export default function ServicesRows({
           </div>
         ) : null}
       </div>
+    </Panel>
+  );
+}
+
+/**
+ * One section per offering, for a page someone came to in order to read.
+ *
+ * The columns layout above is a summary glanced at in sequence while the reader
+ * travels the filmstrip, and four cells wide enough for a claim are not wide
+ * enough for a service to be explained in. On `/about` that produced four
+ * columns of small print under mono captions — the least prominent thing on a
+ * page whose whole job is to say what the company sells.
+ *
+ * Here each offering is the full width of the panel with a seam under it: an
+ * index, a heading in display type, the paragraph at a readable measure, and its
+ * schematic beside it. They read as four sections rather than four columns, and
+ * the type is the size the subject deserves.
+ *
+ * No pin, no held head, no travelling stack. Those exist to make a wide panel
+ * legible while it moves past; nothing here moves.
+ */
+function ServiceSections({
+  index,
+  eyebrow,
+  headline,
+  rows,
+}: Pick<ServicesRowsProps, "index" | "eyebrow" | "headline" | "rows">) {
+  return (
+    <Panel className="grid-rows-[auto_auto]">
+      <div className="cell col-span-full flex-row items-center gap-4 px-gutter py-3">
+        <Label tone="ink" className="opacity-40">
+          {index}
+        </Label>
+        <Label>{eyebrow}</Label>
+      </div>
+
+      <Cell className="col-span-full" bodyClassName="justify-center">
+        <h2 className="max-w-[18ch] font-display text-[clamp(2rem,4.6vw,3.75rem)] leading-[0.95] font-bold text-ink">
+          {headline}
+        </h2>
+      </Cell>
+
+      {rows.map((row) => (
+        <div
+          key={row.index}
+          className="cell col-span-full flex-col gap-8 px-gutter py-[clamp(2rem,5vh,3.25rem)] md:flex-row md:items-center md:gap-12"
+        >
+          <div className="min-w-0 flex-1">
+            <div className="flex items-baseline gap-4">
+              <Label tone="ink" className="shrink-0 opacity-30">
+                {row.index}
+              </Label>
+              <h3 className="font-display text-[clamp(1.5rem,3vw,2.5rem)] leading-[1.04] font-bold text-balance text-ink">
+                {row.title}
+              </h3>
+            </div>
+            <p className="mt-4 max-w-[52ch] font-sans text-base leading-relaxed text-soft md:ms-[calc(1.5rem+1ch)] lg:text-lg">
+              {row.detail}
+            </p>
+          </div>
+
+          {row.figure ? (
+            <div
+              aria-hidden="true"
+              /* Fixed box rather than a flex share: the schematics are drawn to
+                 different aspect ratios, and letting each one size its own cell
+                 made four rows that stepped in and out. */
+              className="pointer-events-none h-32 w-full shrink-0 bg-contain bg-center bg-no-repeat md:h-40 md:w-[16rem] lg:w-[20rem]"
+              style={{ backgroundImage: `url(${row.figure})` }}
+            />
+          ) : null}
+        </div>
+      ))}
     </Panel>
   );
 }

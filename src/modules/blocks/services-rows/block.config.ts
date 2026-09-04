@@ -48,6 +48,20 @@ export const servicesRowsSchema = z.object({
    * decoration with nothing to say.
    */
   lattice: z.boolean().default(false),
+  /**
+   * How the offerings are laid out.
+   *
+   * `"columns"` is the home page: four cells across a panel the pinned head
+   * holds, each one a window on the filmstrip. It is a *summary* — the reader is
+   * travelling and the cells are glanced at in sequence.
+   *
+   * `"sections"` is a page someone came to in order to read. Each offering gets
+   * the full width, a heading in display type and its schematic beside it, with
+   * a seam between them: four sections rather than four columns of small print.
+   * The same four services either way — what changes is how much room they are
+   * given to be understood in.
+   */
+  display: z.enum(["columns", "sections"]).default("columns"),
 });
 
 export type ServicesRowsProps = z.infer<typeof servicesRowsSchema>;

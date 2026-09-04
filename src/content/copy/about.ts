@@ -33,7 +33,17 @@ const aboutCopySchema = z.object({
     index: z.string(),
     eyebrow: z.string(),
     headline: z.string(),
-    rows: z.array(z.object({ index: z.string(), title: z.string(), detail: z.string() })).min(1),
+    rows: z
+      .array(
+        z.object({
+          index: z.string(),
+          title: z.string(),
+          detail: z.string(),
+          /** Schematic of this offering. See scripts/generate-diagrams.mjs. */
+          figure: z.string(),
+        }),
+      )
+      .min(1),
   }),
   method: z.object({
     index: z.string(),
@@ -97,29 +107,33 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
   services: {
     index: "01",
     eyebrow: "What we do",
-    headline: "Four ways we plug in.",
+    headline: "What we offer.",
     rows: [
       {
         index: "01",
-        title: "Agentic AI Systems",
+        title: "Full Agentic AI Systems",
+        figure: "/assets/diagrams/swarm.svg",
         detail:
           "The whole operation, not a chatbot on top of it. Agents that hold context, take decisions inside your rules, and hand off to each other and to a person when the call is not theirs to make.",
       },
       {
         index: "02",
-        title: "Micro Agents & Bots",
+        title: "Micro Agents / Bots for Particular Task Automation",
+        figure: "/assets/diagrams/micro.svg",
         detail:
           "One task, done properly, live in a week. The cheapest thing we build and usually the first — small enough to add without a project and to remove without one.",
       },
       {
         index: "03",
-        title: "AI-Powered Pipelines",
+        title: "AI Powered Pipelines",
+        figure: "/assets/diagrams/pipeline.svg",
         detail:
           "Work that arrives in a queue and leaves finished: enrich, classify, draft, route. The volume nobody wants to look at, handled before anyone has to.",
       },
       {
         index: "04",
-        title: "Custom for SaaS & Enterprise",
+        title: "Custom Solutions for SaaS and Enterprises",
+        figure: "/assets/diagrams/integration.svg",
         detail:
           "Inside your product or inside your stack. AI features your customers use, or systems wired through the CRM, the helpdesk and the compliance path you already run.",
       },

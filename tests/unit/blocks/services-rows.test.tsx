@@ -13,6 +13,7 @@ const props = {
   ],
   next: { index: "02", label: "How it gets built", href: "#expertise" },
   lattice: false,
+  display: "columns" as const,
 };
 
 describe("services-rows", () => {

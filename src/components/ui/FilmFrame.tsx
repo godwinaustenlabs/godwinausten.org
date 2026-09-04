@@ -94,7 +94,9 @@ export function FilmFrame({
             playsInline
             preload="metadata"
             aria-hidden="true"
-            className="size-full object-cover motion-reduce:[&]:![animation:none]"
+            // Contained, not covered: this cell is not 16:9 at `md`, and the
+            // frame is the thing being advertised. See `Reel`.
+            className="size-full object-contain motion-reduce:[&]:![animation:none]"
           />
         ) : (
           <PlaceholderReel runtime={label} playOn="hover" />

@@ -78,6 +78,16 @@ export function Reel({
 
   return (
     <figure className="relative size-full bg-ink">
+      {/*
+        `object-contain`, so the frame is never cropped.
+
+        `object-cover` fills whatever shape the grid gives the cell, and on the
+        two cells that are not 16:9 — the filmstrip's case-study card and the VSL
+        panel at `md` — that meant slicing the sides or the top off the picture.
+        Contained, the video is always displayed at its own ratio on every page,
+        and the ink ground behind it absorbs whatever is left over: a letterbox
+        on an ink panel is invisible, and a cropped frame never is.
+      */}
       <video
         ref={videoRef}
         src={src}
@@ -85,7 +95,7 @@ export function Reel({
         loop
         playsInline
         preload="none"
-        className="size-full object-cover"
+        className="size-full object-contain"
       />
     </figure>
   );

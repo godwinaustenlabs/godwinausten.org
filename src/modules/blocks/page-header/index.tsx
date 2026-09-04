@@ -60,7 +60,10 @@ export default function PageHeader({
       </Cell>
 
       {reel ? (
-        <MediaCell className="aspect-[21/9] w-full">
+        // 16:9, like every other video slot on the site. It was 21:9 — a cinema
+        // crop applied to footage that is not shot that way, so the first thing
+        // it would have done to a real cut was cut it.
+        <MediaCell className="aspect-video w-full">
           {/*
             One `Reel` rather than a `<video>` here and a placeholder there. The
             hand-rolled pair this replaces had a `preload="none"` video with

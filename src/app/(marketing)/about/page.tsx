@@ -24,7 +24,12 @@ export const metadata: Metadata = {
 const about = composePage("about", [
   block("header", "page-header", aboutCopy.header),
   block("pillars", "pillars", aboutCopy.pillars),
-  block("services", "services-rows", aboutCopy.services, { anchor: "expertise" }),
+  block(
+    "services",
+    "services-rows",
+    { ...aboutCopy.services, display: "sections" },
+    { anchor: "expertise" },
+  ),
   block("method", "prose-sections", aboutCopy.method, { anchor: "how-we-work" }),
   block("statement", "about-statement", aboutCopy.statement),
   contactBlock(),

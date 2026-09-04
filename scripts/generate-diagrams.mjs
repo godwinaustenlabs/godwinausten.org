@@ -493,6 +493,10 @@ function micro() {
   <path d="${feeds.join("")}" stroke-width="2.2" opacity="0.55"/>
 </g>
 <g fill="${LINE}" stroke="none" opacity="0.85">${dots.join("")}</g>`,
+    // Cropped to the units. `contain` fits the whole viewBox, so the blank third
+    // above and below the two rows was blank space the browser reproduced
+    // faithfully — the drawing rendered at two thirds the size its box allowed.
+    `0 ${r1(H * 0.16)} ${W} ${r1(H * 0.68)}`,
   );
 }
 

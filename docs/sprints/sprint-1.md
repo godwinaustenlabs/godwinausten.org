@@ -582,6 +582,42 @@ the rule `docs/adr/0003` already sets for this reference.
       the brief says most conversions come from; `useSyncExternalStore` picks
       between them without writing state from an effect.
 
+### Added mid-sprint, eighteenth round (owner, 2026-09-04)
+
+- [x] **The card headings are the owner's words, not a paraphrase of them.**
+      "Custom for SaaS & Enterprise" and the rest were tightened-up versions of
+      four service names the owner had already written out. They are now what was
+      said: Full Agentic AI Systems, Micro Agents / Bots for Particular Task
+      Automation, AI Powered Pipelines, Custom Solutions for SaaS and
+      Enterprises. The section is headed **"What we offer."** rather than "Four
+      ways we plug in", which was a phrase about us where a label was wanted.
+- [x] **The eyebrow bars sit on one line.** The titles wrap to one, two and three
+      lines, and each bar was only as tall as its own — so the body copy started
+      at four different heights and the columns did not line up. A minimum height
+      from `md` puts every seam and every first line on the same baseline.
+- [x] **`/about` gives each service its own section.** Four columns of small
+      print under mono captions made the services the least prominent thing on
+      the page that exists to describe them. A `display` variant on the block
+      switches it: `"columns"` stays the home page's summary, glanced at in
+      sequence while the strip travels; `"sections"` gives each offering the full
+      width, a heading in display type, the paragraph at a readable measure and
+      its schematic beside it. Same four services, four times the room.
+- [x] **Every video is displayed at 16:9, on every page.** Two cells are not
+      16:9 and cannot be: the filmstrip's case-study card is band-height (an
+      `aspect-video` there claims its height first and pushes the notes off a
+      panel that cannot grow — the bug fixed in an earlier round), and the VSL
+      media cell fills a `1fr` grid row at `md`. `object-cover` was therefore
+      slicing the sides or the top off the picture in both. It is `object-contain`
+      now, so the frame is never cropped or stretched anywhere; the ink ground
+      absorbs the letterbox, which on an ink panel is invisible. The masthead
+      slot on `/work/[slug]` was `21/9` — a cinema crop over footage not shot
+      that way — and is `aspect-video` like the rest. Measured across six
+      page/viewport pairs: painted ratio 1.78 in every one.
+- [x] **`micro.svg` is cropped to its drawing.** `contain` fits the whole
+      viewBox, so a third of blank canvas above and below was blank space the
+      browser reproduced faithfully and the schematic rendered two thirds the
+      size its box allowed.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`
