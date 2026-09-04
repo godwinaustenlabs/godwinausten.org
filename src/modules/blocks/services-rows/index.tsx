@@ -122,18 +122,12 @@ export default function ServicesRows({
           // down, so bottom-aligning it left the cell top-heavy with empty
           // paper. Centred, it sits in the middle of the space it is given.
           /*
-            The headline sits under the lattice, not on the floor.
-
-            `justify-between` with a `flex-1` lattice above it pushed the
-            headline to the very bottom of a band-height panel, where a line of
-            display type across the foot of the page reads as a footer rule
-            rather than as the title of what is beside it. The lattice takes a
-            bounded share of the column now and the pair sits together near the
-            top, which is where a heading introduces something.
+            The lattice takes the column and the headline sits at its foot.
+            Lifting the headline was tried and reversed by the owner: the
+            morph wants the whole height to read as one motion, and the
+            heading holding the floor under it is the composition.
           */
-          bodyClassName={
-            lattice ? "justify-start gap-[clamp(1.5rem,4vh,2.75rem)]" : "justify-center"
-          }
+          bodyClassName={lattice ? "justify-between gap-6" : "justify-center"}
         >
           {/* The lattice, in the space above the headline: a stack of dots that
               becomes a cube, a knot, then a network. It runs on the *hold*, so
@@ -146,13 +140,9 @@ export default function ServicesRows({
             frame and never moves. `display: none` also parks its
             `IntersectionObserver`, so it costs nothing there.
           */}
-          {lattice ? (
-            // A share of the column, not all of the slack. `flex-1` let it grow
-            // to whatever was left, which is what put the headline on the floor.
-            <ScrollMorph className="hidden min-h-0 shrink-0 grow-0 basis-[34%] md:block" />
-          ) : null}
+          {lattice ? <ScrollMorph className="hidden min-h-0 flex-1 md:block" /> : null}
 
-          <h2 className="shrink-0 font-display text-[clamp(1.85rem,3.2vw,3.25rem)] leading-[0.95] font-bold text-ink">
+          <h2 className="shrink-0 font-display text-[clamp(2.25rem,4vw,4.25rem)] leading-[0.92] font-bold text-ink">
             {headline}
           </h2>
         </Cell>
@@ -278,11 +268,11 @@ export default function ServicesRows({
                     <Label tone="ink" className="shrink-0 opacity-30">
                       {row.index}
                     </Label>
-                    <h3 className="max-w-[16ch] font-display text-[clamp(1.6rem,2.7vw,2.5rem)] leading-[1.02] font-bold text-balance text-ink">
+                    <h3 className="max-w-[15ch] font-display text-[clamp(2rem,3.6vw,3.4rem)] leading-[0.98] font-bold text-balance text-ink">
                       {row.title}
                     </h3>
                   </div>
-                  <p className="max-w-[32ch] font-sans text-base leading-relaxed text-soft">
+                  <p className="max-w-[34ch] font-sans text-base leading-relaxed text-soft lg:text-lg">
                     {row.detail}
                   </p>
                 </div>
@@ -339,10 +329,14 @@ function ServiceSections({
         Centred in a full-width cell with a seam under it, it read as a footer
         rule — a strip of big type between two sections rather than the top of
         one. Aligned to the top of its cell with the space taken out from under
-        it, it sits directly above the first offering and belongs to it.
+        it, it sits directly above the first offering and belongs to it — but
+        with the cell's own padding intact on both sides. `pb-0` was tried and
+        read as the heading being shoved against the seam below it: a heading
+        needs the same air under it as over it, or the section it introduces
+        looks like it has started too soon.
       */}
-      <Cell className="col-span-full" bodyClassName="justify-start pb-0">
-        <h2 className="max-w-[18ch] font-display text-[clamp(2rem,4.6vw,3.75rem)] leading-[0.95] font-bold text-ink">
+      <Cell className="col-span-full" bodyClassName="justify-start">
+        <h2 className="max-w-[18ch] font-display text-[clamp(2.4rem,5.4vw,4.5rem)] leading-[0.92] font-bold text-ink">
           {headline}
         </h2>
       </Cell>
@@ -357,7 +351,7 @@ function ServiceSections({
               <Label tone="ink" className="shrink-0 opacity-30">
                 {row.index}
               </Label>
-              <h3 className="font-display text-[clamp(1.5rem,3vw,2.5rem)] leading-[1.04] font-bold text-balance text-ink">
+              <h3 className="font-display text-[clamp(1.9rem,3.8vw,3.25rem)] leading-[1] font-bold text-balance text-ink">
                 {row.title}
               </h3>
             </div>

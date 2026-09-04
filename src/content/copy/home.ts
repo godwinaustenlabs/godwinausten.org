@@ -168,7 +168,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
       },
       {
         index: "02",
-        title: "Micro Agents / Bots for Particular Task Automation",
+        title: "Micro Agents & Bots for Task Automation",
         detail:
           "One task, done properly, live in a week. The cheapest thing we build and usually the first — small enough to add without a project and to remove without one.",
         figure: "/assets/diagrams/micro.svg",

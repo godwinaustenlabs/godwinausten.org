@@ -645,6 +645,34 @@ self-center` — `self-center` being the part that matters, because a
       pairs: every box and every video 1.78, and the case-study panel overflows
       by 0.
 
+### Added mid-sprint, twentieth round (owner, 2026-09-04)
+
+- [x] **The lattice has its column back and the headline sits at its foot.**
+      Lifting the headline was tried the round before and reversed here: the
+      morph wants the whole height to read as one motion, and the heading holding
+      the floor under it is the composition. Both headlines are a step larger to
+      pay for it — 67px on the home strip, 72px on `/about`.
+- [x] **The offering headings fill the space they were given.** 40px in a cell
+      most of a screen wide left the panel looking empty around them; 54px with
+      the paragraph a size up reads as the subject of the panel rather than a
+      caption in it. `/about`'s sections match at 52px.
+- [x] **"Micro Agents / Bots for Particular Task Automation" is shorter.** Three
+      lines at the new size, and "particular" was not earning its place. It is
+      "Micro Agents & Bots for Task Automation" — the owner allowed a tweak for
+      readability; the other three names are untouched.
+- [x] **`/about`'s headline has even padding.** `pb-0` read as the heading being
+      shoved against the seam below it. 27px above and below now.
+- [x] **The four schematics are drawn denser, and the density says something.**
+      Satellites chain to their neighbours as well as to the hub, and each pair
+      of clusters is joined by two arcs bowed opposite ways — a star says "one
+      model, many calls", a ring says the narrow agents talk to each other. Each
+      micro unit has a queue at its mouth, a rule stack and a state lamp, all of
+      it _inside_ the unit because the isolation is the claim. The pipeline gates
+      have fill meters and a reject path falling away from each one, which every
+      real pipeline has and no diagram of one ever draws. The integration hub
+      gained an outer orbit of traffic that never lands, and its four systems
+      have field rules inside them so they read as records rather than plates.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

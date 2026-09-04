@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 176 800 448" fill="none" role="presentation">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 192 800 368" fill="none" role="presentation">
 <!-- Godwin Austen Labs — "schematic: ai pipelines". Generated: npm run gen:diagrams -->
 <g stroke="#46443e" fill="none">
-  <path d="M72 400Q154 375.4 236 400M72 400Q154 423.9 236 400M236 400Q318 369.5 400 400M236 400Q318 431.5 400 400M400 400Q482 369.6 564 400M400 400Q482 431 564 400M564 400Q646 353.6 728 400M564 400Q646 460 728 400" stroke-width="2.1" opacity="0.5"/>
+  <path d="M72 400Q154 375.4 236 400M72 400Q154 423.9 236 400M236 400Q318 337.1 400 400M236 400Q318 460.9 400 400M236 400Q236 502.9 210 520.9M400 400Q482 374.2 564 400M400 400Q482 430 564 400M400 400Q400 495 374 513M564 400Q646 369.3 728 400M564 400Q646 427.9 728 400M564 400Q564 499 538 517" stroke-width="2.1" opacity="0.5"/>
   <path d="M72 400L728 400" stroke-width="3.6" opacity="0.85"/>
-  <path d="M72 356L72 444M236 356L236 444M400 356L400 444M564 356L564 444" stroke-width="2.4" opacity="0.55"/>
+  <path d="M72 356L72 444M79 356L79 373.1M236 356L236 444M243 356L243 394.6M400 356L400 444M407 356L407 374.3M564 356L564 444M571 356L571 396.8" stroke-width="2.4" opacity="0.55"/>
 </g>
-<g fill="#46443e" stroke="none" opacity="0.9"><circle cx="72" cy="400" r="11"/><circle cx="154" cy="380.8" r="4.5"/><circle cx="154" cy="418.6" r="4.5"/><circle cx="236" cy="400" r="7.5"/><circle cx="318" cy="376.2" r="4.5"/><circle cx="318" cy="424.5" r="4.5"/><circle cx="400" cy="400" r="7.5"/><circle cx="482" cy="376.3" r="4.5"/><circle cx="482" cy="424.2" r="4.5"/><circle cx="564" cy="400" r="7.5"/><circle cx="646" cy="363.8" r="4.5"/><circle cx="646" cy="446.8" r="4.5"/><circle cx="728" cy="400" r="11"/></g>
+<g fill="#46443e" stroke="none" opacity="0.9"><circle cx="72" cy="400" r="11"/><circle cx="154" cy="380.8" r="4.5"/><circle cx="154" cy="418.6" r="4.5"/><circle cx="236" cy="400" r="7.5"/><circle cx="318" cy="350.9" r="4.5"/><circle cx="318" cy="447.5" r="4.5"/><circle cx="210" cy="520.9" r="5"/><circle cx="400" cy="400" r="7.5"/><circle cx="482" cy="379.9" r="4.5"/><circle cx="482" cy="423.4" r="4.5"/><circle cx="374" cy="513" r="5"/><circle cx="564" cy="400" r="7.5"/><circle cx="646" cy="376.1" r="4.5"/><circle cx="646" cy="421.7" r="4.5"/><circle cx="538" cy="517" r="5"/><circle cx="728" cy="400" r="11"/></g>
 </svg>

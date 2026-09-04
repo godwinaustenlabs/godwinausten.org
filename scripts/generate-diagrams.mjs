@@ -219,9 +219,11 @@ function swarm() {
   const dots = [];
   const hubs = [];
 
+  const satellites = [];
   for (const [cx, cy] of centres) {
-    const count = 7 + Math.floor(random() * 3);
+    const count = 9 + Math.floor(random() * 3);
     const spread = 82 + random() * 30;
+    const ring = [];
     for (let i = 0; i < count; i += 1) {
       const t = (i / count) * Math.PI * 2 + random() * 0.5;
       const rad = spread * (0.6 + random() * 0.55);
@@ -229,24 +231,50 @@ function swarm() {
       const y = cy + Math.sin(t) * rad * 0.9;
       links.push(line(cx, cy, x, y));
       dots.push(node(x, y, 5));
+      ring.push([x, y]);
     }
+    satellites.push(ring);
     hubs.push(node(cx, cy, 9.5));
   }
 
-  // Bowed, so the handoffs read as traffic rather than structure.
+  // Bowed, so the handoffs read as traffic rather than structure. Two arcs per
+  // pair, bowed opposite ways: a single line between two hubs is a diagram of a
+  // wire, and a pair is a diagram of a conversation.
   const arcs = [];
   for (let i = 0; i < centres.length; i += 1) {
     const [ax, ay] = centres[i];
     const [bx, by] = centres[(i + 1) % centres.length];
-    const mx = (ax + bx) / 2 + (by - ay) * 0.18;
-    const my = (ay + by) / 2 - (bx - ax) * 0.18;
-    arcs.push(`M${r1(ax)} ${r1(ay)}Q${r1(mx)} ${r1(my)} ${r1(bx)} ${r1(by)}`);
+    for (const bow of [0.18, -0.09]) {
+      const mx = (ax + bx) / 2 + (by - ay) * bow;
+      const my = (ay + by) / 2 - (bx - ax) * bow;
+      arcs.push(`M${r1(ax)} ${r1(ay)}Q${r1(mx)} ${r1(my)} ${r1(bx)} ${r1(by)}`);
+    }
+  }
+
+  /*
+   * A second order inside each cluster: the satellites are chained to their
+   * neighbours as well as to the hub.
+   *
+   * A pure star says "one model, many calls". The ring around it says the
+   * narrow agents talk to each other too, which is the actual claim in the
+   * paragraph beside the drawing.
+   */
+  const rings = [];
+  for (let c = 0; c < centres.length; c += 1) {
+    const ring = satellites[c];
+    for (let i = 0; i < ring.length; i += 1) {
+      if (random() < 0.32) continue;
+      const [ax, ay] = ring[i];
+      const [bx, by] = ring[(i + 1) % ring.length];
+      rings.push(line(ax, ay, bx, by));
+    }
   }
 
   return svg(
     "schematic: agent swarms",
     `<g stroke="${LINE}" fill="none">
   <path d="${arcs.join("")}" stroke-width="3.4" opacity="0.7"/>
+  <path d="${rings.join("")}" stroke-width="1.5" opacity="0.32"/>
   <path d="${links.join("")}" stroke-width="2.2" opacity="0.55"/>
   <g fill="${LINE}" stroke="none" opacity="0.85">${dots.join("")}</g>
   <g fill="${LINE}" stroke="none" opacity="1">${hubs.join("")}</g>
@@ -278,8 +306,17 @@ function integration() {
   const runs = [];
   const joints = [];
 
+  const fields = [];
   for (const [bx, by] of spots) {
     boxes.push(box(bx, by, bw, bh));
+
+    // Each system is a system, not a rectangle: three field rules inside it, of
+    // uneven length, so the four read as records rather than as blank plates.
+    for (let f = 0; f < 3; f += 1) {
+      const fy = by + (bh / 4) * (f + 1);
+      const fw = 34 + random() * 62;
+      fields.push(line(bx + 14, fy, bx + 14 + fw, fy));
+    }
     // Arrive on the hub's rim at the angle the box actually sits, so four runs
     // meet the circle at four points instead of stacking onto one centreline.
     const px = bx + bw / 2 < cx ? bx + bw : bx;
@@ -296,6 +333,23 @@ function integration() {
     joints.push(
       `<rect x="${r1(jx - s / 2)}" y="${r1(jy - s / 2)}" width="${r1(s)}" height="${r1(s)}" ` +
         `transform="rotate(${r1((a * 180) / Math.PI)} ${r1(jx)} ${r1(jy)})"/>`,
+    );
+  }
+
+  /*
+   * A second orbit outside the tick ring: the traffic that never lands, going
+   * round. It is what stops the hub reading as a full stop at the end of four
+   * lines — the point of the drawing is that this thing is *running*.
+   */
+  const orbit = [];
+  const orbitR = hubR + 46;
+  for (let i = 0; i < 5; i += 1) {
+    const a0 = (i / 5) * Math.PI * 2 + 0.2;
+    const a1 = a0 + 0.62 + random() * 0.3;
+    orbit.push(
+      `M${r1(cx + Math.cos(a0) * orbitR)} ${r1(cy + Math.sin(a0) * orbitR)}` +
+        `A${r1(orbitR)} ${r1(orbitR)} 0 0 1 ` +
+        `${r1(cx + Math.cos(a1) * orbitR)} ${r1(cy + Math.sin(a1) * orbitR)}`,
     );
   }
 
@@ -317,6 +371,8 @@ function integration() {
     "schematic: systems integration",
     `<g stroke="${LINE}" fill="none">
   <path d="${runs.join("")}" stroke-width="3.2" opacity="0.8"/>
+  <path d="${orbit.join("")}" stroke-width="2" opacity="0.4"/>
+  <path d="${fields.join("")}" stroke-width="1.8" opacity="0.45"/>
   <g stroke-width="3.6" opacity="0.9">${boxes.join("")}</g>
   <path d="${ticks.join("")}" stroke-width="3.4" opacity="0.8" stroke-linecap="butt"/>
   <circle cx="${r1(cx)}" cy="${r1(cy)}" r="${r1(hubR)}" stroke-width="3.8" opacity="0.95"/>
@@ -476,13 +532,36 @@ function micro() {
       const h = 74 + random() * 20;
 
       bodies.push(box(cx - w / 2, cy - h / 2, w, h));
-      // In on the left, out on the right, and nothing crossing to a neighbour.
+
+      /*
+       * In on the left, out on the right, and nothing crossing to a neighbour —
+       * that isolation is the whole claim, so the detail all has to live
+       * *inside* each unit rather than between them.
+       *
+       * Three things inside: a short queue of work waiting at the mouth, a
+       * stack of rules the unit runs down, and one lamp for its state. That is
+       * about as much as a bot doing one task actually has in it, and drawing
+       * more would be inventing complexity rather than showing it.
+       */
       feeds.push(line(cx - w / 2 - 54, cy, cx - w / 2, cy));
       feeds.push(line(cx + w / 2, cy, cx + w / 2 + 54, cy));
-      dots.push(node(cx - w / 2 - 54, cy, 6));
       dots.push(node(cx + w / 2 + 54, cy, 6));
-      // The one moving part inside each: a task, ticking.
-      dots.push(node(cx - 18 + random() * 36, cy, 8.5));
+
+      // The queue: three items waiting, the nearest one largest.
+      for (let q = 0; q < 3; q += 1) {
+        dots.push(node(cx - w / 2 - 54 - q * 17, cy, 6 - q * 1.4));
+      }
+
+      // The rule stack, ruled off from the body's left edge.
+      const rows2 = 3;
+      for (let r = 0; r < rows2; r += 1) {
+        const ry = cy - h / 2 + (h / (rows2 + 1)) * (r + 1);
+        const rw = 26 + random() * 30;
+        feeds.push(line(cx - w / 2 + 14, ry, cx - w / 2 + 14 + rw, ry));
+      }
+
+      // The lamp: this unit is running.
+      dots.push(node(cx + w / 2 - 16, cy - h / 2 + 15, 5.5));
     }
   }
 
@@ -536,8 +615,25 @@ function pipeline() {
       dots.push(node(mid, y + spread * 0.78, 4.5));
     }
 
-    // The gate itself: a narrow upright the stream passes through.
+    // The gate itself: a narrow upright the stream passes through, with a short
+    // meter beside it — how much of the batch this stage held on to.
     gates.push(line(x, y - 44, x, y + 44));
+    const fill = 12 + random() * 30;
+    gates.push(line(x + 7, y - 44, x + 7, y - 44 + fill));
+
+    /*
+     * The reject path.
+     *
+     * Every real pipeline has one and no diagram of a pipeline ever draws it,
+     * which is why they all look like plumbing rather than like work. A short
+     * fall away from the spine at each gate, ending in a dot: the records this
+     * stage would not pass.
+     */
+    if (i > 0) {
+      const dropY = y + 96 + random() * 26;
+      fans.push(`M${r1(x)} ${r1(y)}Q${r1(x)} ${r1(dropY - 18)} ${r1(x - 26)} ${r1(dropY)}`);
+      dots.push(node(x - 26, dropY, 5));
+    }
   }
 
   return svg(
@@ -548,7 +644,8 @@ function pipeline() {
   <path d="${gates.join("")}" stroke-width="2.4" opacity="0.55"/>
 </g>
 <g fill="${LINE}" stroke="none" opacity="0.9">${dots.join("")}</g>`,
-    `0 ${r1(H * 0.22)} ${W} ${r1(H * 0.56)}`,
+    // Cropped to the spine plus the reject drops hanging under it.
+    `0 ${r1(H * 0.24)} ${W} ${r1(H * 0.46)}`,
   );
 }
 
