@@ -25,7 +25,7 @@ export function RouteLabel() {
   const pathname = usePathname();
   if (!pathname || pathname === "/") return null;
 
-  // Only the first segment. `/work/the-picasso-experience` is still `/work` —
+  // Only the first segment. `/work/the-rembrandt-experience` is still `/work` —
   // the bar names the section, and a slug in a 11px mono label is unreadable
   // and, on a case-study page, already the headline underneath it.
   const [, segment] = pathname.split("/");

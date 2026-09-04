@@ -19,7 +19,7 @@
   <!-- The film, repeating across the mark on a diagonal. -->
   <linearGradient id="film" gradientUnits="userSpaceOnUse" spreadMethod="repeat"
     x1="630.2" y1="159.3"
-    x2="1001.4" y2="654.4"><stop offset="0" stop-color="#ffffff"/><stop offset="0.1" stop-color="#c6ff3e"/><stop offset="0.2" stop-color="#3f6b1f"/><stop offset="0.3" stop-color="#eafff0"/><stop offset="0.3" stop-color="#1f5f4a"/><stop offset="0.4" stop-color="#cfe4ff"/><stop offset="0.5" stop-color="#ffffff"/><stop offset="0.6" stop-color="#e9c896"/><stop offset="0.7" stop-color="#c2624a"/><stop offset="0.8" stop-color="#5e2a24"/><stop offset="0.8" stop-color="#f3efe4"/><stop offset="0.9" stop-color="#9ee04a"/><stop offset="1" stop-color="#ffffff"/></linearGradient>
+    x2="1001.4" y2="654.4"><stop offset="0" stop-color="#dfe8d2"/><stop offset="0.1" stop-color="#c6ff3e"/><stop offset="0.2" stop-color="#3f6b1f"/><stop offset="0.3" stop-color="#bfe8cf"/><stop offset="0.3" stop-color="#1f5f4a"/><stop offset="0.4" stop-color="#a9c8ef"/><stop offset="0.5" stop-color="#e4ecd8"/><stop offset="0.6" stop-color="#e9c896"/><stop offset="0.7" stop-color="#c2624a"/><stop offset="0.8" stop-color="#5e2a24"/><stop offset="0.8" stop-color="#d8d3c2"/><stop offset="0.9" stop-color="#9ee04a"/><stop offset="1" stop-color="#dfe8d2"/></linearGradient>
 
   <!--
     Swirl the film, then light it.
@@ -67,14 +67,14 @@
 </g>
 
 <!--
-  The silhouette, drawn.
+  The silhouette, drawn softly.
 
-  The film is anchored on white, which was free while the mark sat on an ink
-  cell: the light bands were the highlights. On paper they are the *background*,
-  and the shape dissolved into it at its edges — the mark read as a smudge of
-  colour rather than as a mark. A hairline gives it back its outline, in the same
-  ink and at the same weight as every rule on the site.
+  There was a hard hairline here once and it was too much: at this size a full
+  weight outline reads as a sticker die-cut, and the mark stopped being a surface
+  and started being a shape with a line round it. This is roughly two thirds of
+  that weight at a little under half the opacity — enough to hold the edge where
+  a light band in the film meets the page, not enough to announce itself.
 -->
-<use href="#mark" fill="none" stroke="#0e0e0c" stroke-width="7.3" stroke-opacity="0.72"/>
+<use href="#mark" fill="none" stroke="#0e0e0c" stroke-width="4.7" stroke-opacity="0.42"/>
 
 </svg>

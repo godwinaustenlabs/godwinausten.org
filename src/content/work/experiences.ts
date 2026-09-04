@@ -83,9 +83,9 @@ export type Experience = z.infer<typeof experienceSchema>;
 
 export const experiences: Experience[] = z.array(experienceSchema).parse([
   {
-    slug: "the-picasso-experience",
+    slug: "the-rembrandt-experience",
     index: "01",
-    name: "The Picasso Experience",
+    name: "The Rembrandt Experience",
     client: "faayy.shop",
     summary:
       "A catalogue growing faster than anyone could describe it, and an inbox growing faster than that. Narrow agents that write the listings, answer what the catalogue can answer, and hand the rest to a human with the context attached.",
@@ -97,11 +97,19 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
       "Systems integration",
     ],
     status: "In production",
+    /*
+      The two ids below still say "picasso", and deliberately.
+
+      `still` names a file whose art is generated from a seed derived from that
+      word, so renaming it redraws the tile. `media` resolves to an R2 key that
+      the owner uploads a cut to. Neither is ever read by a visitor, and both
+      would break something real in exchange for tidiness nobody can see.
+    */
     still: "/assets/tiles/picasso.svg",
     media: "reel-picasso",
     runtime: "Demo reel",
     detail: {
-      headline: "The Picasso Experience.",
+      headline: "The Rembrandt Experience.",
       lead: "Faayy had a catalogue growing faster than anyone could describe it and an inbox growing faster than that. This is what we built, how we decided what to build, and what we deliberately left alone.",
       meta: ["faayy.shop", "In production", "Four weeks"],
       build: {
@@ -121,7 +129,7 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
             index: "02",
             title: "Narrow agents, not one big one",
             paragraphs: [
-              "One agent that does everything is one agent that fails at everything at once, and is impossible to debug when it does. The Picasso Experience is several: one drafts a listing from photographs and a spec, one answers the questions the catalogue can already answer, and one decides when a human should take over.",
+              "One agent that does everything is one agent that fails at everything at once, and is impossible to debug when it does. The Rembrandt Experience is several: one drafts a listing from photographs and a spec, one answers the questions the catalogue can already answer, and one decides when a human should take over.",
               "Each has a narrow brief and a defined output. When something goes wrong it is obvious which one went wrong, which is the difference between a system a team trusts and one they quietly stop using.",
             ],
           },

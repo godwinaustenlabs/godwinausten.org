@@ -283,44 +283,82 @@ function swarm() {
 }
 
 /*
- * 03 — Systems Integration. One hub, four boxes, wired. The boxes carry no
- * product names: naming the CRM would date the drawing and imply an integration
- * we have not built.
+ * 03 — Systems Integration. One hub, four named systems, wired.
+ *
+ * The boxes used to be deliberately anonymous, on the argument that naming a CRM
+ * dates the drawing and implies an integration we have not built. The owner's
+ * call reverses it, and the reasoning is better than the old one: "custom
+ * solutions for SaaS and enterprises" is an abstraction until you see the four
+ * places the work actually lands, and everyone reading it already has an opinion
+ * about at least one of them. Four blank plates say nothing; HubSpot, Salesforce,
+ * the Graph API and Slack say what the sentence beside them means.
+ *
+ * They are set in a system monospace stack rather than the site's own face. This
+ * is painted as a background image, which cannot reach the page's webfonts — a
+ * named font here would silently fall back to whatever the machine has, so it
+ * asks for the category instead and gets a predictable answer everywhere.
  */
+const SYSTEMS = ["HubSpot", "Salesforce", "Meta Graph API", "Slack"];
+
 function integration() {
   const random = rng(0x6b12);
   const cx = W * 0.5;
   const cy = H * 0.5;
 
-  const bw = 168;
-  const bh = 74;
+  // Wide enough for the longest name at a size that survives being painted at
+  // roughly half scale, and tall enough for a header and the record under it.
+  const bw = 216;
+  const bh = 104;
   const hubR = 46;
   const spots = [
-    [W * 0.04, H * 0.1],
-    [W * 0.96 - bw, H * 0.16],
-    [W * 0.04, H * 0.74],
-    [W * 0.96 - bw, H * 0.68],
+    [W * 0.03, H * 0.08],
+    [W * 0.97 - bw, H * 0.15],
+    [W * 0.03, H * 0.72],
+    [W * 0.97 - bw, H * 0.66],
   ];
 
   const boxes = [];
   const runs = [];
   const joints = [];
+  const labels = [];
+  const rules = [];
+  const ports = [];
 
   const fields = [];
-  for (const [bx, by] of spots) {
+  for (const [i, [bx, by]] of spots.entries()) {
     boxes.push(box(bx, by, bw, bh));
 
-    // Each system is a system, not a rectangle: three field rules inside it, of
-    // uneven length, so the four read as records rather than as blank plates.
+    /*
+     * A header, then the record under it.
+     *
+     * The name sits above a full-width rule, the way the top of a table does,
+     * and the field lines below it are of uneven length so the four read as
+     * systems holding different things rather than as one shape stamped out
+     * four times.
+     */
+    labels.push(
+      `<text x="${r1(bx + 16)}" y="${r1(by + 32)}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" ` +
+        `font-size="21" letter-spacing="0.5" fill="${LINE}" fill-opacity="0.92">${SYSTEMS[i]}</text>`,
+    );
+    rules.push(line(bx, by + 44, bx + bw, by + 44));
+
     for (let f = 0; f < 3; f += 1) {
-      const fy = by + (bh / 4) * (f + 1);
-      const fw = 34 + random() * 62;
-      fields.push(line(bx + 14, fy, bx + 14 + fw, fy));
+      const fy = by + 62 + f * 16;
+      const fw = 44 + random() * 104;
+      fields.push(line(bx + 16, fy, bx + 16 + fw, fy));
+      // A value against the field, hard right — the shape of a record, without
+      // inventing data nobody can read at this size anyway.
+      fields.push(line(bx + bw - 16 - (14 + random() * 26), fy, bx + bw - 16, fy));
     }
+
     // Arrive on the hub's rim at the angle the box actually sits, so four runs
     // meet the circle at four points instead of stacking onto one centreline.
     const px = bx + bw / 2 < cx ? bx + bw : bx;
     const py = by + bh / 2;
+
+    // The port the run leaves through: a system has connectors, and a line
+    // touching a bare rectangle reads as a line that happens to end there.
+    ports.push(`<rect x="${r1(px - 7)}" y="${r1(py - 7)}" width="14" height="14"/>`);
     const a = Math.atan2(cy - py, cx - px);
     const hx = cx - Math.cos(a) * hubR;
     const hy = cy - Math.sin(a) * hubR;
@@ -373,12 +411,15 @@ function integration() {
   <path d="${runs.join("")}" stroke-width="3.2" opacity="0.8"/>
   <path d="${orbit.join("")}" stroke-width="2" opacity="0.4"/>
   <path d="${fields.join("")}" stroke-width="1.8" opacity="0.45"/>
+  <path d="${rules.join("")}" stroke-width="2.6" opacity="0.7"/>
   <g stroke-width="3.6" opacity="0.9">${boxes.join("")}</g>
+  <g stroke-width="3" opacity="0.9" fill="#f6f5f1">${ports.join("")}</g>
+  ${labels.join("")}
   <path d="${ticks.join("")}" stroke-width="3.4" opacity="0.8" stroke-linecap="butt"/>
   <circle cx="${r1(cx)}" cy="${r1(cy)}" r="${r1(hubR)}" stroke-width="3.8" opacity="0.95"/>
   <g fill="${LINE}" stroke="none" opacity="1">${joints.join("")}${node(cx, cy, 11)}</g>
 </g>`,
-    `0 ${r1(H * 0.1 - 26)} ${W} ${r1(H * 0.74 + bh + 26 - (H * 0.1 - 26))}`,
+    `0 ${r1(H * 0.08 - 26)} ${W} ${r1(H * 0.72 + bh + 26 - (H * 0.08 - 26))}`,
   );
 }
 

@@ -110,20 +110,15 @@ export function PlaybookForm({
 
   if (state.status === "success") {
     return (
-      /*
-        Ink, not paper. This replaces the offer *in the cell*, and the cell is
-        the site's own paper — the dark tones here were correct only while the
-        whole panel was an ink block.
-      */
       <div role="status">
-        <p className="flex items-baseline gap-3 font-display text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-bold text-ink">
+        <p className="flex items-baseline gap-3 font-display text-[clamp(1.75rem,3vw,2.75rem)] leading-tight font-bold text-paper">
           <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-signal" />
           {success}
         </p>
-        <p className="mt-4 font-sans text-base text-soft">{successBody}</p>
+        <p className="mt-4 font-sans text-base text-paper/70">{successBody}</p>
         <a
           href={href}
-          className="signal-link mt-4 inline-block font-sans text-base font-medium text-ink"
+          className="signal-link mt-4 inline-block font-sans text-base font-medium text-paper"
         >
           {again}
         </a>
@@ -139,20 +134,71 @@ export function PlaybookForm({
       </span>
     </>
   );
+  /*
+   * Ink on the accent, in a printed frame.
+   *
+   * A halftone pool used to sit behind it, standing in for a spotlight. It was
+   * the wrong device: a field of dots reads as texture on the panel rather than
+   * as an edge on the control, and the button needs an edge — it is the one
+   * thing on the page that has to look pressable.
+   *
+   * ## The frame
+   *
+   * Three rules and a block, all hard-edged, no blur anywhere:
+   *
+   *   border-2 paper        a thin white frame on the ink panel
+   *   inset 5px signal      a gap, the width of the bevel
+   *   inset 7px ink         the dark line held inside it
+   *   7px 7px paper         the solid block it stands on
+   *
+   * The inset pair is what makes it read as *bevelled* rather than as outlined:
+   * a second line held a few pixels inside the face is how a raised surface was
+   * drawn before anything could render a gradient, and it is the detail that
+   * separates this from a modern button with a border.
+   *
+   * Every colour here is picked against an ink ground: the frame and the block
+   * are paper, because on black nothing else reads as a solid, and the line
+   * inside the face is ink, because on the accent nothing else reads as a line.
+   *
+   * The two insets are listed before the offset block because box-shadows paint
+   * front to back: the accent one has to sit *over* the ink one to hold the gap
+   * open, or the dark line runs straight to the edge of the face.
+   *
+   * On press the block collapses and the button travels the same distance into
+   * it: nothing fades, something moves.
+   *
+   * Square corners, not the rounded ones it had. A radius is the one detail that
+   * would give away that this is a modern button wearing a frame.
+   */
+  /*
+   * Written out in full, three times over, and it has to be.
+   *
+   * The shadow stack was a constant interpolated into each state's class — which
+   * is correct JavaScript and invisible to Tailwind. The scanner reads source
+   * *text* and generates a utility for every class-like string it finds; a name
+   * assembled at runtime is never in the file, so no rule was ever emitted and
+   * the button simply had no bevel and no block. It looked like a styling
+   * mistake and was a build-time one. Repetition is the price of the class
+   * existing at all.
+   */
   const buttonClass =
-    "flex w-full cursor-pointer list-none items-center justify-between gap-4 rounded-sm bg-signal px-6 py-4 font-sans text-lg font-medium text-ink transition-transform hover:-translate-y-px sm:px-8 sm:py-5 sm:text-xl [&::-webkit-details-marker]:hidden";
+    "flex w-full cursor-pointer list-none items-center justify-between gap-4 border-2 border-paper bg-signal px-7 py-5 font-sans text-lg font-medium text-ink " +
+    "shadow-[inset_0_0_0_5px_var(--color-signal),inset_0_0_0_7px_var(--color-ink),7px_7px_0_0_var(--color-paper)] " +
+    "transition-[transform,box-shadow] duration-150 " +
+    "hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[inset_0_0_0_5px_var(--color-signal),inset_0_0_0_7px_var(--color-ink),4px_4px_0_0_var(--color-paper)] " +
+    "active:translate-x-[7px] active:translate-y-[7px] active:shadow-[inset_0_0_0_5px_var(--color-signal),inset_0_0_0_7px_var(--color-ink)] " +
+    "sm:px-9 sm:py-6 sm:text-xl [&::-webkit-details-marker]:hidden";
 
   /*
-   * The field is rendered on two different grounds.
+   * One palette, because there is one ground.
    *
-   * Hydrated, it opens in the dialog, which dims the page behind it and is dark.
-   * Before hydration it is a native `<details>` that opens *in the cell*, and
-   * the cell is paper. One set of colours cannot be right in both places, and
-   * the version that was wrong was the one a visitor sees while the JavaScript
-   * is still arriving — so it takes the ground as an argument rather than
-   * assuming it.
+   * This renders in two places — in the cell, as a native `<details>` before
+   * hydration, and in the dialog once there is JavaScript — and for a while
+   * those were different colours, which meant carrying the ground as an
+   * argument. The cell is pine now and the dialog dims the page behind it, so
+   * both are dark and the distinction has stopped existing.
    */
-  const renderForm = (onDark: boolean) => (
+  const form = (
     <form action={formAction}>
       {/* Honeypot. Hidden from sight and from assistive tech, but a bot filling
           every field in the DOM will still take it. */}
@@ -160,10 +206,7 @@ export function PlaybookForm({
         <input type="text" name="company" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <label
-        htmlFor={fieldId}
-        className={`mb-3 block font-sans text-base ${onDark ? "text-paper/70" : "text-soft"}`}
-      >
+      <label htmlFor={fieldId} className="mb-3 block font-sans text-base text-paper/70">
         {prompt}
       </label>
 
@@ -177,11 +220,7 @@ export function PlaybookForm({
           placeholder={placeholder}
           aria-describedby={state.status === "error" ? messageId : undefined}
           aria-invalid={state.status === "error"}
-          className={`min-w-0 grow rounded-sm border px-4 py-3.5 font-sans text-base outline-none ${
-            onDark
-              ? "border-paper/25 bg-paper/[0.04] text-paper placeholder:text-paper/40 focus:border-paper/60"
-              : "border-hairline bg-ink/[0.02] text-ink placeholder:text-ink/35 focus:border-ink/50"
-          }`}
+          className="min-w-0 grow rounded-sm border border-paper/25 bg-paper/[0.04] px-4 py-3.5 font-sans text-base text-paper outline-none placeholder:text-paper/40 focus:border-paper/60"
         />
         <button
           type="submit"
@@ -193,17 +232,12 @@ export function PlaybookForm({
       </div>
 
       {state.status === "error" ? (
-        // Lime carries an error against the dim; against paper it disappears.
-        <p
-          id={messageId}
-          role="alert"
-          className={`mt-3 font-sans text-sm ${onDark ? "text-signal" : "font-medium text-ink"}`}
-        >
+        <p id={messageId} role="alert" className="mt-3 font-sans text-sm text-signal">
           {state.message}
         </p>
       ) : null}
 
-      <Label as="p" className={`mt-5 ${onDark ? "text-paper/50" : "text-soft"}`}>
+      <Label as="p" className="mt-5 text-paper/50">
         {micro}
       </Label>
     </form>
@@ -214,7 +248,7 @@ export function PlaybookForm({
     return (
       <details className="group">
         <summary className={`${buttonClass} group-open:hidden`}>{button}</summary>
-        <div className="pt-6">{renderForm(false)}</div>
+        <div className="pt-6">{form}</div>
       </details>
     );
   }
@@ -226,7 +260,7 @@ export function PlaybookForm({
       </button>
       {open || pending || state.status === "error" ? (
         <PlaybookDialog label={cta} onClose={() => setOpen(false)}>
-          {renderForm(true)}
+          {form}
         </PlaybookDialog>
       ) : null}
     </>

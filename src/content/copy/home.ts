@@ -145,7 +145,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     card: {
       eyebrow: "An experience",
       client: "faayy.shop",
-      name: "The Picasso Experience",
+      name: "The Rembrandt Experience",
       body: "Narrow agents that write the listings, answer what the catalogue can answer, and hand the rest to a human with the context attached.",
       notes: [
         { label: "Shape", value: "Catalogue, support, escalation" },

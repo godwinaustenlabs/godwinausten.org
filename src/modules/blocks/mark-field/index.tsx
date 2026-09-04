@@ -69,11 +69,26 @@ export default function MarkField({
           screen — were cut off square with paper still showing above and below
           the cut, which is the one thing a print does not do.
         */}
+        {/* From `md` up it is a layer on the right of the panel instead — see
+            the note above about why it is positioned rather than laid out. */}
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] overflow-hidden md:block">
           <Watermark />
         </div>
 
-        <div className="relative flex h-full items-center px-gutter py-[clamp(1.75rem,5vh,3.5rem)]">
+        <div className="relative flex h-full flex-col justify-center gap-8 px-gutter py-[clamp(1.75rem,5vh,3.5rem)] md:flex-row md:items-center md:justify-start md:gap-0">
+          {/*
+            On a phone the print goes *above* the claim rather than beside it.
+
+            There is no room for a second column at that width, and the panel
+            used to simply drop it — which left the phone with the one section
+            on the site that is meant to look made by hand reading as a
+            paragraph and an email address. In flow and in a band of its own it
+            is the first thing seen, and the heading lands under it.
+          */}
+          <div className="relative h-[clamp(8rem,32vw,13rem)] w-full overflow-hidden md:hidden">
+            <Watermark />
+          </div>
+
           <div className="max-w-[42ch] md:max-w-[48%]">
             <h2 className="font-display text-[clamp(2.4rem,4.8vw,4.75rem)] leading-[0.92] font-bold text-ink">
               {headline}

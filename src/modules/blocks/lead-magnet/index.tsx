@@ -55,9 +55,19 @@ export default function LeadMagnet({
   return (
     <Panel
       id={anchor}
-      className="grid-rows-[auto_auto_auto_auto] md:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] md:grid-rows-[auto_minmax(0,1fr)_auto]"
+      /*
+        The mark takes the left column and the offer the right.
+
+        The *order in the document* is unchanged — the offer still comes first,
+        which is the order it is read in on a phone and the order that matters
+        for the one conversion on the page. Only the placement moves, and only
+        from `md` up, where there are two columns for it to move between. Doing
+        it with `order` rather than by swapping the JSX is what keeps those two
+        facts independent.
+      */
+      className="grid-rows-[auto_auto_auto_auto] md:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] md:grid-rows-[auto_minmax(0,1fr)_auto]"
     >
-      <div className="cell col-span-full flex-row items-center gap-4 px-gutter py-3">
+      <div className="cell col-span-full flex-row items-center gap-4 px-gutter py-3 md:order-1">
         <Label tone="ink" className="opacity-40">
           {index}
         </Label>
@@ -74,19 +84,34 @@ export default function LeadMagnet({
         `--block-lead` and has to be opaque as it travels over the one behind it.
       */}
       <Cell
-        className="z-20 col-span-full [transform:translate3d(0,var(--block-lead,0px),0)] bg-paper will-change-transform md:col-span-1 strip:[transform:translate3d(var(--block-lead,0px),0,0)]"
+        /*
+          Ink, with the offer in paper.
+
+          Two coloured grounds were tried here and both are recorded in the
+          history rather than in the file: pine, and the accent let down into
+          paper. Each solved the complaint that white makes this one more section
+          in a column of white sections, and the owner's landing point is that a
+          black panel does it better — the offer is the one thing on the page
+          being *given away*, and it reads as an object when the page around it
+          goes dark rather than as a louder version of the same page.
+
+          `bg-ink` is explicit as well as `tone`: the cell travels on
+          `--block-lead` and has to be opaque as it passes over the panel behind.
+        */
+        tone="ink"
+        className="z-20 col-span-full [transform:translate3d(0,var(--block-lead,0px),0)] bg-ink will-change-transform md:order-3 md:col-span-1 strip:[transform:translate3d(var(--block-lead,0px),0,0)]"
         bodyClassName="justify-center gap-5"
       >
-        {/* Lime on paper is a highlighter, not a colour to set type in. */}
-        <p className="font-mono text-xs font-medium tracking-[0.12em] text-ink/70 uppercase">
+        <p className="font-mono text-xs font-medium tracking-[0.12em] text-paper/65 uppercase">
           {kicker}
         </p>
 
-        <h2 className="font-display text-[clamp(1.9rem,3.8vw,3.5rem)] leading-[0.94] font-bold text-ink">
+        <h2 className="font-display text-[clamp(1.9rem,3.8vw,3.5rem)] leading-[0.94] font-bold text-paper">
           {headline}
         </h2>
 
-        <p className="max-w-[34ch] font-sans text-base text-soft lg:text-lg">{body}</p>
+        {/* `soft` is a grey mixed for paper and goes muddy on anything else. */}
+        <p className="max-w-[34ch] font-sans text-base text-paper/70 lg:text-lg">{body}</p>
 
         {/*
           The button lives with the offer, not beside the cover.
@@ -97,7 +122,15 @@ export default function LeadMagnet({
           between a visitor and a download they have already decided on. What is
           left is one claim, one line, one control.
         */}
-        <div className="mt-1 w-full max-w-[24rem]">
+        {/*
+          Set down from the copy rather than tucked under it.
+
+          The cell is a `gap-5` stack, and at that spacing the control read as
+          the last line of the paragraph. The extra top margin is what makes it
+          a separate object on the panel — something you press, rather than
+          something you finish reading.
+        */}
+        <div className="mt-6 w-full max-w-[24rem] sm:mt-9">
           <PlaybookForm {...form} />
         </div>
       </Cell>
@@ -107,7 +140,7 @@ export default function LeadMagnet({
         ground from edge to edge, and the mark is the only colour on it.
       */}
       <Cell
-        className="relative col-span-full overflow-hidden md:col-span-1"
+        className="relative col-span-full overflow-hidden md:order-2 md:col-span-1"
         bodyClassName="items-center justify-center"
       >
         {/*
@@ -143,7 +176,7 @@ export default function LeadMagnet({
         </div>
       </Cell>
 
-      <div className="cell col-span-full hidden md:flex">
+      <div className="cell col-span-full hidden md:order-4 md:flex">
         <NextCell next={next} />
       </div>
     </Panel>

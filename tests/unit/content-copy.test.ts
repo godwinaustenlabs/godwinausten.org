@@ -121,7 +121,7 @@ describe("site copy", () => {
   });
 
   it("calls the case study an experience", () => {
-    expect(homeCopy.experience.card.name).toBe("The Picasso Experience");
+    expect(homeCopy.experience.card.name).toBe("The Rembrandt Experience");
     expect(homeCopy.experience.card.client).toBe("faayy.shop");
     expect(strings.some((s) => /case stud(y|ies)/i.test(s))).toBe(false);
   });

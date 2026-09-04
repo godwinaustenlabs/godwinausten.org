@@ -23,6 +23,9 @@ export const vslPanel = defineBlock({
     layout: { width: "full-bleed", spacing: "none", panel: "content" },
     // Time-to-first-frame is the metric that matters most here (docs/brief.md);
     // an opacity animation over a video element is the wrong place to spend one.
-    motion: { reveal: false },
+    // Same as the lead magnet: with nothing at all the panel snaps into
+    // existence mid-scroll and reads as a section loading. A fade moves no
+    // geometry, which matters on the one panel holding a video.
+    motion: { reveal: "fade" },
   },
 });

@@ -41,12 +41,12 @@ import { experienceBySlug } from "@/content/work/experiences";
  */
 async function homeComposition() {
   /*
-   * The card on this panel *is* the Picasso experience, so its reel comes from
+   * The card on this panel *is* the Rembrandt experience, so its reel comes from
    * that record rather than from a second copy of the id sitting here. The id
    * lived in two places before — this line and (unset) on the experience — and
    * the result was a film that played on the home page and nowhere else.
    */
-  const picasso = experienceBySlug("the-picasso-experience");
+  const picasso = experienceBySlug("the-rembrandt-experience");
   const [vsl, reel] = await Promise.all([
     mediaSrc("vsl"),
     picasso ? mediaSrc(picasso.media) : undefined,

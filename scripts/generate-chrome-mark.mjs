@@ -144,6 +144,14 @@ const defsFor = (shape) =>
 /**
  * The hues the film cycles through.
  *
+ * Nothing in here is white any more, and that is what lets the mark go without
+ * an outline. The lightest stops used to be pure `#ffffff`: free on an ink cell,
+ * where they were the highlights, but on paper they *were* the paper — the
+ * silhouette dissolved wherever a light band reached its edge. An outline fixed
+ * that and the owner did not want one, so the film holds its own edge instead:
+ * every stop is now darker than the page it sits on, and the shape is legible
+ * because none of its colours can be mistaken for the ground.
+ *
  * Anchored on the site's lime and walked outwards — mint, cool blue, warm sand,
  * a muted coral — rather than a full spectrum. That is the same trick the
  * reference uses: its slick reads as "iridescent" while actually living in a
@@ -151,19 +159,19 @@ const defsFor = (shape) =>
  * instead of fighting it.
  */
 const FILM = [
-  "#ffffff",
+  "#dfe8d2",
   "#c6ff3e",
   "#3f6b1f",
-  "#eafff0",
+  "#bfe8cf",
   "#1f5f4a",
-  "#cfe4ff",
-  "#ffffff",
+  "#a9c8ef",
+  "#e4ecd8",
   "#e9c896",
   "#c2624a",
   "#5e2a24",
-  "#f3efe4",
+  "#d8d3c2",
   "#9ee04a",
-  "#ffffff",
+  "#dfe8d2",
 ];
 
 const filmStops = FILM.map(
@@ -253,15 +261,15 @@ const partSvg = (
 </g>
 
 <!--
-  The silhouette, drawn.
+  The silhouette, drawn softly.
 
-  The film is anchored on white, which was free while the mark sat on an ink
-  cell: the light bands were the highlights. On paper they are the *background*,
-  and the shape dissolved into it at its edges — the mark read as a smudge of
-  colour rather than as a mark. A hairline gives it back its outline, in the same
-  ink and at the same weight as every rule on the site.
+  There was a hard hairline here once and it was too much: at this size a full
+  weight outline reads as a sticker die-cut, and the mark stopped being a surface
+  and started being a shape with a line round it. This is roughly two thirds of
+  that weight at a little under half the opacity — enough to hold the edge where
+  a light band in the film meets the page, not enough to announce itself.
 -->
-<use href="#mark" fill="none" stroke="#0e0e0c" stroke-width="${r1(markH * 0.005)}" stroke-opacity="0.72"/>
+<use href="#mark" fill="none" stroke="#0e0e0c" stroke-width="${r1(markH * 0.0032)}" stroke-opacity="0.42"/>
 
 </svg>
 `;

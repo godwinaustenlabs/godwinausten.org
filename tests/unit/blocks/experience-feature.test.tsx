@@ -5,7 +5,7 @@ import ExperienceFeature from "@/modules/blocks/experience-feature";
 const card = {
   eyebrow: "An experience",
   client: "faayy.shop",
-  name: "The Picasso Experience",
+  name: "The Rembrandt Experience",
   body: "Narrow agents that write the listings and answer what the catalogue can answer.",
   notes: [
     { label: "Shape", value: "Catalogue, support, escalation" },
@@ -29,7 +29,7 @@ describe("experience-feature", () => {
     render(<ExperienceFeature {...props} />);
     expect(screen.getByRole("heading", { level: 2, name: props.headline })).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 3, name: /The Picasso Experience/ }),
+      screen.getByRole("heading", { level: 3, name: /The Rembrandt Experience/ }),
     ).toBeInTheDocument();
   });
 
@@ -37,7 +37,7 @@ describe("experience-feature", () => {
     render(<ExperienceFeature {...props} />);
     // The card is the link, not a button inside it. One build does not need a
     // call to action of its own on a landing page — the detail is on /work.
-    expect(screen.getByRole("link", { name: /The Picasso Experience/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /The Rembrandt Experience/ })).toHaveAttribute(
       "href",
       card.cta.href,
     );
@@ -51,10 +51,10 @@ describe("experience-feature", () => {
 
   it("mounts a muted looping video once a src arrives", () => {
     const { container } = render(
-      <ExperienceFeature {...props} card={{ ...card, src: "/picasso.mp4" }} />,
+      <ExperienceFeature {...props} card={{ ...card, src: "/rembrandt.mp4" }} />,
     );
     const video = container.querySelector("video");
-    expect(video).toHaveAttribute("src", "/picasso.mp4");
+    expect(video).toHaveAttribute("src", "/rembrandt.mp4");
     expect(video).toHaveProperty("muted", true);
     expect(video).toHaveAttribute("preload", "none");
   });

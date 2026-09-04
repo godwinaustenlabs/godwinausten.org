@@ -33,9 +33,17 @@ export const leadMagnet = defineBlock({
   load: () => import("./index"),
   defaults: {
     layout: { width: "full-bleed", spacing: "none", panel: "viewport" },
-    // No reveal. This is the page's one conversion; an opacity animation
-    // between the reader deciding and the field being usable is a cost with no
-    // return.
-    motion: { reveal: false },
+    /*
+      It arrives, rather than simply being there.
+     
+      This carried `reveal: false` on the argument that an animation between the
+      reader deciding and the field being usable is a cost with no return. The
+      owner's read is the one that matters here and it is the opposite: with no
+      transition the panel *appears* mid-scroll, which looks like a section
+      loading rather than a section arriving. A fade is the cheapest one — it
+      moves nothing, so the button is never travelling under a thumb reaching
+      for it.
+    */
+    motion: { reveal: "fade" },
   },
 });

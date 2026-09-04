@@ -881,6 +881,63 @@ rejected outright. The parts sat still, no error was reported anywhere, and the
 loop was running the whole time. Out of range now means zero, not "the direction,
 times zero".
 
+### Added mid-sprint, twenty-seventh round (owner, 2026-09-04)
+
+> A long back-and-forth on the lead magnet, plus: the watermark above the claim
+> on a phone · a vector spotlight on the download button · product names in the
+> integration schematic · "The Picasso Experience" becomes "The Rembrandt
+> Experience" · the mark's outline back, softer · sections that appear rather
+> than snap in.
+
+- [x] **The Rembrandt Experience.** Renamed everywhere it is written, including
+      the URL. The two ids behind it still say "picasso" and deliberately: one
+      names a file whose art is generated from a seed derived from that word, the
+      other resolves to an R2 key the owner uploads a cut to. Neither is ever read
+      by a visitor and both would break something real.
+- [x] **The panels arrive instead of appearing.** The lead magnet and the VSL
+      carried `reveal: false`, so mid-scroll they snapped into existence and read
+      as sections _loading_. Both fade now — no geometry moves, which matters on
+      a panel holding a video and on one holding the page's only button.
+- [x] **The print goes above the claim on a phone.** There is no room for a
+      second column at that width and the panel used to simply drop it, which
+      left the one section meant to look hand-made reading as a paragraph and an
+      email address.
+- [x] **The integration schematic names its systems.** HubSpot, Salesforce, the
+      Meta Graph API and Slack, each as a record with a header rule, uneven field
+      lines and a port where its run leaves. The boxes were deliberately
+      anonymous before; "custom solutions for SaaS and enterprises" is an
+      abstraction until you see the four places the work actually lands.
+- [x] **The mark keeps a soft outline.** A full-weight hairline read as a die-cut
+      sticker; this is two thirds of the weight at under half the opacity —
+      enough to hold the edge where a light band meets the page.
+- [x] **The lead magnet: mark left, offer right, on ink, with a retro control.**
+      The document order is unchanged — the offer still comes first, which is
+      what a phone reads and what the funnel needs — and only the placement moves,
+      with `order`, from `md` up.
+
+**Two things worth recording, because both looked like design faults and were
+not.**
+
+_The spotlight._ A radial gradient pool was the first attempt and came out as a
+grey rectangular smear: the gradient never reached zero before the edge of its
+own box, so it had a straight cut down one side, and a soft blur is a texture
+nothing else on this site has. A halftone replaced it and was better but still
+wrong — a field of dots reads as texture on the _panel_, where what the button
+needed was an edge. The frame does that job now.
+
+_The class that was never built._ The button's shadow stack was a constant
+interpolated into each state's class. Correct JavaScript, invisible to Tailwind:
+the scanner reads source text and emits a utility for every class-like string it
+finds, so a name assembled at runtime is never in the file and no rule was ever
+generated. The button had no bevel and no block, and nothing in the type system
+or the linter had anything to say about it. Written out in full, three times.
+
+**Colour, for the record.** The ground went paper, then the accent, then pine,
+then the accent let down into paper, then back to ink with a paper foreground.
+The ADR drafted along the way was deleted with the last of those — ink needs no
+decision recorded, and an ADR describing a ground the site does not have is worse
+than none.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

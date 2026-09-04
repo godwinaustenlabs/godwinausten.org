@@ -57,7 +57,7 @@ which is the whole of the offence above. "Agentic AI Systems" is the name of a
 service we sell and is exempt by name in the test; "our agentic approach" is not
 and never will be. See `docs/adr/0006-agentic-as-a-service-name.md`.
 **Banned:** "case study". We call the work **experiences** — the first is _The
-Picasso Experience_, for faayy.shop.
+Rembrandt Experience_, for faayy.shop.
 **Banned:** invented statistics. No "+40% demo bookings" tiles, no metric
 blocks, no percentages anywhere on this page. Real case-study numbers go on a
 real case-study page. Both bans are enforced by
@@ -171,5 +171,5 @@ folders under `src/app/(marketing)/` still hold only a `.gitkeep`.
 - **A second experience.** `/work` is one build described properly. It becomes an
   index the moment there are two, and that is when `/work/[slug]` earns its
   keep.
-- **The Picasso Experience film.** The section is built for it; the copy module
+- **The Rembrandt Experience film.** The section is built for it; the copy module
   takes a `src:` and nothing else moves.
