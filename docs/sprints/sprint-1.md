@@ -639,7 +639,7 @@ the rule `docs/adr/0003` already sets for this reference.
       left ink letterbox around it. Both offending cells now hold the ratio
       themselves: the case-study card is `aspect-video shrink-0` in both modes
       with the notes taking the slack, and the VSL cell is `aspect-video
-    self-center` — `self-center` being the part that matters, because a
+self-center` — `self-center` being the part that matters, because a
       stretched grid item has a definite height and `aspect-ratio` is then a
       suggestion the browser may ignore. Measured across seven page/viewport
       pairs: every box and every video 1.78, and the case-study panel overflows
