@@ -129,9 +129,25 @@ export function HeroFigure({ src, className }: HeroFigureProps) {
       ref={rootRef}
       aria-hidden="true"
       className={cn(
-        // Fills its column and bleeds off the bottom, so the drawing reads as a
-        // crop of something larger rather than a picture placed in a box.
-        "pointer-events-none absolute inset-x-0 bottom-0 h-[108%] text-ink",
+        "pointer-events-none absolute inset-x-0 bottom-0 text-ink",
+        /*
+         * Two different jobs at two different shapes.
+         *
+         * Wide, the drawing sits in a tall column beside the copy: it is scaled
+         * to `contain` inside a box 8% taller than that column and anchored to
+         * the floor, so it overflows the top and bleeds — a crop of something
+         * larger rather than a picture placed in a box.
+         *
+         * Narrow, it is stacked *above* the copy in a short, wide column, and
+         * both halves of that go wrong. The 8% overflow clips the raised hand
+         * against the top of the hero, and `contain` on a box wider than the
+         * drawing's own near-square aspect fits by width and leaves a band of
+         * empty paper under the figure — read together as "the drawing is cut
+         * and there is a hole beneath it", which is exactly what it looks like.
+         * `auto 100%` fills the column's height instead, so the drawing meets
+         * the copy with no gap, and the full height means nothing is clipped.
+         */
+        "h-full [--figure-mask-size:auto_100%] md:h-[108%] md:[--figure-mask-size:contain]",
         className,
       )}
       style={{ "--pointer-x": 0, "--pointer-y": 0 } as React.CSSProperties}
@@ -160,8 +176,8 @@ export function HeroFigure({ src, className }: HeroFigureProps) {
               maskRepeat: "no-repeat",
               WebkitMaskPosition: "center bottom",
               maskPosition: "center bottom",
-              WebkitMaskSize: "contain",
-              maskSize: "contain",
+              WebkitMaskSize: "var(--figure-mask-size)",
+              maskSize: "var(--figure-mask-size)",
               backgroundColor: "currentColor",
             } as React.CSSProperties
           }

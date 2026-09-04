@@ -42,7 +42,18 @@ export default function HeroScribble({
 
   return (
     <div className="relative flex h-[var(--band)] w-full flex-col overflow-hidden md:flex-row md:items-stretch strip:h-full strip:w-screen">
-      <div className="relative order-2 flex min-h-0 flex-1 flex-col justify-center px-gutter py-[clamp(1rem,3vh,2rem)] md:order-1 md:basis-[54%] lg:basis-[56%]">
+      {/*
+        Centred beside the drawing, top-aligned under it.
+
+        Side by side, the copy is optically centred against the figure's column
+        and the free space is split above and below where it reads as margin.
+        Stacked on a phone, that same centring puts half its slack *between* the
+        drawing and the headline, where it reads as a hole rather than as air —
+        the drawing looks cut off from the words it belongs to. Top-aligned, the
+        headline sits under the figure and the slack falls to the foot of the
+        hero, which is where a page is expected to have some.
+      */}
+      <div className="relative order-2 flex min-h-0 flex-1 flex-col justify-start px-gutter py-[clamp(1rem,3vh,2rem)] md:order-1 md:basis-[54%] md:justify-center lg:basis-[56%]">
         <h1 className="font-display text-[clamp(2rem,5.6vw,6rem)] leading-[0.88] font-bold text-ink">
           {headlineLines.map((line) => (
             <span key={line} className="block">

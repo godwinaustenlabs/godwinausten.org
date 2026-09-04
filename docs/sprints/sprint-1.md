@@ -521,6 +521,25 @@ the rule `docs/adr/0003` already sets for this reference.
       entries in `MEDIA_ASSETS` name the same file — the `fallback` column only
       means something if replacing one asset changes one asset.
 
+### Added mid-sprint, sixteenth round (owner, 2026-09-04)
+
+- [x] **The hero figure is whole on a phone, and sits on the headline.** Two
+      faults reading as one. The mask box is 8% taller than its column and
+      anchored to the floor — a bleed that works beside the copy and, stacked
+      above it, clipped the raised hand against the top of the hero. And
+      `contain` on a column wider than the drawing's near-square aspect fits by
+      width, leaving a band of empty paper beneath it. Narrow now uses
+      `auto 100%`, which fills the column's height so nothing is clipped and the
+      drawing meets the copy; wide keeps `contain` and the bleed unchanged.
+      Measured: the figure's box is exactly its column at 390 and 360, and still
+      overflows by 8% at 1440.
+- [x] **The hero copy is top-aligned below `md`.** Beside the drawing its free
+      space splits above and below and reads as margin. Stacked, half of it lands
+      _between_ the drawing and the headline and reads as a hole — the gap the
+      figure's clipped edge was being blamed for. The gap from the figure to the
+      headline is 25px at 390 and 19px at 360; the slack now falls to the foot of
+      the hero, where a page is expected to have some.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`
