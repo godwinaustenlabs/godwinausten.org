@@ -32,7 +32,11 @@ import { PlaceholderReel } from "@/components/ui/PlaceholderReel";
  * The observer's `play()` is what starts the fetch.
  *
  * Until a `src` arrives it runs `PlaceholderReel` — the drawn loop, never a
- * black box.
+ * black box. A `src` that arrives and then fails to load takes the same branch:
+ * since media moved to a public origin (`src/server/media.ts`) nothing checks
+ * ahead of time whether the object is really there, so "the key is empty" shows
+ * up here, as a load error, and the answer to it is the drawn loop rather than
+ * the broken-media glyph the browser would otherwise paint.
  */
 export function Reel({
   label,
@@ -52,6 +56,10 @@ export function Reel({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [inView, setInView] = useState(false);
+  // The failing URL rather than a flag, so a new `src` is live again with no
+  // effect to reset it — and a second failure of the same URL is still one
+  // state change, not a loop.
+  const [failedSrc, setFailedSrc] = useState<string>();
 
   useEffect(() => {
     const el = videoRef.current;
@@ -72,7 +80,7 @@ export function Reel({
     else el.pause();
   }, [inView]);
 
-  if (!src) {
+  if (!src || failedSrc === src) {
     return <PlaceholderReel runtime={label} playOn={playOn} />;
   }
 
@@ -95,6 +103,7 @@ export function Reel({
         loop
         playsInline
         preload="none"
+        onError={() => setFailedSrc(src)}
         className="size-full object-contain"
       />
     </figure>

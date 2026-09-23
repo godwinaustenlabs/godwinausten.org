@@ -1,5 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { MEDIA_ASSETS, isMediaId, mediaHref, parseRange } from "@/server/media";
+import { afterEach, describe, expect, it } from "vitest";
+import {
+  MEDIA_ASSETS,
+  isMediaId,
+  mediaHref,
+  mediaObjectUrl,
+  mediaSrc,
+  parseRange,
+} from "@/server/media";
 
 describe("the media allowlist", () => {
   it("accepts only the ids it declares", () => {
@@ -99,5 +106,49 @@ describe("parseRange", () => {
     // is worse than serving the file: the player would render garbage.
     expect(parseRange("bytes=0-99,200-299", SIZE)).toBeNull();
     expect(parseRange("items=0-99", SIZE)).toBeNull();
+  });
+});
+
+describe("the public origin", () => {
+  const VARIABLE = "NEXT_PUBLIC_MEDIA_BASE_URL";
+  const original = process.env[VARIABLE];
+
+  afterEach(() => {
+    if (original === undefined) delete process.env[VARIABLE];
+    else process.env[VARIABLE] = original;
+  });
+
+  it("points a player at the object, not at the Worker", async () => {
+    process.env[VARIABLE] = "https://cdn.example.test";
+
+    // The whole fix in one assertion: what reaches a `<video>` is an origin URL,
+    // so the byte path is R2 behind the CDN and the Worker is not in it. A
+    // regression here is not cosmetic — it is the Worker running out of
+    // resources again. See docs/adr/0007-media-on-a-public-origin.md.
+    const src = await mediaSrc("reel-picasso");
+    expect(src).toBe(`https://cdn.example.test/${MEDIA_ASSETS["reel-picasso"].key}`);
+    expect(src).not.toContain("/api/media");
+  });
+
+  it("does not care how the origin is spelled", async () => {
+    process.env[VARIABLE] = "https://cdn.example.test///";
+    expect(await mediaSrc("vsl")).toBe(`https://cdn.example.test/${MEDIA_ASSETS.vsl.key}`);
+  });
+
+  it("falls back to the Worker route when the origin is turned off", async () => {
+    // The kill switch: one empty variable and every asset is served the way it
+    // was before the origin existed, with no deploy of new code. Empty and
+    // unset must therefore mean different things.
+    process.env[VARIABLE] = "";
+    expect(mediaObjectUrl("vsl")).toBeNull();
+    expect(await mediaSrc("vsl")).toBe("/api/media/vsl");
+  });
+
+  it("keeps the download on the Worker either way", () => {
+    // `Content-Disposition` is a header the origin would have to carry as object
+    // metadata, and one PDF per captured lead is a volume the Worker will never
+    // notice. Only the films moved.
+    process.env[VARIABLE] = "https://cdn.example.test";
+    expect(mediaHref("playbook", { download: true })).toBe("/api/media/playbook?download=1");
   });
 });

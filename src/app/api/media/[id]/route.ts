@@ -9,6 +9,18 @@ export const dynamic = "force-dynamic";
  * `[id]` is an id from `MEDIA_ASSETS`, never a bucket key — see the note there
  * for why the obvious `[...key]` version is not what this is.
  *
+ * ## What still comes through here
+ *
+ * The playbook, and nothing else in production. Film and reels now point
+ * straight at the public origin, because serving them from here is what
+ * exhausted the Worker — the reasoning is in `src/server/media.ts` and
+ * `docs/adr/0007-media-on-a-public-origin.md`.
+ *
+ * This is not dead code, and the range handling below is not vestigial. It is
+ * the path every asset takes when `NEXT_PUBLIC_MEDIA_BASE_URL` is empty: a
+ * local run, a preview, and the site itself if the origin ever has to be pulled.
+ * It must keep working, and `npm run test:worker` is what says it does.
+ *
  * ## Range requests
  *
  * A `<video>` element does not download a file and play it; it asks for byte
@@ -38,33 +50,42 @@ export async function GET(
 
   // Nothing in the bucket yet. Hand over the shipped stand-in where there is
   // one, so the funnel works before the owner has uploaded anything.
-  //
-  // Streamed through this handler rather than redirected to `/assets/...`: a
-  // redirect hands the request to the static asset server, which knows nothing
-  // about `Content-Disposition`, so the placeholder would open in a tab or save
-  // itself under its own filename. Proxying it means the stand-in and the real
-  // object are indistinguishable to the browser — same headers, same download,
-  // same filename — and the day the bucket is filled nothing observable changes.
   if (!head) {
     if (!asset.fallback) return new Response("Not found", { status: 404 });
 
+    // A film's stand-in is *redirected* to, not proxied.
+    //
+    // This used to proxy every stand-in, and the argument for it was
+    // `Content-Disposition` — which a redirect loses, because the static asset
+    // server knows nothing about it. That argument only ever applied to the
+    // download. For a film it bought nothing and cost a great deal: proxying a
+    // stand-in means buffering the whole file with `arrayBuffer()` to slice a
+    // range out of it, and a `<video>` asks for ranges by the dozen. One reader
+    // scrubbing a placeholder was tens of whole-file allocations, which is a
+    // large part of how this route came to exhaust the Worker.
+    //
+    // `/assets/...` is served by the ASSETS binding, which answers `Range`
+    // natively and does not invoke this Worker at all, so the redirect is both
+    // cheaper and more correct than the copy it replaces.
+    if (!asset.filename) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: new URL(asset.fallback, request.url).toString(),
+          // Short: the day an object lands at the key this answer is wrong, and
+          // a stale redirect would keep the stand-in on screen past its welcome.
+          "Cache-Control": "public, max-age=60",
+        },
+      });
+    }
+
+    // The download still proxies, and still ranges, for the reason the redirect
+    // above does not apply to it: the browser must save this under the name in
+    // the table rather than open it in a tab. It is one small PDF per captured
+    // lead, so the buffer is affordable here in a way it never was for a film.
     const stand = await fetch(new URL(asset.fallback, request.url));
     if (!stand.ok || !stand.body) return new Response("Not found", { status: 404 });
 
-    /*
-     * Buffered, and ranged like the real object.
-     *
-     * Streaming the body straight through is enough for the PDF and not enough
-     * for the film: the stand-in is a fragmented MP4 whose seek index sits in
-     * the `mfra` box at the very end, so a player that cannot ask for the tail
-     * cannot scrub. Answering `Range` here is what makes the transport work
-     * before anything has been uploaded — and it keeps the promise the
-     * `Accept-Ranges` header below was already making.
-     *
-     * The stand-ins are small and shipped in `public/`, so holding one in
-     * memory to slice it is cheaper than the alternatives. The real object
-     * above is never buffered; R2 ranges it at source.
-     */
     const body = new Uint8Array(await stand.arrayBuffer());
     const standRange = parseRange(request.headers.get("range"), body.byteLength);
     if (standRange === "unsatisfiable") {

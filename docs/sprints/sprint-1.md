@@ -975,6 +975,91 @@ so the raised hand went off one edge and the low arm off the other. Fixing the
 white space broke the drawing. It fits by width at both shapes now, anchored to
 the floor, so slack falls _above_ the figure where it reads as air under the nav.
 
+### Added mid-sprint, twenty-ninth round (owner, 2026-09-15)
+
+> `faayy-cs.mov` — the case-study footage. Into all its places, kept looping,
+> and served in a way that does not cost the page its load time.
+
+- [x] **The Rembrandt reel is real footage on all three pages.** No code
+      decides this. `reel-picasso` was already one id on one experience record,
+      resolved through `mediaSrc()` by the home panel, the `/work` index and the
+      `/work/[slug]` header, so the footage arriving at its R2 key lit all three
+      at once. The twenty-eighth round's note that "tiles take a real `.mp4` as
+      a one-line change" turned out to overstate the work: it was no lines.
+- [x] **It loops.** It already did — every consumer is `Reel`, which is already
+      `muted loop playsInline`. Nothing to add; worth stating because it was
+      asked for and the answer is that the component had it right.
+- [x] **The page does not pay for it.** `Reel` is `preload="none"` and starts
+      the fetch from an `IntersectionObserver`, so not a byte moves until the
+      reel is on screen. R2 ranges at source and the route already answers
+      `Range`, so it streams rather than arriving whole.
+
+**The two things that were actually wrong**, neither visible from the filename:
+
+- **The master could not stream.** It is a screen recording, `mdat` first and
+  `moov` at the tail, so a player has no index until the last byte lands — all
+  27 MB of it before the first frame. Re-encoded with `-movflags +faststart`.
+- **The master could not be trusted to play.** Container brand `qt  `, which
+  Safari takes and Chrome and Firefox do not reliably. The encode is `isom`
+  /`avc1`, which is what `contentType: "video/mp4"` has been claiming all along.
+
+**And it could not have shipped where it was put.** `public/` is the
+static-asset payload and Cloudflare caps a single asset at **25 MiB**; the file
+is 27.3 MiB, so the deploy would have refused it. Worse if it had squeaked
+under — the route's fallback path buffers a stand-in with `arrayBuffer()` to
+slice ranges out of it, which is fine for the 308 KB drawn loop it was written
+for and is a 27 MB allocation per request for this. Masters live in a
+gitignored `media/` now, and reach the site through R2 like every other heavy
+asset. Nothing large should ever sit in `public/` again.
+
+Shipped at 1920×1080@60, CRF 21, 5.5 MB — a 4.7× reduction with no visible
+loss on the UI text, which is most of what the reel shows.
+
+### Added mid-sprint, thirtieth round (owner, 2026-09-23)
+
+> The constant R2 reads for media are running the Worker out of resources.
+> Serve the video another way, everywhere it is served — home, `/work`, the
+> case-study page.
+
+- [x] **Video no longer touches the Worker.** `site-media` is on a public
+      origin, `cdn.godwinausten.org`, and `mediaSrc()` returns a URL on it. R2
+      answers `Range` itself and sits behind the CDN, so a reel costs no
+      invocation and, on a cache hit, no R2 operation. All three pages were
+      already resolving through `mediaSrc()`, so all three moved at once —
+      the same property that made the Rembrandt footage light three pages in
+      the last round.
+- [x] **The download stayed.** `/api/media/playbook` still proxies, because a
+      download needs `Content-Disposition` and one PDF per captured lead is a
+      volume nothing notices. It was the volume that was the problem.
+- [x] **A missing object degrades better than it did.** `Reel` and `FilmFrame`
+      fall back to `PlaceholderReel` on a load error, not just on an absent
+      `src`.
+
+**What the arithmetic actually was.** Not "constant reads" — worse. A `<video>`
+opens a chain of `Range` requests and keeps opening them while it buffers and
+while the reader scrubs, and this site puts several players on a page. Each
+request was a full OpenNext render invocation, an `R2.head()` **and** an
+`R2.get()`, and on `*.workers.dev` there is no CDN cache, so no two visitors
+ever shared any of it.
+
+**The part that was a bug, not a design.** When a key is empty the route
+`fetch`ed the whole stand-in and `arrayBuffer()`d it to slice a range out —
+an entire file allocated _per range request_. The twenty-ninth round flagged
+this as a hazard for a 27 MB file; it was already firing on every VSL request,
+because `vsl` has no object. A film's stand-in is now a redirect to `/assets/`,
+which the ASSETS binding serves without invoking the Worker at all.
+
+**What it cost.** The allowlist in `MEDIA_ASSETS` is no longer an access
+control — every object in `site-media` is now fetchable by key. Put to the
+owner with a second, private bucket as the alternative; the owner chose the
+single bucket. `SECURITY.md` §7 carries the rule that replaces it, and
+`docs/adr/0007-media-on-a-public-origin.md` records the trade, the Stream
+option that was turned down, and the kill switch.
+
+**Not done here, and blocking a deploy:** `cdn.godwinausten.org` does not exist
+yet. The bucket domain has to be bound before this ships, or every film 404s to
+a placeholder loop.
+
 ## Explicitly out of scope
 
 - **`/work/[slug]`, `/vsl`, `/privacy`, `/terms`.** Still only a `.gitkeep`

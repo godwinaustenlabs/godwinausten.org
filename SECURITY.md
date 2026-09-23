@@ -88,6 +88,11 @@ boundary, that trade-off gets an ADR first.
       so loose it is theatre or so tight it silently breaks the VSL player.
       Build it nonce-based, `default-src 'self'`, and roll it out
       `Content-Security-Policy-Report-Only` first.
+      **One origin is already known**: `media-src` must name
+      `https://cdn.godwinausten.org`, or every film and reel on the site is
+      blocked. It is the first host this site loads a subresource from — a
+      `default-src 'self'` policy written without it will look correct and break
+      the funnel. See §7.
 - [ ] `preload` added to HSTS, and the domain submitted, only after the apex and
       every subdomain are confirmed HTTPS-only.
 - [ ] `cross-origin-embedder-policy` — only if the VSL player tolerates it. Test
@@ -165,27 +170,40 @@ with a real destination behind it.
 public and unauthenticated, which is correct — everything it can reach is
 marketing collateral we are trying to hand out.
 
-**What stops it becoming a read cursor over the bucket** is that `[id]` is a key
-of `MEDIA_ASSETS` in `src/server/media.ts` and nothing else. The URL never
-carries a bucket key, so there is no traversal to sanitise and no object outside
-that table that can be named. Adding a reachable object is a code change with a
-review attached, and that is deliberate.
+**In production this now serves the playbook and nothing else.** Film and reels
+go straight to `cdn.godwinausten.org` — see §7 and
+`docs/adr/0007-media-on-a-public-origin.md`. The route remains the path for every
+asset when `NEXT_PUBLIC_MEDIA_BASE_URL` is empty, which is the kill switch if the
+origin has to be pulled, so none of the rules below have relaxed.
+
+**`[id]` is a key of `MEDIA_ASSETS` in `src/server/media.ts` and nothing else.**
+The URL never carries a bucket key, so there is no traversal to sanitise and no
+object outside that table that this route can be made to name.
+
+What that no longer buys is secrecy. The bucket is on a public origin now, so
+the set of _reachable_ objects is the whole bucket, whatever this route will
+name. The allowlist is a statement of what the site serves, not a boundary —
+the boundary is the rule in §7 about what may go in the bucket at all.
 
 Rules:
 
 - **Never** widen this to `[...key]` or otherwise pass a request-supplied string
-  to `MEDIA.get()`. The bucket also holds anything the owner uploads for other
-  purposes.
+  to `MEDIA.get()`. Still absolute, and not because of secrecy — an unbounded
+  key is an unbounded object, and the stand-in note below depends on knowing the
+  size of what is being read.
 - Responses carry `X-Content-Type-Options: nosniff` and an explicit
   `Content-Type` from the table, never one derived from the object.
 - `Content-Disposition: attachment` is set only for assets that declare a
   `filename` — a film must not download instead of playing.
-- The stand-in path answers `Range` too, and it does so by buffering the whole
-  file to slice it. That is safe **only** because a `fallback` is a fixed path
-  written in `MEDIA_ASSETS` and shipped in `public/` — a small file we chose. It
-  would not be safe against a request-supplied path or an object of unknown
-  size, which is another reason the previous rule is absolute. Range parsing is
-  the same `parseRange` the R2 path uses; do not write a second one.
+- The stand-in path buffers the whole file to slice a range out of it, and is
+  therefore reached **only** by an asset that declares a `filename` — the
+  playbook. A film's stand-in is redirected to instead. That is a cost decision
+  before it is a safety one (buffering a file per range request is what helped
+  exhaust the Worker), but the safety argument stands either way: buffering is
+  tolerable only because a `fallback` is a fixed path in `MEDIA_ASSETS` shipped
+  in `public/` — a small file we chose — and never a request-supplied path or an
+  object of unknown size. Range parsing is the same `parseRange` the R2 path
+  uses; do not write a second one.
 
 **The lead magnet's gate is the form, not this route.** Anyone who finds the
 download path can fetch the guide without giving us an address. That is the same
@@ -210,15 +228,25 @@ output as untrusted.
 
 ## 7. Storage
 
-**`site-media` (R2)** — public-facing brand and funnel media.
+**`site-media` (R2)** — public-facing brand and funnel media. **Public.**
 
-- Served through the Worker (`src/lib/media.ts`), never by exposing a public
-  bucket URL, so access stays revocable and observable.
-- Nothing private, personal, or unreleased goes in this bucket. There is no
-  per-object access control in front of it.
+- Bound to a public custom domain, `cdn.godwinausten.org`. This bucket used to
+  be reachable only through the Worker; serving video that way exhausted it, and
+  `docs/adr/0007-media-on-a-public-origin.md` records the decision and what it
+  cost.
+- **Every object in it is fetchable by anyone who knows its key.** There is no
+  per-object access control, no allowlist in front of it, and no code in this
+  repo that can change that. Treat the bucket as a directory on a public web
+  server, because that is what it is.
+- **Nothing goes in this bucket that is not already public.** Not a draft, not a
+  client's footage before it is released, not an export, not a "temporary" file.
+  Anything private needs a different bucket, and that bucket must not be given a
+  domain. This rule is now the entire boundary — it used to be backed by the
+  `MEDIA_ASSETS` allowlist, and it is not any more.
 - Uploads are done by a human via `wrangler r2 object put`. There is no upload
   endpoint, and adding one requires auth + type/size validation + a virus
-  consideration first.
+  consideration first. An upload endpoint onto a public bucket is worse than it
+  was: it would be an open, world-readable file host.
 
 **`site-isr-cache` (R2)** — OpenNext rendered-page cache.
 

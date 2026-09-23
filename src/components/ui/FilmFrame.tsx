@@ -39,9 +39,17 @@ import { cn } from "@/lib/utils";
  * That path is kept honest rather than pretty: `PlaceholderReel` in both states
  * — the drawn loop rather than a black rectangle — and a transport that says it
  * is waiting instead of miming.
+ *
+ * A `src` that fails to load is treated as an absent one, in the frame *and* in
+ * the theatre. Since media moved to a public origin (`src/server/media.ts`)
+ * nothing checks ahead of render whether the object is really at the key, so an
+ * empty key surfaces here as a load error — and the honest path above is
+ * already the right answer to it. Sharing one piece of state between the two
+ * states is the point: a frame that has discovered there is no film must not
+ * open a theatre that goes looking for it again.
  */
 export function FilmFrame({
-  src,
+  src: given,
   label,
   className,
   openLabel = "Play",
@@ -58,6 +66,10 @@ export function FilmFrame({
   // a portal to create there is certainly a `document` to create it in.
   const [open, setOpen] = useState(false);
   const inline = useRef<HTMLVideoElement>(null);
+  // The failing URL rather than a flag, so a new `src` is live again with no
+  // effect to reset it.
+  const [failedSrc, setFailedSrc] = useState<string>();
+  const src = given && failedSrc === given ? undefined : given;
 
   const hoverPlay = useCallback((play: boolean) => {
     const video = inline.current;
@@ -94,6 +106,7 @@ export function FilmFrame({
             playsInline
             preload="metadata"
             aria-hidden="true"
+            onError={() => setFailedSrc(given)}
             // Contained, not covered: this cell is not 16:9 at `md`, and the
             // frame is the thing being advertised. See `Reel`.
             className="size-full object-contain motion-reduce:[&]:![animation:none]"
@@ -126,7 +139,12 @@ export function FilmFrame({
 
       {open
         ? createPortal(
-            <Theatre src={src} label={label} onClose={() => setOpen(false)} />,
+            <Theatre
+              src={src}
+              label={label}
+              onClose={() => setOpen(false)}
+              onError={() => setFailedSrc(given)}
+            />,
             document.body,
           )
         : null}
@@ -137,7 +155,18 @@ export function FilmFrame({
 /** Seconds the skip controls jump. */
 const SKIP = 5;
 
-function Theatre({ src, label, onClose }: { src?: string; label: string; onClose: () => void }) {
+function Theatre({
+  src,
+  label,
+  onClose,
+  onError,
+}: {
+  src?: string;
+  label: string;
+  onClose: () => void;
+  /** Reported up, so the frame behind the dim stops offering a film there is none of. */
+  onError: () => void;
+}) {
   const video = useRef<HTMLVideoElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -238,6 +267,7 @@ function Theatre({ src, label, onClose }: { src?: string; label: string; onClose
                 const seconds = e.currentTarget.duration;
                 if (Number.isFinite(seconds)) setDuration(seconds);
               }}
+              onError={onError}
               className="size-full object-contain"
             >
               <track kind="captions" />

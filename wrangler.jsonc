@@ -51,6 +51,12 @@
   ],
   // ---------------------------------------------------------------------------
   // R2 — object storage
+  //
+  // `site-media` is ALSO bound to a public custom domain, cdn.godwinausten.org,
+  // which is where the browser actually fetches film and reels from. That is a
+  // bucket-level setting, not a Worker binding, so it does not appear here —
+  // see docs/cloudflare-resources.md for the row and the command that made it,
+  // and docs/adr/0006-media-on-a-public-origin.md for why.
   // ---------------------------------------------------------------------------
   "r2_buckets": [
     {
@@ -90,6 +96,15 @@
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://godwinausten.org",
     "ENVIRONMENT": "production",
+    // The origin `site-media` is served from — the R2 custom domain below.
+    //
+    // Set here for parity and for server code that reads it at runtime, but
+    // note that this is NOT what puts the host into a rendered page: these
+    // pages are static, so `mediaSrc()` runs at build time where `vars` do not
+    // exist. The compiled default in `src/server/media.ts` is what ships. This
+    // row is the runtime override, and setting it to "" is the kill switch that
+    // sends media back through the Worker without a code change.
+    "NEXT_PUBLIC_MEDIA_BASE_URL": "https://cdn.godwinausten.org",
   },
   // ---------------------------------------------------------------------------
   // Observability — logs in the dashboard + `npm run tail`.

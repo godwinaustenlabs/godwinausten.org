@@ -68,3 +68,8 @@ docs/inspiration/**/*
 
 # local agent config / generated knowledge graph
 .claude/settings.local.json
+
+# ---- media masters ---------------------------------------------------------
+# Large source footage. Too big for public/ (25 MiB static-asset limit) and it
+# reaches the site through R2 instead. See media/README.md.
+media/
