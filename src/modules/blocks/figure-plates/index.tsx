@@ -71,7 +71,16 @@ export default function FigurePlates({ plates, headline, body }: FigurePlatesPro
       {plates.map((plate, i) => (
         <MediaCell
           key={plate.src}
-          className={cn("min-h-[34svh] md:min-h-0", i === last && "md:row-span-2")}
+          /*
+            Only the first plate below `md`. Stacked, three pictures are a full
+            screen and a half of photograph before the line they set up; one is
+            the breath, three is a scroll.
+          */
+          className={cn(
+            "min-h-[34svh] md:min-h-0",
+            i > 0 && "max-md:hidden",
+            i === last && "md:row-span-2",
+          )}
         >
           <div
             aria-hidden="true"

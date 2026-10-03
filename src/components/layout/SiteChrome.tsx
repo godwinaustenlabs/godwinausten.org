@@ -26,6 +26,10 @@ import { RouteLabel } from "./RouteLabel";
  * as props", because threading the same four strings through four page
  * compositions would only create four places for them to drift apart.
  */
+/** The phone rail's two rows: the shorter half of the links, then the rest. */
+const navTop = Math.floor(siteCopy.nav.length / 2);
+const navBottom = siteCopy.nav.length - navTop;
+
 export function SiteChrome({ mainId }: { mainId: string }) {
   return (
     <>
@@ -97,25 +101,29 @@ export function SiteChrome({ mainId }: { mainId: string }) {
           fixed `--chrome-bottom` tall — had no height for, and it was cut in
           half. Derived, adding a route is one line in `siteCopy.nav`.
         */}
+        {/*
+          Below `sm`, exactly two rows: the shorter half of the links on top,
+          the longer half underneath (five is two over three). Each row fills
+          the width, so the grid has `top × bottom` columns and a link spans
+          the other row's count — 2 over 3 is six columns, spans of 3 and 2.
+          Two columns wrapping used to give five links three rows, the last
+          alone, in a bar whose height is fixed.
+        */}
         <ul
-          className="grid h-full grid-cols-2 gap-px bg-hairline sm:grid-cols-[repeat(var(--nav-cols),minmax(0,1fr))]"
-          style={{ "--nav-cols": siteCopy.nav.length } as React.CSSProperties}
+          className="grid h-full grid-cols-[repeat(var(--nav-mobile-cols),minmax(0,1fr))] gap-px bg-hairline sm:grid-cols-[repeat(var(--nav-cols),minmax(0,1fr))]"
+          style={
+            {
+              "--nav-cols": siteCopy.nav.length,
+              "--nav-mobile-cols": navTop * navBottom,
+            } as React.CSSProperties
+          }
         >
           {siteCopy.nav.map((item, i) => (
             <li
               key={item.label}
-              /*
-                Below `sm` the rail is two columns and wraps, and an odd number
-                of links leaves the last one alone in a row beside an empty
-                cell — a bare rectangle of seam ground, which reads as something
-                failing to load rather than as space. It takes the whole row
-                instead. Even counts are unaffected, so this is inert until the
-                nav has an odd length.
-              */
-              className={
-                i === siteCopy.nav.length - 1 && siteCopy.nav.length % 2 === 1
-                  ? "col-span-2 min-w-0 bg-paper sm:col-span-1"
-                  : "min-w-0 bg-paper"
+              className="min-w-0 bg-paper [grid-column:span_var(--nav-span)] sm:[grid-column:auto]"
+              style={
+                { "--nav-span": i < navTop ? navBottom : navTop } as React.CSSProperties
               }
             >
               <SiteLink
