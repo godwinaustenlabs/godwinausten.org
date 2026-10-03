@@ -53,7 +53,11 @@ export default async function ExperiencePage({ params }: { params: Promise<{ slu
       headline: detail.headline,
       lead: detail.lead,
       meta: detail.meta,
-      reel: { runtime: experience.runtime, ...(reel ? { src: reel } : {}) },
+      reel: {
+        runtime: experience.runtime,
+        ...(reel ? { src: reel } : {}),
+        ...(experience.thumbnail ? { poster: experience.thumbnail } : {}),
+      },
     }),
     block("build", "prose-sections", detail.build, { anchor: "how" }),
     block("closing", "about-statement", detail.closing),

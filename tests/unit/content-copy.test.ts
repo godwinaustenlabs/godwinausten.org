@@ -4,6 +4,7 @@ import { siteCopy } from "@/content/copy/site";
 import { workCopy } from "@/content/copy/work";
 import { aboutCopy } from "@/content/copy/about";
 import { contactCopy } from "@/content/copy/contact";
+import { careersCopy } from "@/content/copy/careers";
 import { blockRegistry } from "@/modules";
 
 /**
@@ -38,7 +39,7 @@ function allStrings(value: unknown, out: string[] = []): string[] {
   return out;
 }
 
-const strings = allStrings([homeCopy, siteCopy, workCopy, aboutCopy, contactCopy]);
+const strings = allStrings([homeCopy, siteCopy, workCopy, aboutCopy, contactCopy, careersCopy]);
 
 /** The same copy with the proper names taken out, for the vocabulary ban only. */
 const prose = strings.map((s) => NAMES.reduce((acc, name) => acc.split(name).join(""), s));
@@ -66,8 +67,9 @@ describe("site copy", () => {
     const routes: Record<string, string[]> = {
       "/": ["experience", "expertise", "playbook", "watch", "contact", "top"],
       "/work": ["experience", "how", "contact", "top"],
-      "/about": ["expertise", "how-we-work", "contact", "top"],
+      "/about": ["who-we-are", "expertise", "how-we-work", "contact", "top"],
       "/contact": ["before", "channels", "contact", "top"],
+      "/careers": ["what-we-look-for", "roles", "contact", "top"],
     };
 
     for (const item of siteCopy.nav) {
@@ -132,10 +134,14 @@ describe("blockRegistry", () => {
     for (const id of [
       "hero-scribble",
       "index-list",
-      "pillars",
       "page-header",
       "experience-feature",
       "services-rows",
+      "figure-statement",
+      "figure-plates",
+      "open-roles",
+      "direct-line",
+      "charter",
       "prose-sections",
       "lead-magnet",
       "vsl-panel",

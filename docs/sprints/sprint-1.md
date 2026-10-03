@@ -1096,6 +1096,310 @@ Runtime additions, documented in `docs/modules.md`:
 | `layout.panel` on `BlockLayout` | How a block sizes itself as a filmstrip panel                 |
 | `anchor` on `BlockInstance`     | The composition, not the block, decides what gets a permalink |
 
+### Added mid-sprint, twenty-sixth round (owner, 2026-09-27)
+
+> "seperate out the two pages which are now merged in contact" · "add a whatsapp
+> button in the same retro kinda stlye" · "use engaging svg vectors like the one
+> on hero page but smh else not exactly that pose" · "the text doesn't grows to
+> fill up the space" on a 27" monitor · "we don't want the rembrandt video to
+> stream automatically" · "in the about page ... place another section saying
+> Who We Are"
+
+Written up after the work rather than before it, which is not what §7.3 asks
+for — the instructions arrived one at a time while the previous one was being
+built. The scope below is what was actually asked and what was actually done.
+
+- [x] **Careers is a route, not a row on `/contact`.** It was one address among
+      three in a `services-rows` list, which gave the half of the company that
+      is people the same weight as a footnote about press enquiries, and made a
+      job application a routing decision before anything could be written.
+      `/careers` is now four sections: the masthead, the stance beside the
+      figure, the board, and the print panel. `/contact` keeps what it had —
+      what to send, what happens next — and lost the list.
+- [x] **`/contact` has one address and it is the largest thing on the panel.**
+      The address used to be set in the same 16px as the sentence explaining it.
+      `direct-line` replaces `services-rows` there: the address in display type
+      as a `mailto`, a WhatsApp button under it, and the three footnotes —
+      including the one that points at `/careers` rather than offering a second
+      address to choose between.
+- [x] **A WhatsApp button, printed rather than styled.** A flat lime plate
+      offset behind an outlined paper one that registers on hover — the Labs
+      watermark's misregistration at button scale. It carries **no vendor
+      mark**: `docs/adr/0008` settled that this repository never draws somebody
+      else's logo and there is no WhatsApp file in `scripts/logos/`, so the
+      glyph is a plain speech bubble of ours and the word does the naming.
+- [x] **The board is allowed to be empty.** `open-roles` renders `closed` when
+      `roles` is `[]`, so taking a filled role down is deleting a content entry
+      rather than a code change — which is the only version of that which
+      actually happens. Two postings are up: Sales Intern and Marketing Intern.
+- [x] **The figure appears on `/careers` under a different treatment.**
+      Mirrored, tilted, and overprinted in two flat passes whose offset breathes
+      on `--block-progress` — not the hero's gradient and not its cursor loop,
+      and no JavaScript at all. It was cropped past its cell first and the owner
+      asked for it whole; it is `contain` now. **A genuinely different pose
+      needs a different source image**: the drawing is traced (`docs/adr/0004`)
+      and generating an original was tried three times and rejected.
+- [x] **`mark-field` takes its plate's words as a prop.** The same block is the
+      Labs panel on `/` and the closing invitation on `/careers`. Two pages, one
+      press.
+- [x] **The site scales on a large display.** Every size on the site is
+      `clamp(min, vw, max)` and the ceiling is a fixed `rem`, so past about a
+      1440px window every ceiling was already reached and a 27" monitor got a
+      13" page with 500px of paper down each side. One root `font-size` ramp
+      upstream of all of it — in `rem`, so the visitor's own font-size
+      preference survives — and ramped on **height as well as width**, because a
+      panel is the band between the fixed bars and does not grow.
+- [x] **The Rembrandt reel is a still until someone points at it.** `playOn`
+      used to govern only the drawn placeholder, so real footage opened a chain
+      of range requests on all three pages that show the experience, at readers
+      who had not asked to watch anything. It gates the video now, and the
+      thumbnail is a layer over it rather than the `poster` attribute — a poster
+      is replaced by the first decoded frame and never comes back, and one that
+      404s paints the broken-image glyph. The file is
+      `public/assets/photo/rembrandt-thumbnail.jpg`, a named slot the owner
+      overwrites.
+- [x] **`/about` has a Who We Are section, between the tiles and the
+      offerings.** Map / Build / Tune says how we work, so the next question is
+      what for — and that has to land before the list of things we sell. It
+      carries the largest display type on any sub-route, on ink, and states what
+      the company is for: a business, a laboratory, and the Academy. - It shipped once as three paragraphs over a row of three cards holding
+      the hundred-year plan, the vision and the mission, with an empty
+      `credential` slot on each for the PSEB registration and the DUNS record.
+      The owner cut the cards — the certifications do not exist yet and a row
+      of empty slots advertises what we have not got. The card content moved
+      **into** the section, which is now headed sections a reader can take at
+      their own resolution, with those three as **spotlights**: ink, the accent
+      rule, one size up. They come back as their own thing when there is
+      something to put in them. - A card was the wrong pattern anyway. It is the one thing the brief's card
+      test names outright.
+- [x] **A second figure, drawn rather than traced.** The owner asked for a
+      person beside that statement, "a new pose entirely", fluorescent on black.
+      There is no second photograph to trace, so
+      `scripts/generate-ascent-figure.mjs` draws one: a skeleton of joints, and
+      every stroke a long continuous line travelling _along_ a chain of bones
+      while winding round the tube they describe — which is the difference
+      between a figure and the fuzz the three rejected hero attempts produced.
+      Seeded, so the file is identical on every machine. It is original to this
+      repo, which also means it is the one figure on the site with no licensing
+      question attached to it.
+- [x] **An open role is lit.** A neon frame round each posting — the site's one
+      glowing element, `.neon-frame` in `globals.css`. - It shipped on ink first, on the argument that neon is light and light
+      needs a dark ground. The owner cut that: two black slabs in the middle of
+      a page whose whole subject is the two jobs printed on them turned the
+      most readable thing on the route into the one fighting its own reader. - Then the glow was turned **inward only**, and deeper. Outward it smudged
+      the paper, and two cards bled into the gap between them until the pair
+      fused into one lit bar. - The postings are **cards** now, not full-bleed cells: inset from the
+      page, 8px radius, no shadow. A deliberate exception to the brief's card
+      test, taken on the owner's call and written into `docs/brief.md` — a role
+      comes and goes, and a panel reads as architecture. - The apply row is a **filled lime bar** that inverts to ink on hover. It
+      was a mono label with a small accent square, which is how every hand-off
+      on this site is drawn and which vanished into a card already lit lime.
+      This is the only thing on `/careers` a reader is asked to _do_.
+
+### Added mid-sprint, twenty-seventh round (owner, 2026-09-27)
+
+> "dont black out the career rols" · "Remove the map build and tune cards
+> entirely" · "make it a woman's body ... sharper, edgy and more inviting" · "it
+> looks like a boring page, utilise UI techniques"
+
+- [x] **Map / Build / Tune is gone from `/about`,** and the `pillars` block with
+      it. Those three words were a compressed version of `method` further down
+      the same page, so the masthead was followed immediately by a summary of a
+      section the reader had not reached. The block was placed on exactly one
+      route, and a registered block nothing places is the sample block
+      `CLAUDE.md` §2.3 exists to prevent. `/about` opens on `charter` now.
+- [x] **The four service schematics on `/about` fill their rows.** They were
+      160x320 thumbnails on the page someone opens _to read about the services_,
+      which made the drawing of each offering the smallest thing in its own row.
+      Still one shared box rather than a flex share — the four are drawn to
+      ratios from 1:1 to 2.17:1, so per-drawing sizing made four rows that
+      stepped in and out — but the box is now nearly half the row.
+- [x] **The second figure is a woman, and sharp.** The first pass was all
+      winding, which read as a person and read as wool: nothing in it was ever
+      straight, so it could not produce an edge. It is three passes now —
+      **contours** at fixed offsets for the silhouette, **facets** (straight
+      mitred chords between surface rings) for the edges, and far fewer
+      **runners** as connective tissue. The proportions carry the reading: chest
+      narrower than hip by a third, a waist under half the hip, shoulder joints
+      inboard of the ribs, legs longer than the torso. Hair thrown back by the
+      stride does the motion; the first attempt threw it almost horizontally and
+      put a bright streak straight through the raised arm.
+- [x] **`charter`'s prose is not a column with a void beside it.** Every section
+      was an index in a narrow margin and one 62ch strip of text, with a third of
+      a wide page empty next to it. It is two columns now: the number at display
+      scale as a landmark, the heading, and **one line stating the section's
+      thesis** — deliberately _not_ a lifted pull quote, because the reader would
+      then meet the same words twice at two sizes, which is how the deleted cards
+      failed. The opening paragraph of each section is set a step up.
+- [x] **The masthead meta bar is off `/contact`.** It carried "Pakistan" and
+      "Replies within two working days" — both of which the section under it
+      then says properly, one of them as a numbered section with a paragraph.
+- [x] **The nav rail is five wide and derives its columns.** It was
+      `sm:grid-cols-4` against a list that is now five long, so the fifth link
+      wrapped into a row the fixed-height bar had no room for. Below `sm` the
+      rail is three rows and `--chrome-bottom` accounts for it.
+
+### Added mid-sprint, twenty-eighth round (owner, 2026-09-27)
+
+> "the glow around the roles should only be inwards and a bit deeper" · "make the
+> roles cards a bit smaller ... rounded edges" · "The apply button for roles
+> should be better visible" · "use the pics together in one section somewhere in
+> the middle" · "use the globe in place of svg" · "the cards of vision mission
+> and 100 year plan should have transparent background to actually show the
+> picture behind it" · "make sure we don't break the experience on mobile"
+
+- [x] **The postings are cards on paper.** Inset from the page, 8px radius, no
+      shadow — and the glow turned **inward only** and deepened, because outward
+      it smudged the paper and two cards bled into the gap between them until the
+      pair fused into one lit bar. A deliberate exception to the brief's card
+      test, written into `docs/brief.md`.
+- [x] **The apply row is a filled lime bar** that inverts to ink on hover. A mono
+      label with a small accent square is how every _hand-off_ on this site is
+      drawn; this is the only thing on `/careers` a reader is asked to do, and
+      against a card already lit lime it disappeared into its own frame.
+- [x] **`/careers` says what the roles pay, above the board.** These seats are
+      voluntary and commission-only with no basic salary. That is stated in a
+      cell of its own between the heading and the first posting, because a
+      benefits line inside each posting is disclosure that is present and unread.
+- [x] **Three photographs, one panel, in the middle of the funnel.** Between the
+      mechanism and the proof — not in front of the opt-in or the film, the two
+      moments the brief protects. Two sit in a band with the type under them and
+      the third spans both rows, because a row of three equal rectangles over a
+      caption bar is a contact sheet and the tall column on the end makes it a
+      layout. - An earlier cut floated them on the ink with `mix-blend-mode: screen`, on
+      the reasoning that a black source pixel contributes nothing so the
+      rectangle would vanish. **That only works if the file's black is actually
+      black.** These are grainy, lifted-black photographs: screen pushed their
+      ground _above_ the panel's and produced a pale grey rectangle — the exact
+      frame the trick was there to remove, now lighter than its surroundings.
+      They are full-bleed cells instead, which needs no blend to be honest.
+- [x] **The generated wire figure is gone from `/about`,** replaced by the
+      owner's globe photograph as a full-bleed cell beside the statement.
+      `scripts/generate-ascent-figure.mjs` stays; `npm run gen:ascent` brings the
+      drawing back if it is ever wanted.
+- [x] **The three commitments share one cell and one photograph.** They were a
+      cell each, and each cell paints its own ground — so a picture behind them
+      was covered three times over. One cell, one backdrop, and the sections told
+      apart by a rule drawn _on_ the picture rather than by a seam the picture
+      cannot cross. - The backdrop is fitted to **width**, not `cover`. The lit run is three
+      sections tall, so covering it scaled the image by height and cropped
+      nearly half its width — and the two hands are at the far left and far
+      right of that frame. `cover` threw the entire subject away and left the
+      black middle, which is why the section read as flat ink at every opacity
+      it was tried at.
+- [x] **`/about`'s charter was invisible on every phone, and the cause was in
+      `BlockFrame`.** `viewport: { amount: 0.2 }` asks for a fifth of the
+      _element_ to be on screen; a block taller than five viewports can never
+      satisfy it, so the reveal never fired and the section sat at `opacity: 0`.
+      At 4856px against an 844px viewport the charter could show 17% of itself.
+      The trigger is `amount: "some"` with a margin of a tenth of the **viewport**
+      now — a figure independent of how tall the block is. Every block allowed to
+      run taller than the band was one content edit from the same bug.
+- [x] **Nothing overflows sideways on any page at any phone width.** `/careers`
+      scrolled 27px at 320px: the masthead's meta bar was two columns at every
+      width, and half of a 320px screen is less than `jobs@godwinausten.org`
+      needs. A mono address is one unbreakable token, so it did not wrap — it
+      widened the document, and fixed chrome stretches with the document, so the
+      whole site scrolled sideways. One column below `sm`, plus `break-words` as
+      the backstop.
+
+### Added mid-sprint, twenty-ninth round (owner, 2026-09-27)
+
+> "I replaced the rembrandt thumbnail, convert and compress into jpg" · "the
+> first hero svg moves to left, turn that off only in mobile view" · "sometimes
+> there is a delay streaming the video ... it should start as soon as user hovers
+> over it, in mobile view it should automatically start when in view" · "use 100
+> instead of hundered" · "remove the divider bar with words Pakistan and
+> JOBS@GODWINAUSTEN.ORG from the careers page"
+
+- [x] **The Rembrandt reel has a real thumbnail.** A frame of the Faayy
+      storefront we built, replacing the abstract stand-in. 1.5 MB PNG →
+      **152 KB JPEG** at 1600px. It lives at `public/assets/reels/` rather than
+      `public/assets/photo/`, because that folder's generated credits file
+      asserts every file in it is a named Unsplash photograph — keeping it there
+      would have made a generated guarantee false. `gen:photos` no longer emits a
+      `rembrandt-thumbnail` entry.
+- [x] **The hero figure no longer slides sideways on a phone.** Its horizontal
+      travel is driven by `--block-progress`, which the engine publishes at
+      **every** width — it is the reveal/parallax channel, not a desktop one. So
+      on a phone, with no pointer to lean at, the drawing drifted as the page
+      scrolled: the one piece of movement on the hero that nothing initiated.
+      `--figure-drift` is 0 below `md` and 1 above it, which multiplies the
+      scroll term away without touching the desktop behaviour. A custom property
+      rather than a second transform, because the transform is an inline style
+      and inline styles cannot carry a media query.
+- [x] **Hover-to-play is instant, and touch autoplays in view.** Three separate
+      causes, and the host — the one named in the request — was the smallest of
+      them. Written up as `docs/adr/0009`: - The file was 1920x1080 at **60fps, 7.5 Mbps, with an audio track** — 16 MB
+      for a sixteen-second loop every consumer renders `muted`. Re-encoded to
+      720p30 with no audio: **1.9 MB**, eight times less. - `preload="none"` meant the pointer arriving _was_ the start of the
+      download. `Reel` now warms on approach — one observer at a viewport of
+      `rootMargin` flips `preload` to `"auto"`, a tighter one plays — so a reel
+      nobody scrolls near still costs nothing. Measured `readyState: 4` before
+      any hover. - A `"hover"` reel on a touch screen plays on **visibility** now. There is
+      no pointer to arrive, and holding a frozen frame gave a phone visitor no
+      sign it was a video. - The file ships in `public/` and `mediaSrc()` prefers it. This does not
+      reopen `docs/adr/0007`, which is about keeping the _Worker_ out of the
+      byte path: Workers Assets invokes it exactly as often as R2 behind the
+      CDN does, which is never.
+- [x] **"The 100-year plan"**, not "hundred-year".
+- [x] **`/careers` lost its masthead meta bar.** It carried "Pakistan" and the
+      careers address; both are said properly further down — the address is the
+      apply bar on every posting, the place is in each role's meta. The same call
+      `/contact` made in the twenty-fifth round.
+- [x] **The hands are visible as one photograph.** The backdrop was `inset-0`
+      and fitted to the cell's width — and the lit run is three sections tall, so
+      on a wide screen that resolved to an image over 1100px tall, taller than
+      the viewport it is read in. You scrolled past one bright shape and then
+      another several hundred pixels later and never saw them as one picture. It
+      is a band of at most 62svh now, with `bg-contain` fitting the whole frame
+      inside it: `contain` rather than a fixed width or height because the two
+      shapes pull opposite ways — a fixed width overflows the viewport on a
+      desktop, a fixed height overflows the cell on a phone, and the hands sit at
+      the far left and right of the frame, so anything cropping horizontally
+      throws the subject away.
+- [x] **The backdrop's rectangle is gone.** Its edges were visible as a slightly
+      darker panel: measured off the file, the photograph's corners are
+      #000000–#040404 against `--color-ink`'s #0E0E0C. Ten values is nothing in
+      isolation and unmistakable over a thousand-pixel straight edge.
+      `mix-blend-mode: screen` removes it arithmetically rather than by fading —
+      screen is `1 - (1-base)(1-source)`, so a source pixel of zero resolves to
+      the backdrop exactly. Sampled across the former seam afterwards: 1–2 values
+      of difference, down from 10–14. The scrim over it had to become a
+      black-to-transparent `multiply` for the same reason — a normal-blend
+      gradient ending in ink would have repainted the very edge the blend just
+      removed. - Worth remembering that this is the same trick that **failed** on the home
+      page's plates: those files have lifted blacks, so screen pushed their
+      ground _above_ the panel's and produced a pale rectangle instead. Screen
+      is only invisible when the source's black is genuinely black, which is a
+      property of the file and has to be checked per image.
+- [x] **The backdrop is full-bleed, and every one of its edges is gone.** Three
+      separate attempts at the seam, each of which fixed one edge and created
+      another — worth recording because the sequence is the lesson: - `screen` blending removed the **side** edges. The photograph's corners
+      measure #000000–#040404 against `--color-ink`'s #0E0E0C, and screen is
+      `1 - (1-base)(1-source)`, so a source pixel of zero resolves to the
+      backdrop exactly. Sampled afterwards: 1–2 values of difference, down from
+      10–14. - That left a **bottom** edge, because the scrim over it multiplied toward
+      `#000` — driving the band's foot to pure black while the panel around it
+      is #0E0E0C. The fix for the sides had created a horizontal one. There is
+      no scrim now: the image masks its own foot, and a screened layer masked
+      away contributes nothing, so what shows through is the cell's unmodified
+      ink. - Sizing went `inset-0` → `contain` in a bounded band → **full width at the
+      frame's own ratio**. `aspect-ratio` with `max-height` is the spelling
+      that looks right and is not — together they shrink the box in _both_
+      directions, so capping the height pulled the width in and re-centred the
+      picture. It is `h-[min(56.3vw,92svh)]`: the frame's ratio, with a ceiling
+      that trims the foot rather than scaling the whole thing. - Opacity went 0.55 → 0.9 → **0.72**. Low it vanished (the photograph is
+      nine-tenths black, so dimming mostly dims the tenth that is the picture);
+      high and full-width, the brightest part of the palm landed under a
+      display heading. Opacity is safe here only because of the blend: screen
+      of a black source resolves to the backdrop, and interpolating between the
+      backdrop and itself cannot put an edge back.
+- [x] **Ninety page/size combinations checked, all clean.** Six routes across
+      fifteen viewports — 320x568 through 3440x1440, including iPad portrait and
+      landscape, a square 1024, a tall fold, and a 27" and ultrawide — with no
+      horizontal overflow, no block left invisible, and no page error anywhere.
+
 ## Cloudflare resources needed
 
 - [x] none — nothing in this sprint touches a binding.

@@ -18,6 +18,8 @@ export const indexListSchema = z.object({
         runtime: z.string().min(1),
         /** Real footage, when there is any. */
         src: z.string().optional(),
+        /** The reel's still, held until the pointer arrives. See `Reel`. */
+        poster: z.string().optional(),
       }),
     )
     .min(1),

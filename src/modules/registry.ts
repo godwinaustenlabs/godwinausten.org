@@ -13,9 +13,13 @@ import { heroScribble } from "./blocks/hero-scribble/block.config";
 import { pageHeader } from "./blocks/page-header/block.config";
 import { experienceFeature } from "./blocks/experience-feature/block.config";
 import { servicesRows } from "./blocks/services-rows/block.config";
+import { figureStatement } from "./blocks/figure-statement/block.config";
+import { figurePlates } from "./blocks/figure-plates/block.config";
+import { openRoles } from "./blocks/open-roles/block.config";
+import { directLine } from "./blocks/direct-line/block.config";
 import { proseSections } from "./blocks/prose-sections/block.config";
 import { indexList } from "./blocks/index-list/block.config";
-import { pillars } from "./blocks/pillars/block.config";
+import { charter } from "./blocks/charter/block.config";
 import { leadMagnet } from "./blocks/lead-magnet/block.config";
 import { vslPanel } from "./blocks/vsl-panel/block.config";
 import { markField } from "./blocks/mark-field/block.config";
@@ -27,9 +31,13 @@ export const blockRegistry = {
   "page-header": pageHeader,
   "experience-feature": experienceFeature,
   "services-rows": servicesRows,
+  "figure-statement": figureStatement,
+  "figure-plates": figurePlates,
+  "open-roles": openRoles,
+  "direct-line": directLine,
   "prose-sections": proseSections,
   "index-list": indexList,
-  pillars: pillars,
+  charter: charter,
   "lead-magnet": leadMagnet,
   "vsl-panel": vslPanel,
   "mark-field": markField,

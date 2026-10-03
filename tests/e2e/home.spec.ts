@@ -13,7 +13,8 @@ test.describe("home — the funnel", () => {
 
     // DOM order is the reading order in both scroll modes — the whole
     // accessibility argument for the filmstrip. It is also the funnel:
-    // hook → mechanism → proof → the ask → the long version → a breath → contact.
+    // hook → mechanism → a breath → proof → the ask → the long version →
+    // Labs → contact.
     const blocks = await page
       .locator("[data-block]")
       .evaluateAll((els) => els.map((el) => el.getAttribute("data-block")));
@@ -24,15 +25,31 @@ test.describe("home — the funnel", () => {
       // question a cold reader arrives with, and the build then reads as
       // evidence for a claim they have already been given.
       "services-rows",
+      /*
+        An unnumbered breath, and the reason this assertion is a *list* rather
+        than a set of orderings.
+
+        It carries no index, so it does not renumber the argument — 01 → 04 runs
+        straight through it — but it does occupy a screen of the filmstrip, and
+        where that screen sits is a funnel decision. Here it separates the
+        mechanism from the proof. The two places it must never move to are in
+        front of `lead-magnet` and in front of `vsl-panel`: the ask is the peak
+        of the reader's willingness and nothing precedes the film.
+      */
+      "figure-plates",
       "experience-feature",
       "lead-magnet",
       "vsl-panel",
-      // A breath between the film and the ask. Present in the DOM at every
-      // width — `stripOnly` hides it with `display`, so reading order is the
-      // same document either way.
+      // Labs, the second breath. Present in the DOM at every width —
+      // `stripOnly` hides it with `display`, so reading order is the same
+      // document either way.
       "mark-field",
       "contact-footer",
     ]);
+
+    // The breath never lands in front of the ask or the film.
+    expect(blocks.indexOf("figure-plates")).toBeLessThan(blocks.indexOf("lead-magnet"));
+    expect(blocks.indexOf("figure-plates")).toBeLessThan(blocks.indexOf("vsl-panel"));
 
     // The ask precedes the video. Reversing them spends the reader's peak
     // willingness on a four-minute commitment.
@@ -50,7 +67,7 @@ test.describe("home — the funnel", () => {
   });
 
   test("makes no percentage claims on any route", async ({ page }) => {
-    for (const path of ["/", "/work", "/about", "/contact"]) {
+    for (const path of ["/", "/work", "/about", "/careers", "/contact"]) {
       await page.goto(path);
       const text = (await page.locator("body").innerText()).replace(/\s+/g, " ");
       expect(text, path).not.toMatch(/[+-]?\d+(\.\d+)?\s*%/);
@@ -58,7 +75,7 @@ test.describe("home — the funnel", () => {
   });
 
   test("gives every route exactly one h1", async ({ page }) => {
-    for (const path of ["/", "/work", "/about", "/contact"]) {
+    for (const path of ["/", "/work", "/about", "/careers", "/contact"]) {
       await page.goto(path);
       await expect(page.getByRole("heading", { level: 1 }), path).toHaveCount(1);
     }
@@ -170,7 +187,20 @@ test.describe("home — desktop filmstrip", () => {
       .poll(() =>
         page.evaluate(() => {
           const r = document.activeElement!.getBoundingClientRect();
-          return r.left > -10 && r.left < window.innerWidth;
+          /*
+           * On screen means the element *overlaps* the viewport, not that its
+           * left edge is inside it.
+           *
+           * This asserted `r.left > -10`, which is only the same thing for
+           * elements narrower than the window. Several of the things focus lands
+           * on here are a whole panel wide — the `NextCell` at the foot of each
+           * section runs the full 1440 — so once the strip has pulled one into
+           * view its left edge is legitimately off-screen while the element
+           * itself fills the window. The old form passed by luck of where a
+           * fixed sixteen tabs happened to land, and adding a fifth nav link
+           * moved the landing spot onto one of those bars.
+           */
+          return r.right > 0 && r.left < window.innerWidth;
         }),
       )
       .toBe(true);
@@ -189,7 +219,7 @@ test.describe("sub-routes", () => {
   test.use({ viewport: DESKTOP });
 
   test("are vertical documents, not filmstrips", async ({ page }) => {
-    for (const path of ["/work", "/about", "/contact"]) {
+    for (const path of ["/work", "/about", "/careers", "/contact"]) {
       await page.goto(path);
       // Only the home page travels sideways. A page with real depth of content
       // wants to be read at the reader's pace.
@@ -205,13 +235,16 @@ test.describe("sub-routes", () => {
     await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
   });
 
-  test("the nav reaches all four routes", async ({ page }) => {
+  test("the nav reaches every route", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Primary" });
 
     for (const [label, url, heading] of [
       ["Work", /\/work$/, "Systems in production."],
       ["About", /\/about$/, "Small team. Big appetite for automation."],
+      // Careers left `/contact` and became a route of its own — the rail is the
+      // only way to it that is not a link inside another page's prose.
+      ["Careers", /\/careers$/, "We hire rarely. We read everything."],
       ["Contact", /\/contact$/, "Tell us what you're doing by hand."],
     ] as const) {
       await nav.getByText(label, { exact: true }).click();

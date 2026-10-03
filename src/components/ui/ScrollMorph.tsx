@@ -24,8 +24,9 @@ import { cn } from "@/lib/utils";
  * projection, the same edge-distance rule. What changed is the driver and the
  * palette. The original ran on a GSAP ScrollTrigger timeline; this reads the
  * element's own position instead, so it works on both the horizontal filmstrip
- * and the vertical routes without a dependency. Colours come from the site's
- * tokens rather than the old yellow.
+ * and the vertical routes without a dependency. The old yellow is gone; the
+ * lattice now walks the schematics' own metals, one tone per stop — see
+ * `STOPS`.
  *
  * ## Cost
  *
@@ -41,6 +42,38 @@ import { cn } from "@/lib/utils";
 /** Node count and grid extent, from the original. */
 const NODES = 27;
 
+/** An RGB triple. Kept as numbers because the ramp is interpolated per frame. */
+type Tone = readonly [number, number, number];
+
+/*
+ * The lattice's ramp.
+ *
+ * These are the four schematics' tones (scripts/generate-diagrams.mjs — the two
+ * lists must agree, the same way `--breakpoint-wide` and `STRIP_MIN_WIDTH` do;
+ * the generator is a build script and cannot be imported into the bundle).
+ *
+ * Here they are an **index, not the legend**. In the drawings a tone names a
+ * role — flow, data, held, dropped — and the lattice has no roles to name: it
+ * is one shape becoming another. What it does have is a position. It sits in
+ * the head the four offerings travel past, and its four stops land exactly
+ * where the four cards do, so wearing the set in card order is the head saying
+ * which offering you are currently looking at. The same move swarm's clusters
+ * and integration's plates make, and documented there for the same reason.
+ *
+ * **Metals, and the variety is in weight rather than hue.** The first pass ran
+ * a saturated amber → lime → teal → blue and it read as poster paint; a ramp
+ * through four primaries is a children's toy however good the geometry under it
+ * is. This one runs silver → steel → bronze → graphite: light and unformed,
+ * then cool, then warm, then heavy as the last offering lands. Nothing is far
+ * from neutral, which is also why it can be blended straight in RGB — the grey
+ * a channel-wise blend gives two distant hues is a fault in a saturated ramp
+ * and simply another pewter in this one.
+ */
+const SILVER: Tone = [128, 126, 116]; // #807E74 — light, unformed
+const STEEL: Tone = [76, 98, 110]; //    #4C626E — cool, the shape arriving
+const BRONZE: Tone = [117, 96, 58]; //   #75603A — warm, the shape moving
+const GRAPHITE: Tone = [58, 56, 51]; //  #3A3833 — heavy, the network resolved
+
 interface Stop {
   /** How far through the section this state is reached, 0→1. */
   at: number;
@@ -48,6 +81,8 @@ interface Stop {
   rotation: number;
   intensity: number;
   scale: number;
+  /** The tone this state arrives on. Interpolated between stops. */
+  tone: Tone;
 }
 
 /**
@@ -63,10 +98,10 @@ interface Stop {
  * each blend below owns a third of it.
  */
 const STOPS: Stop[] = [
-  { at: 0, morph: 0, rotation: 0, intensity: 0, scale: 0.8 },
-  { at: 1 / 3, morph: 1 / 3, rotation: Math.PI * 0.5, intensity: 0.4, scale: 1.02 },
-  { at: 2 / 3, morph: 2 / 3, rotation: Math.PI * 1.25, intensity: 0.7, scale: 1.1 },
-  { at: 1, morph: 1, rotation: Math.PI * 2, intensity: 0.9, scale: 1.06 },
+  { at: 0, morph: 0, rotation: 0, intensity: 0, scale: 0.8, tone: SILVER },
+  { at: 1 / 3, morph: 1 / 3, rotation: Math.PI * 0.5, intensity: 0.4, scale: 1.02, tone: STEEL },
+  { at: 2 / 3, morph: 2 / 3, rotation: Math.PI * 1.25, intensity: 0.7, scale: 1.1, tone: BRONZE },
+  { at: 1, morph: 1, rotation: Math.PI * 2, intensity: 0.9, scale: 1.06, tone: GRAPHITE },
 ];
 
 const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
@@ -86,11 +121,18 @@ function stateAt(progress: number) {
 
   const span = upper.at - lower.at || 1;
   const t = clamp01((progress - lower.at) / span);
+
+  // Blended straight in RGB. Safe here only because the ramp is near-neutral
+  // throughout — see the note above the tones.
+
+  const tone = lower.tone.map((c, i) => Math.round(c + (upper.tone[i]! - c) * t));
+
   return {
     morph: lower.morph + (upper.morph - lower.morph) * t,
     rotation: lower.rotation + (upper.rotation - lower.rotation) * t,
     intensity: lower.intensity + (upper.intensity - lower.intensity) * t,
     scale: lower.scale + (upper.scale - lower.scale) * t,
+    tone: `rgb(${tone[0]} ${tone[1]} ${tone[2]})`,
   };
 }
 
@@ -189,7 +231,7 @@ export function ScrollMorph({
 
     function draw() {
       frame = 0;
-      const { morph, rotation, intensity, scale } = stateAt(progress());
+      const { morph, rotation, intensity, scale, tone } = stateAt(progress());
       const cx = width / 2;
       const cy = height / 2;
       const unit = 0.35 * Math.min(width, height) * scale;
@@ -272,10 +314,9 @@ export function ScrollMorph({
       // holds its shape as the whole thing turns. The original narrowed this
       // for its scatter phase; with that phase gone it is a constant.
       const reach = 1.1;
-      const ink = getComputedStyle(canvas!).color;
 
       context!.beginPath();
-      context!.strokeStyle = ink;
+      context!.strokeStyle = tone;
       context!.lineWidth = 1;
 
       for (let i = 0; i < points.length; i += 1) {
@@ -291,15 +332,15 @@ export function ScrollMorph({
         }
       }
 
-      context!.globalAlpha = 0.15 + 0.35 * intensity;
+      context!.globalAlpha = 0.3 + 0.3 * intensity;
       context!.stroke();
 
       for (const point of points) {
         if (point.opacity <= 0.1) continue;
-        context!.globalAlpha = point.opacity * (0.6 + 0.4 * intensity);
-        context!.fillStyle = ink;
+        context!.globalAlpha = point.opacity * (0.8 + 0.2 * intensity);
+        context!.fillStyle = tone;
         context!.beginPath();
-        context!.arc(point.sx, point.sy, Math.max(0.1, 2.6 * (1.4 - point.depth)), 0, Math.PI * 2);
+        context!.arc(point.sx, point.sy, Math.max(0.1, 2.9 * (1.4 - point.depth)), 0, Math.PI * 2);
         context!.fill();
       }
 
@@ -348,7 +389,7 @@ export function ScrollMorph({
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className={cn("pointer-events-none block size-full text-ink", className)}
+      className={cn("pointer-events-none block size-full", className)}
     />
   );
 }

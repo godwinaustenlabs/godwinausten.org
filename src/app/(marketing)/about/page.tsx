@@ -7,10 +7,15 @@ import { MAIN_ID, contactBlock } from "@/content/compositions";
 /**
  * `/about` — a vertical document.
  *
- * The shape follows oddcommon's `/expertise`: three tiles stating the shape of
- * the answer before any prose, then what we do, then the numbered principles of
- * working with us. A reader arriving here wants the shape immediately; three
- * words give it faster than a paragraph can.
+ * The page opens on what the company is *for* and then says what it sells.
+ *
+ * It used to open on three tiles — Map, Build, Tune — after oddcommon's
+ * `/expertise`, on the argument that a reader arriving on a sub-route wants the
+ * shape of the answer before any prose. The owner cut them, and the page is
+ * better for it: those three words were a summary of `method` further down the
+ * same page, so the masthead was followed immediately by a compressed version of
+ * a section the reader had not reached yet. `charter` is the opening now, which
+ * answers the question a stranger actually arrives with.
  *
  * `services-rows` appears here and on the home page — the same block placed
  * twice by two compositions, not a component copied.
@@ -23,7 +28,10 @@ export const metadata: Metadata = {
 
 const about = composePage("about", [
   block("header", "page-header", aboutCopy.header),
-  block("pillars", "pillars", aboutCopy.pillars),
+  // The pictures come from the copy module now, like every other asset a page
+  // names. `ASCENT_FIGURE` — the generated wire figure that used to sit here —
+  // is regenerable from `npm run gen:ascent` if it is ever wanted back.
+  block("charter", "charter", aboutCopy.charter, { anchor: "who-we-are" }),
   block(
     "services",
     "services-rows",

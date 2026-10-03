@@ -44,6 +44,7 @@ Requires Node ≥ 20.9 and a Cloudflare login (`npx wrangler login`).
 | `npm run format` / `format:check` | Prettier                                                     |
 | `npm run check:resources`         | Fails if `wrangler.jsonc` and the resource registry disagree |
 | `npm run gen:figure`              | Retrace the hero figure from the reference artwork           |
+| `npm run gen:ascent`              | Redraw the generated wire figure (not currently shipped)     |
 | `npm run gen:stills`              | Regenerate the work-tile placeholder stills                  |
 | `npm run gen:diagrams`            | Regenerate the service schematics and stage backdrops        |
 | `npm run gen:placeholder-pdf`     | Rebuild the stand-in guide the opt-in serves                 |
@@ -208,6 +209,7 @@ re-run it.
 | Command                         | Produces                                    | Deterministic |
 | ------------------------------- | ------------------------------------------- | ------------- |
 | `npm run gen:figure`            | `public/assets/figure.svg`                  | yes           |
+| `npm run gen:ascent`            | `public/assets/figure-ascent.svg` — unused  | yes           |
 | `npm run gen:stills`            | `public/assets/tiles/*.svg`                 | yes           |
 | `npm run gen:diagrams`          | `public/assets/diagrams/*.svg`              | yes           |
 | `npm run gen:placeholder-pdf`   | `public/assets/playbook-placeholder.pdf`    | yes           |
@@ -215,6 +217,11 @@ re-run it.
 | `npm run gen:chrome-mark`       | `public/assets/mark-chrome-{1,2,3}.svg`     | yes           |
 | `npm run gen:placeholder-video` | `public/assets/{film,reel}-placeholder.mp4` | no            |
 | `npm run gen:photos`            | `public/assets/photo/*.jpg` + credits       | network       |
+
+`public/assets/reels/` and `public/assets/plates/` are **not** generated — they
+hold the reel, its thumbnail and the owner's photographs. See
+`docs/adr/0009-the-reel-ships-in-the-repo.md` and
+`public/assets/plates/README.md`.
 
 The deterministic five regenerate byte-identically from an unchanged script;
 tune the parameters in the script, never the SVG. `gen:photos` reaches the

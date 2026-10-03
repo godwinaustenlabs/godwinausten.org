@@ -8,6 +8,15 @@ export const vslPanelSchema = z.object({
   body: z.string().min(1),
   videoLabel: z.string().min(1),
   src: z.string().optional(),
+  /**
+   * The film does not exist yet, so the frame is a banner that says so.
+   *
+   * Set while the cut is in production. Remove it — here and in the copy — and
+   * the panel renders the real `FilmFrame` against `src` again, with nothing
+   * else to change. The message is copy rather than hardcoded for the same
+   * reason the rest of the panel's words are: it is the owner's sentence.
+   */
+  comingSoon: z.object({ heading: z.string().min(1), body: z.string().min(1) }).optional(),
   /** The hand-off to the next section. */
   next: z.object({ index: z.string(), label: z.string(), href: z.string() }),
 });

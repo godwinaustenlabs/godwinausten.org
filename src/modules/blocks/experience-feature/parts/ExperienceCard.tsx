@@ -22,6 +22,7 @@ export function ExperienceCard({
   notes,
   videoLabel,
   src,
+  poster,
   cta,
 }: {
   eyebrow: string;
@@ -31,6 +32,7 @@ export function ExperienceCard({
   notes: { label: string; value: string }[];
   videoLabel: string;
   src?: string;
+  poster?: string;
   cta: { label: string; href: string };
 }) {
   return (
@@ -61,7 +63,7 @@ export function ExperienceCard({
         to give it is the caption.
       */}
       <div className="relative aspect-video w-full shrink-0 overflow-hidden">
-        <Reel label={videoLabel} src={src} />
+        <Reel label={videoLabel} src={src} poster={poster} />
       </div>
 
       <div className="flex shrink-0 flex-col gap-4 px-gutter py-4">

@@ -82,6 +82,20 @@ const homeCopySchema = z.object({
     cta: z.object({ label: z.string(), href: z.string() }),
     next: nextSchema,
   }),
+  /**
+   * The unnumbered breath in the middle of the funnel.
+   *
+   * Three pictures and one line. It is not a section — it carries no index — so
+   * the argument's numbering still runs 01 → 04 straight through it.
+   */
+  plates: z.object({
+    plates: z
+      .array(z.object({ src: z.string() }))
+      .min(2)
+      .max(3),
+    headline: z.string(),
+    body: z.string(),
+  }),
   magnet: z.object({
     index: z.string(),
     eyebrow: z.string(),
@@ -121,6 +135,8 @@ const homeCopySchema = z.object({
     body: z.string(),
     videoLabel: z.string(),
     src: z.string().optional(),
+    /** Present only while the film is still being cut — see the block's schema. */
+    comingSoon: z.object({ heading: z.string(), body: z.string() }).optional(),
     next: nextSchema,
   }),
 });
@@ -141,7 +157,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     index: "02",
     eyebrow: "Proof",
     headline: "We have shipped this.",
-    lead: "Not a pilot and not a demo — a system doing real work inside a real company, every day, since we handed it over.",
+    lead: "Not a pilot and not a demo. A system doing real work inside a real company, every day, since we handed it over.",
     card: {
       eyebrow: "An experience",
       client: "faayy.shop",
@@ -173,7 +189,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
         index: "02",
         title: "Micro Agents & Bots for Task Automation",
         detail:
-          "We will take one task off your team and have it live in a week. You get one bot that does that job and stops — cheap to add without a project, simple to remove.",
+          "We will take one task off your team and have it live in a week. You get one bot that does that job and stops. Cheap to add without a project, simple to remove.",
         figure: "/assets/diagrams/micro.svg",
       },
       {
@@ -195,10 +211,28 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     next: { index: "02", label: "What we have shipped", href: "#experience" },
   },
 
+  /*
+   * The interstitial.
+   *
+   * One panel, between the mechanism and the proof. Not in front of the opt-in
+   * and not in front of the film: those are the two moments the brief protects —
+   * the ask is the peak of the reader's willingness, and nothing goes in front
+   * of the VSL.
+   */
+  plates: {
+    plates: [
+      { src: "/assets/plates/motion.jpg" },
+      { src: "/assets/plates/presence.jpg" },
+      { src: "/assets/plates/emergence.jpg" },
+    ],
+    headline: "We love humans. We don\u2019t replace them with AI.",
+    body: "Every system we have built has somebody at the end of it who got their week back, and who is now spending it on the part of the job they were hired for. The agents stop where judgement starts and hand over with the context attached. Nothing we make is worth anything if the answer to \u201cwho did this free up, and for what\u201d is nobody.",
+  },
+
   magnet: {
     index: "03",
     eyebrow: "Free guide",
-    kicker: "Free — no call, no sequence",
+    kicker: "Free. No call, no sequence",
     headline: "Steal our day-one worksheet.",
     body: "The four questions we ask before writing a line of code.",
     cta: "Download it free",
@@ -219,6 +253,14 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     headline: "The part where we convince you.",
     body: "The workflow we mapped, what we built, what we left to a human, and what it costs to run. No slides.",
     videoLabel: "Demo reel",
+    /**
+     * The cut is still being made. Delete this key and the panel goes back to
+     * the real player against whatever is at the VSL's bucket key.
+     */
+    comingSoon: {
+      heading: "The developers are working on it.",
+      body: "The film will be up shortly \u2014 come back in a few days, or skip the video and just book the call. We will walk you through the same thing live.",
+    },
     next: { index: "05", label: "Labs", href: "#labs" },
   },
 
@@ -226,7 +268,7 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     index: "05",
     eyebrow: "Labs",
     headline: "If you have a skill, we need you.",
-    body: "The other half of the company. Labs is where sharp people get a room, a budget and no revenue target — time to build the thing that has no customer yet, take an idea apart, and find out. Some of it becomes work we sell. Most of it does not, and that is the point of having it.",
+    body: "The other half of the company. Labs is where sharp people get a room, a budget and no revenue target, and time to build the thing that has no customer yet, take an idea apart, and find out. Some of it becomes work we sell. Most of it does not, and that is the point of having it.",
     note: "Send us your crazy ideas or work.",
     apply: { label: "Write to us", email: "jobs@godwinausten.org" },
     next: { index: "06", label: "Talk to us", href: "#contact" },

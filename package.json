@@ -39,6 +39,7 @@
     "cf:secrets": "wrangler secret list --name site",
     "check:resources": "node scripts/check-resources.mjs",
     "gen:figure": "node scripts/trace-figure.mjs",
+    "gen:ascent": "node scripts/generate-ascent-figure.mjs",
     "gen:stills": "node scripts/generate-tile-stills.mjs",
     "gen:diagrams": "node scripts/generate-diagrams.mjs",
     "gen:placeholder-pdf": "node scripts/generate-placeholder-pdf.mjs",

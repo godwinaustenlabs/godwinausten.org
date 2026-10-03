@@ -37,12 +37,31 @@ recorded here because it is a resource on the account like any other.
 
 | Hostname               | Fronts       | Created    | Purpose                                                                                           |
 | ---------------------- | ------------ | ---------- | ------------------------------------------------------------------------------------------------- |
-| `cdn.godwinausten.org` | `site-media` | 2026-09-23 | Film and reels, served by R2 behind Cloudflare's CDN so video never invokes the Worker. ADR 0007. |
+| `cdn.godwinausten.org` | `site-media` | 2026-09-26 | Film and reels, served by R2 behind Cloudflare's CDN so video never invokes the Worker. ADR 0007. |
+
+Note that this domain also exposes `playbook/get-your-week-back.pdf`, which is
+deliberate — the playbook is a public asset and the opt-in form in front of it is
+a conversion step rather than a gate. See SECURITY.md §7.
 
 ```bash
 npx wrangler r2 bucket domain add site-media   --domain cdn.godwinausten.org --zone-id <godwinausten.org zone id> --min-tls 1.2
 npx wrangler r2 bucket domain list site-media   # confirm status: active
 ```
+
+> **This row was wrong for three days, and the way it was wrong is worth
+> knowing.** It was written on 2026-09-23 as though the domain had been
+> connected, and it had not been: `wrangler r2 bucket domain list site-media`
+> returned nothing and `cdn.godwinausten.org` had no DNS record at all, while
+> `mediaSrc()` went on baking that hostname into every statically prerendered
+> page. Nothing looked broken, because a video whose `src` fails falls back to
+> the drawn loop exactly as it does when there is no film at all. Actually
+> connected 2026-09-26.
+>
+> `npm run check:resources` cannot catch this class of drift: a bucket domain is
+> not a Worker binding, so it is not in `wrangler.jsonc` for the script to
+> compare against. **Writing the row is not provisioning the resource.** Run the
+> `list` below and read the status before believing this table about anything in
+> this section.
 
 **This makes every object in `site-media` world-readable by key.** The rule that
 follows from it is in `SECURITY.md` §7 and it is the only boundary left: nothing

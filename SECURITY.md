@@ -185,6 +185,27 @@ the set of _reachable_ objects is the whole bucket, whatever this route will
 name. The allowlist is a statement of what the site serves, not a boundary —
 the boundary is the rule in §7 about what may go in the bucket at all.
 
+### The playbook is a public object, by decision
+
+The real guide went into `site-media` on **2026-10-02**
+(`playbook/get-your-week-back.pdf`), so it is fetchable at
+`cdn.godwinausten.org/playbook/get-your-week-back.pdf` by anyone who knows or
+guesses the key. That does **not** breach §7: the owner was asked and classified
+it public. It is a lead magnet the business is actively trying to give away, and
+the email form in front of it is a **conversion step, not an access control**.
+
+Stating it plainly because the opposite is easy to assume from the form. Anyone
+who finds the key gets the PDF without giving us an address, which is true of
+every ungated lead magnet on the internet. If that ever has to stop being true,
+the fix is not a token on `/api/media/playbook` — the object has to move to a
+bucket with no public origin, because while it is in this one no code here can
+make it unreachable.
+
+What must not follow is a second file going in on the strength of this one.
+§7's rule is unchanged and per-object: nothing enters `site-media` that is not
+already public, and "the playbook is in there" is not an argument that anything
+else may be.
+
 Rules:
 
 - **Never** widen this to `[...key]` or otherwise pass a request-supplied string
@@ -311,11 +332,19 @@ Tracked here so they are visible rather than forgotten. None of these are done.
       studio's artwork on the owner's instruction (`docs/adr/0004`). Licence it,
       re-trace from an image we own, or drop it before the site is public. This
       is a legal exposure, not a security one, but it blocks the same launch.
-- [ ] **Stock photograph licensing** — the four images under
-      `public/assets/photo/` came from Unsplash (`docs/photo-credits.md`,
-      `npm run gen:photos`). The owner said they would check the licensing
-      themselves; until that is written down, treat it as unresolved. Same class
-      of exposure as the traced figure above.
+- [ ] **Stock photograph licensing** — the images under `public/assets/photo/`
+      came from Unsplash (`docs/photo-credits.md`, `npm run gen:photos`). The
+      owner said they would check the licensing themselves; until that is written
+      down, treat it as unresolved. Same class of exposure as the traced figure
+      above.
+- [ ] **Owner-supplied photograph provenance** — the five files under
+      `public/assets/plates/` were pasted into the repository by the owner on
+      2026-09-27 with no source recorded (`public/assets/plates/README.md`). They
+      carry the home page's interstitial band and both pictures in `/about`'s
+      charter, so they are on two of the five routes. Where they came from and
+      whether we may publish them is unanswered, and nothing in the repo can
+      answer it. Same class of exposure as the two items above, and the same
+      launch.
 - [ ] Lead endpoint hardening (§5) — **blocks the funnel form shipping.**
       Honeypot and PII-free logging are done; Turnstile, rate limiting, consent
       copy + privacy policy, and a retention decision are not. The form is live

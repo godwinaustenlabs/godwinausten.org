@@ -30,6 +30,21 @@ const experienceSchema = z.object({
   /** Placeholder artwork until real footage lands. */
   still: z.string().min(1),
   /**
+   * The reel's thumbnail — what the frame shows before anyone asks to watch.
+   *
+   * A path under `public/`, not a bucket key, and that is the difference
+   * between this and `media` below. The film is in R2 because a `<video>` opens
+   * a chain of range requests and the Worker must not be in that path
+   * (`docs/adr/0007`); a still is one small image the CDN serves from Workers
+   * Assets for nothing. So it is committed, and **replacing it is dropping a
+   * file over the one at this path** — no deploy of new code, no re-encode, no
+   * entry in the media allowlist.
+   *
+   * Optional. Without one the frame shows the video's own first frame instead,
+   * which costs a `preload="metadata"` round trip — see `Reel`.
+   */
+  thumbnail: z.string().min(1).optional(),
+  /**
    * Which reel in the media allowlist this build's footage lives at.
    *
    * An **id**, not a URL, and that is the whole point: `/`, `/work` and
@@ -106,6 +121,23 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
       would break something real in exchange for tidiness nobody can see.
     */
     still: "/assets/tiles/picasso.svg",
+    /*
+      The real thing now, not a stand-in.
+
+      It is a frame of the Faayy storefront we built — the work this experience
+      is about — replacing the abstract photograph that stood in while there was
+      nothing true to put here.
+
+      It lives under `assets/reels/` rather than `assets/photo/`, and that is not
+      filing for its own sake: `assets/photo/` carries a generated credits file
+      (`docs/photo-credits.md`) asserting that every file in it is an Unsplash
+      photograph with a named photographer. This one is ours, so keeping it there
+      would have made that guarantee false.
+
+      Replacing it is still a drag and drop onto this path — no deploy, no code
+      change, and every page showing this experience picks it up.
+    */
+    thumbnail: "/assets/reels/rembrandt-thumbnail.jpg",
     media: "reel-picasso",
     runtime: "Demo reel",
     detail: {
@@ -121,7 +153,7 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
             index: "01",
             title: "We sat with the work first",
             paragraphs: [
-              "Before writing anything we spent a week watching how listings actually got made. The brief said the bottleneck was copywriting. It was not — it was the back-and-forth about which photographs belonged to which variant, which happened over chat and left no trace anywhere a system could read.",
+              "Before writing anything we spent a week watching how listings actually got made. The brief said the bottleneck was copywriting. It was not. It was the back-and-forth about which photographs belonged to which variant, which happened over chat and left no trace anywhere a system could read.",
               "That is the usual outcome of the first week, and it is why we do it. Roughly half of what teams ask us to automate turns out not to be the thing costing them.",
             ],
           },
@@ -138,7 +170,7 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
             title: "The handoff is the product",
             paragraphs: [
               "The interesting part of a support agent is not the questions it answers. It is what happens with the ones it should not.",
-              "When the escalation agent hands a conversation over, the human gets the order, the history, what was already tried, and why the agent stopped — in the tool they were already working in. No new tab, no context to reconstruct. That was the piece the team noticed.",
+              "When the escalation agent hands a conversation over, the human gets the order, the history, what was already tried, and why the agent stopped, in the tool they were already working in. No new tab, no context to reconstruct. That was the piece the team noticed.",
             ],
           },
           {
@@ -156,7 +188,7 @@ export const experiences: Experience[] = z.array(experienceSchema).parse([
         eyebrow: "What happens next",
         headline: "The second one is faster.",
         body: "The mapping week is the same for everyone, but the agent scaffolding, the escalation logic and the integration patterns carry across. If you have a workflow that looks anything like this, most of the answer already exists.",
-        meta: "Pakistan — since 2024",
+        meta: "Pakistan, since 2024",
       },
     },
   },

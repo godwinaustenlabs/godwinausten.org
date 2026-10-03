@@ -186,6 +186,23 @@ export function HeroFigure({ src, className }: HeroFigureProps) {
           an absolutely positioned box with `bottom-0` and a height ignores it.
         */
         "h-[95%] [--figure-mask-size:contain] md:h-[108%]",
+        /*
+          The scroll drift is off below `md`, and this switch is why.
+
+          The figure's horizontal travel is `(0.5 - --block-progress) * ...`, and
+          the engine publishes `--block-progress` at **every** width — it is the
+          reveal/parallax channel, not a desktop one. So on a phone, where there
+          is no pointer to lean at and the layer should be still, the drawing
+          slid sideways as the page scrolled: the one piece of movement on the
+          hero that nothing initiated and nobody could stop.
+
+          A custom property rather than a second transform, because the transform
+          is an inline style and inline styles cannot carry a media query. Zero
+          multiplies the scroll term away and leaves the pointer term — which is
+          already zero without a fine pointer — so below `md` the figure is
+          genuinely fixed rather than merely slower.
+        */
+        "[--figure-drift:0] md:[--figure-drift:1]",
         className,
       )}
       style={{ "--pointer-x": 0, "--pointer-y": 0 } as React.CSSProperties}
@@ -203,7 +220,8 @@ export function HeroFigure({ src, className }: HeroFigureProps) {
               transform: `translate3d(
                 calc(
                   var(--pointer-x) * ${layer.depth}px +
-                  (0.5 - var(--block-progress, 0.5)) * var(--block-depth, 0) * ${layer.depth * 4}px
+                  (0.5 - var(--block-progress, 0.5)) * var(--block-depth, 0) *
+                    var(--figure-drift, 1) * ${layer.depth * 4}px
                 ),
                 calc(var(--pointer-y) * ${layer.depth * 0.5}px),
                 0

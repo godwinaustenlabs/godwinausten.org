@@ -8,6 +8,17 @@
 # Tells Next.js which .env.* files to load inside the Worker preview.
 NEXTJS_ENV=development
 
+# Where a captured lead is sent: Pleiades, as a lead in Acquisition.
+#
+# The key is an `api_keys` row in Pleiades naming a login that holds exactly one
+# grant (`acquisition/contacts` edit) and cannot sign in. Get it from the owner;
+# production is set with `npx wrangler secret put PLEIADES_API_KEY --name site`.
+#
+# Unset, the opt-in still serves the PDF and logs that it could not deliver, so a
+# local run needs neither of these to work.
+PLEIADES_API_URL=https://pleiades.galabs.workers.dev
+PLEIADES_API_KEY=
+
 # --- not yet used; here so the shape is agreed before we need them ---
 # RESEND_API_KEY=
 # TURNSTILE_SECRET_KEY=

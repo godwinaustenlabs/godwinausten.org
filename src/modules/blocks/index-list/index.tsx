@@ -53,7 +53,7 @@ export default function IndexList({ heading, entries }: IndexListProps) {
               text and a gutter.
             */}
             <div className="aspect-video w-full shrink-0 overflow-hidden md:w-[55%]">
-              <Reel label={entry.runtime} src={entry.src} playOn="hover" />
+              <Reel label={entry.runtime} src={entry.src} poster={entry.poster} playOn="hover" />
             </div>
 
             <div className="min-w-0 flex-1">

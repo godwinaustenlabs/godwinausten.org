@@ -15,6 +15,8 @@ export const experienceFeatureSchema = z.object({
     notes: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
     videoLabel: z.string().min(1),
     src: z.string().optional(),
+    /** The reel's still, held until the pointer arrives. See `Reel`. */
+    poster: z.string().optional(),
     cta: z.object({ label: z.string(), href: z.string() }),
   }),
   /** The hand-off to the next section. */

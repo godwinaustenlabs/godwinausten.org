@@ -85,12 +85,28 @@
      * drops a cell, it does not overflow.
      */
     --chrome-top: 3.25rem;
-    --chrome-bottom: 3rem;
+    /*
+     * Three rows, because below `sm` the rail is two columns and there are five
+     * links in it. The bar does not grow to its content — it is a fixed height
+     * that `--band` is measured against — so a row the bar has no height for is
+     * a row sliced through the middle of its labels, which is what a fifth link
+     * did to it. One row of 24px each, the same row height the four-link rail
+     * had at 3rem.
+     */
+    --chrome-bottom: 4.5rem;
     --band: calc(100svh - var(--chrome-top) - var(--chrome-bottom));
 
     /* Seams. Every division on the page is one hairline wide — cells are told
        apart by the gap between them, never by a border around them. */
     --seam: 1px;
+  }
+
+  /* From `sm` the rail is a single row again — a column per link — so the bar
+     goes back to one row's worth of height. Matches `sm:` in SiteChrome. */
+  @media (min-width: 640px) {
+    :root {
+      --chrome-bottom: 3rem;
+    }
   }
 
   @media (min-width: 768px) {
@@ -107,6 +123,57 @@
       --chrome-top: 3.75rem;
       --chrome-bottom: 3.5rem;
     }
+  }
+
+  /*
+   * The root scale — one number that makes the whole site bigger on a big screen.
+   *
+   * ## The problem it fixes
+   *
+   * Every size on this site is `clamp(min, <n>vw, max)`. The middle term grows
+   * with the window, so a 13" laptop and a 27" monitor should look the same
+   * shape — except the *ceiling* is a fixed `rem`, and on anything past about a
+   * 1440px window every ceiling is already reached. Past that point the window
+   * keeps growing and nothing in it does: a 27" display got a 13" page with
+   * 500px of paper down each side, which is exactly what it looked like.
+   *
+   * Raising each ceiling individually would mean touching every block and
+   * getting the relationships between them wrong. But all of them are written
+   * in `rem`, and so are the gutter, the chrome bars, `ch` measures and the
+   * whole Tailwind spacing scale — so there is a single number upstream of the
+   * lot of it, and it is this one.
+   *
+   * ## Why the ramp starts where it does
+   *
+   * 90rem (1440px at a default root) is the largest window the layout was
+   * actually designed against, so nothing at or below a laptop moves by a
+   * pixel. From there it climbs to 1.375x at 200rem (3200px) — a 27" display
+   * lands near 1.24x and a 32" near 1.33x. It is deliberately gentler than the
+   * window's own growth: the point is to spend the extra width on type and air
+   * in proportion, not to blow the page up until a paragraph is two words wide.
+   *
+   * ## Why height is in it at all
+   *
+   * Because a panel is the band between the fixed bars and **does not grow**
+   * (`src/components/ui/Panel.tsx`), and `cell-body` clips. Scale the type off
+   * width alone and a 2560x1080 ultrawide — wide, but no taller than a laptop —
+   * gets a quarter more type in the same band and loses the bottom of it. So
+   * the two terms are ramped separately and the *smaller* wins: the page only
+   * takes the extra size when there is room for it in both directions.
+   *
+   * ## Why `rem` and not `px`
+   *
+   * On the root element `rem` resolves against the browser's *initial* font
+   * size, which is the one the visitor set. Written in `px` this would silently
+   * override that preference for everybody — the classic way a site breaks
+   * accessible text sizing while looking fine to the person who wrote it.
+   */
+  :root {
+    font-size: clamp(
+      1rem,
+      min(calc(1rem + (100vw - 90rem) * 0.0034), calc(1rem + (100vh - 50rem) * 0.006)),
+      1.375rem
+    );
   }
 
   html {
@@ -398,6 +465,69 @@
     border: 0;
     border-radius: 9999px;
     background-color: var(--color-signal);
+  }
+
+  /*
+   * The neon frame — the one glowing thing on the site.
+   *
+   * Reserved for an open role on `/careers`. There are usually none, so when
+   * there is one it should be the brightest thing on the page; a posting that
+   * looks like every other cell is a posting nobody notices is new.
+   *
+   * ## It lights the card, not the page
+   *
+   * Everything it draws is `inset`. An outward halo is how neon behaves in a
+   * dark room, and on the site's paper it behaved like a smudge — worse, two
+   * cards stacked on a board each bled outward into the gap between them until
+   * the pair fused into one lit bar. Turned inward, the light lands *on* the
+   * card, the paper around it stays paper, and two cards next to each other stay
+   * two cards.
+   *
+   * Two insets rather than one: a tight bloom that hugs the rule and keeps the
+   * edge reading as a lit tube, and a wide one that carries the colour far
+   * enough in to reach the copy. One alone is either a bright outline with a
+   * dead middle or an evenly green box.
+   *
+   * ## It is a layer, not a border on the cell
+   *
+   * A border would take a pixel out of the cell's own box and shift every seam
+   * it touches by one — and seams that are exactly one pixel everywhere is the
+   * rule the whole grid is built on. `border-radius: inherit` so it follows
+   * whatever corner its card has.
+   */
+  .neon-frame {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 2px solid var(--color-signal);
+    border-radius: inherit;
+    box-shadow:
+      inset 0 0 16px color-mix(in srgb, var(--color-signal) 42%, transparent),
+      inset 0 0 54px color-mix(in srgb, var(--color-signal) 26%, transparent);
+    animation: neon-breathe 4.2s var(--ease-out-expo) infinite;
+  }
+
+  /*
+   * A breath, not a blink.
+   *
+   * Tube neon does not flash — it sits at a level and drifts, and anything
+   * faster than about four seconds reads as a notification badge demanding to be
+   * clicked. The base layer's reduced-motion rule collapses the duration, which
+   * leaves the frame lit and still: the right answer, because the glow is the
+   * marking and the movement is only the flourish.
+   *
+   * It only dips to 0.78. Over ink a deeper fade read as a tube settling; over
+   * paper the same fade takes the rule close enough to the ground to look like
+   * it is being redrawn every few seconds.
+   */
+  @keyframes neon-breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.78;
+    }
   }
 
   /*

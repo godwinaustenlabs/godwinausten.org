@@ -60,10 +60,28 @@ async function homeComposition() {
       { ...homeCopy.services, lattice: true },
       { anchor: "expertise" },
     ),
+    /*
+      The breath, in the middle of the page.
+
+      Between the mechanism and the proof: the reader has been told how we build
+      and is about to be shown one thing we built, which is the one seam in the
+      argument wide enough to take a panel with nothing to click on it. The two
+      places it could not go are in front of the opt-in and in front of the film
+      — the peak of the reader's willingness, and the section the brief says
+      nothing may precede.
+    */
+    block("plates", "figure-plates", homeCopy.plates),
     block(
       "experience",
       "experience-feature",
-      { ...homeCopy.experience, card: { ...homeCopy.experience.card, src: reel } },
+      {
+        ...homeCopy.experience,
+        card: {
+          ...homeCopy.experience.card,
+          src: reel,
+          ...(picasso?.thumbnail ? { poster: picasso.thumbnail } : {}),
+        },
+      },
       { anchor: "experience" },
     ),
     block("magnet", "lead-magnet", { ...homeCopy.magnet, anchor: "playbook" }),

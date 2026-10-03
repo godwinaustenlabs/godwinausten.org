@@ -16,6 +16,20 @@ export const markFieldSchema = z.object({
   note: z.string().min(1),
   /** Where an application goes. An address, not a form — there is no form. */
   apply: z.object({ label: z.string().min(1), email: z.string().min(1) }),
+  /**
+   * The words in the overprint, one per line.
+   *
+   * The motto was hard-coded here for as long as this block appeared on exactly
+   * one page. `/careers` places it too, and the same four words on both would
+   * make the second one read as a copy of the first rather than as the same
+   * press run twice — so the panel keeps its print and the page chooses what is
+   * printed on it.
+   *
+   * Set them short. The type is 132 units in a 1160-unit box, so anything past
+   * about ten characters runs out of the plate, and four or five lines is what
+   * the box was drawn for.
+   */
+  print: z.array(z.string().min(1)).min(1).default(["MAKE", "SOMETHING", "CRAZY", "WITH US"]),
   next: z.object({ index: z.string(), label: z.string(), href: z.string() }),
 });
 

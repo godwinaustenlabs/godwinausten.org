@@ -56,7 +56,32 @@ describe("experience-feature", () => {
     const video = container.querySelector("video");
     expect(video).toHaveAttribute("src", "/rembrandt.mp4");
     expect(video).toHaveProperty("muted", true);
+    // Nothing is fetched until the reel is near the viewport. jsdom has no
+    // IntersectionObserver worth the name, so the warm pass never fires here and
+    // this is the cold state — which is the one worth asserting: a reel nobody
+    // scrolls near must not pull its file.
     expect(video).toHaveAttribute("preload", "none");
+  });
+
+  it("holds a thumbnail and fetches nothing until the pointer arrives", () => {
+    // The clip used to start itself the moment the card scrolled into view, on
+    // all three pages that show this experience. A reader who has not asked to
+    // watch anything should not be streaming anything.
+    const { container } = render(
+      <ExperienceFeature
+        {...props}
+        card={{ ...card, src: "/rembrandt.mp4", poster: "/rembrandt-thumbnail.jpg" }}
+      />,
+    );
+    const video = container.querySelector("video");
+    expect(video).toHaveAttribute("preload", "none");
+
+    const still = container.querySelector('[style*="rembrandt-thumbnail.jpg"]');
+    expect(still).toBeInTheDocument();
+    // A layer over the video, not the `poster` attribute: a poster is replaced
+    // by the first decoded frame and never comes back, and a poster that 404s
+    // paints the browser's broken-image glyph.
+    expect(video).not.toHaveAttribute("poster");
   });
 
   it("shows the clip at 16:9 in every mode", () => {

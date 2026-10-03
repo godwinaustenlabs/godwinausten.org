@@ -105,6 +105,16 @@
     // row is the runtime override, and setting it to "" is the kill switch that
     // sends media back through the Worker without a code change.
     "NEXT_PUBLIC_MEDIA_BASE_URL": "https://cdn.godwinausten.org",
+    // Where a captured lead goes: Pleiades, the company's own system, as a lead
+    // in Acquisition. Not NEXT_PUBLIC_ — nothing in the browser needs it, and a
+    // public var is one copy-paste away from being read client-side.
+    //
+    // The credential is PLEIADES_API_KEY, a secret (`wrangler secret put`), never
+    // here. It names a Pleiades login holding exactly one grant,
+    // `acquisition/contacts` edit, so a leak is leads rather than the company.
+    // Unset either and the opt-in still serves the PDF and logs that it could
+    // not deliver — see src/server/actions/lead-magnet.ts.
+    "PLEIADES_API_URL": "https://pleiades.galabs.workers.dev",
   },
   // ---------------------------------------------------------------------------
   // Observability — logs in the dashboard + `npm run tail`.

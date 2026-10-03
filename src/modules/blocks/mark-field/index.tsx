@@ -41,6 +41,7 @@ export default function MarkField({
   note,
   apply,
   next,
+  print,
 }: MarkFieldProps) {
   return (
     <Panel width={1} className="grid-rows-[auto_1fr_auto]">
@@ -72,7 +73,7 @@ export default function MarkField({
         {/* From `md` up it is a layer on the right of the panel instead — see
             the note above about why it is positioned rather than laid out. */}
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] overflow-hidden md:block">
-          <Watermark />
+          <Watermark words={print} />
         </div>
 
         <div className="relative flex h-full flex-col justify-center gap-8 px-gutter py-[clamp(1.75rem,5vh,3.5rem)] md:flex-row md:items-center md:justify-start md:gap-0">
@@ -86,7 +87,7 @@ export default function MarkField({
             is the first thing seen, and the heading lands under it.
           */}
           <div className="relative h-[clamp(8rem,32vw,13rem)] w-full overflow-hidden md:hidden">
-            <Watermark />
+            <Watermark words={print} />
           </div>
 
           <div className="max-w-[42ch] md:max-w-[48%]">
@@ -118,7 +119,10 @@ export default function MarkField({
 }
 
 /**
- * The motto, overprinted.
+ * The words, overprinted.
+ *
+ * The motto on the home page, and whatever `/careers` asks for on `/careers` —
+ * the press is the block's, the plate is the page's.
  *
  * ## Why not the obvious things
  *
@@ -144,7 +148,7 @@ export default function MarkField({
  * specks a few pixels across, never in slabs, and specks that size read as a
  * process rather than as a decoration somebody added.
  */
-function Watermark() {
+function Watermark({ words }: { words: string[] }) {
   /*
    * Two passes: the offset each is printed at and its colour.
    *
@@ -250,7 +254,7 @@ function Watermark() {
             fill={pass.fill}
             opacity={pass.opacity}
           >
-            {["MAKE", "SOMETHING", "CRAZY", "WITH US"].map((word, row) => (
+            {words.map((word, row) => (
               <text
                 key={word}
                 x="60"

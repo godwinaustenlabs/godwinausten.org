@@ -42,6 +42,7 @@ export const siteCopy: SiteCopy = siteCopySchema.parse({
     { label: "Work", href: "/work" },
     { label: "About", href: "/about" },
     { label: "Playbook", href: "/#playbook" },
+    { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
   ],
   meta: { place: "Pakistan", founded: "Est. 2024" },

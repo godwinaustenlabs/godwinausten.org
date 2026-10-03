@@ -82,10 +82,23 @@ function mediaOrigin(): string | null {
  */
 export const MEDIA_ASSETS = {
   playbook: {
-    key: "playbook/what-to-automate-first.pdf",
+    /**
+     * The real guide, uploaded 2026-10-02. Key and filename both name the
+     * artefact rather than the panel it sits under — the section is headed
+     * "What to automate first", the PDF is "Get Your Week Back", and a key that
+     * said the former while serving the latter is the kind of small lie that
+     * costs somebody ten minutes a year from now.
+     */
+    key: "playbook/get-your-week-back.pdf",
     contentType: "application/pdf",
     /** Sent as a download under this name, not opened in a tab. */
-    filename: "what-to-automate-first.pdf",
+    filename: "Get-Your-Week-Back.pdf",
+    /**
+     * Still here, and still the right shape even though the object now exists:
+     * it is what a deleted or mis-uploaded key falls back to, so the funnel's
+     * last step degrades to a stand-in rather than a 404 on the one request the
+     * visitor just paid for with their address.
+     */
     fallback: "/assets/playbook-placeholder.pdf",
   },
   vsl: {
@@ -105,6 +118,33 @@ export const MEDIA_ASSETS = {
     key: "reels/rembrandt.mp4",
     contentType: "video/mp4",
     filename: null,
+    /*
+     * Served from the repo, not from the bucket.
+     *
+     * The owner's complaint was a delay between hovering a reel and seeing it
+     * move, and the instruction was to stop streaming this one from R2. Worth
+     * being honest about what actually fixed it, because it was mostly not the
+     * host:
+     *
+     * - **The encode.** What sat at this key was 1920x1080 at 60fps and
+     *   7.5 Mbps with an audio track, for a sixteen-second loop that every
+     *   consumer renders `muted` in a card a few hundred pixels wide. Re-encoded
+     *   to 720p30 with no audio it is 1.9 MB rather than 16 MB — eight times
+     *   less to pull before the first frame can paint.
+     * - **The preload.** `Reel` fetched nothing until the pointer arrived, so
+     *   the wait was the whole download starting from zero. It warms the buffer
+     *   as the reel approaches the viewport now; see that file.
+     * - **The host**, which changed least. Workers Assets and a custom-domain R2
+     *   bucket are the same Cloudflare edge, and neither invokes the Worker
+     *   (`docs/adr/0007` is about Worker invocations and is untouched by this).
+     *   What this does buy is one less origin and a file that cannot be missing.
+     *
+     * The cost is 1.9 MB in the repository and in every deploy, and swapping the
+     * cut is now a commit rather than a bucket upload. `key` above is still the
+     * bucket's, so deleting this line puts it back on R2 with nothing else to
+     * change.
+     */
+    local: "/assets/reels/rembrandt.mp4",
     /**
      * Its own stand-in, not the VSL's.
      *
@@ -211,6 +251,12 @@ export async function hasMedia(id: MediaId): Promise<boolean> {
  * Worker route, resolving object-then-fallback per request.
  */
 export async function mediaSrc(id: MediaId): Promise<string | undefined> {
+  // A committed file wins over the bucket. It is served by Workers Assets from
+  // the same edge, it cannot 404 because someone emptied a key, and it needs no
+  // origin to be configured — see `local` on the asset for the full reasoning.
+  const shipped = MEDIA_ASSETS[id];
+  if ("local" in shipped && shipped.local) return shipped.local;
+
   const url = mediaObjectUrl(id);
   if (url) return url;
   if (MEDIA_ASSETS[id].fallback) return mediaHref(id);

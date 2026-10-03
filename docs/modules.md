@@ -543,29 +543,48 @@ compatible with Server Components.
 
 ## Current state
 
-Seven blocks, placed across three routes:
+Fifteen blocks, placed across five routes:
 
-| Block                | `/` | `/work` | `/about` | `/contact` |
-| -------------------- | :-: | :-----: | :------: | :--------: |
-| `hero-scribble`      |  ●  |         |          |            |
-| `experience-feature` |  ●  |         |          |            |
-| `index-list`         |     |    ●    |          |            |
-| `pillars`            |     |         |    ●     |            |
-| `services-rows`      |  ●  |         |    ●     |     ●      |
-| `lead-magnet`        |  ●  |         |          |            |
-| `vsl-panel`          |  ●  |         |          |            |
-| `page-header`        |     |    ●    |    ●     |     ●      |
-| `prose-sections`     |     |    ●    |    ●     |     ●      |
-| `about-statement`    |     |    ●    |    ●     |            |
-| `contact-footer`     |  ●  |    ●    |    ●     |     ●      |
+| Block                | `/` | `/work` | `/about` | `/careers` | `/contact` |
+| -------------------- | :-: | :-----: | :------: | :--------: | :--------: |
+| `hero-scribble`      |  ●  |         |          |            |            |
+| `experience-feature` |  ●  |         |          |            |            |
+| `figure-plates`      |  ●  |         |          |            |            |
+| `index-list`         |     |    ●    |          |            |            |
+| `charter`            |     |         |    ●     |            |            |
+| `services-rows`      |  ●  |         |    ●     |            |            |
+| `lead-magnet`        |  ●  |         |          |            |            |
+| `vsl-panel`          |  ●  |         |          |            |            |
+| `mark-field`         |  ●  |         |          |     ●      |            |
+| `figure-statement`   |     |         |          |     ●      |            |
+| `open-roles`         |     |         |          |     ●      |            |
+| `direct-line`        |     |         |          |            |     ●      |
+| `page-header`        |     |    ●    |    ●     |     ●      |     ●      |
+| `prose-sections`     |     |    ●    |    ●     |            |     ●      |
+| `about-statement`    |     |    ●    |    ●     |            |            |
+| `contact-footer`     |  ●  |    ●    |    ●     |     ●      |     ●      |
 
-`prose-sections` is the one block allowed to be taller than the band. It only
-ever appears on a vertical sub-route, where a reader scrolls at their own pace
-and a fixed height would be a cage.
+`prose-sections`, `open-roles` and `charter` are the three blocks allowed to be
+taller than the band. All three only ever appear on a vertical sub-route, where a
+reader scrolls at their own pace and a fixed height would be a cage.
 
-That table is the argument for the whole system. Three sub-routes cost two new
-blocks and three content files between them; every other section on them is the
-same component the home page uses, placed by a different composition.
+`pillars` used to be here, on `/about`: three tiles — Map, Build, Tune — before
+any prose. The owner cut them, and the block went with them. It was placed on
+exactly one route, and a registered block nothing places is the "sample block"
+`CLAUDE.md` §2.3 exists to keep out of `src/modules/blocks/`. `git` has it if it
+is ever wanted back.
+
+`mark-field` is the clearest case the system makes for itself. It is the Labs
+panel on `/` and the closing invitation on `/careers` — the same overprinted
+plate, the same claim-and-address layout, with the words on the plate supplied
+by the page (`print`). Two sections that look related because they _are_ the same
+block, not because somebody remembered to copy the styling.
+
+`services-rows` used to be the third: it carried the addresses on `/contact` as
+a three-row list. That was the block being stretched rather than reused — the
+addresses are not offerings, and the row that mattered was set in the same size
+as the sentence explaining it. `direct-line` replaced it there, and careers left
+the page entirely for `/careers`.
 
 Nothing else is registered, on purpose. Blocks are added when a real section is
 designed, never as placeholders. See `CLAUDE.md` §2.3 and the block inventory in

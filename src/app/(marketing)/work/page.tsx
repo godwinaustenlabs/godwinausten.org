@@ -49,6 +49,7 @@ async function workComposition() {
           href: `/work/${experience.slug}`,
           runtime: experience.runtime,
           ...(reels[i] ? { src: reels[i] } : {}),
+          ...(experience.thumbnail ? { poster: experience.thumbnail } : {}),
         })),
       },
       { anchor: "index" },

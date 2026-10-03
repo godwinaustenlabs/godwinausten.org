@@ -41,12 +41,14 @@
  * Output: public/assets/diagrams/*.svg
  */
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = resolve(ROOT, "public/assets/diagrams");
+/** Where the four third-party marks are read from. See `loadMarks`. */
+const LOGO_DIR = resolve(ROOT, "scripts/logos");
 
 /** Schematic canvas. Cropped per diagram — see `svg()`. */
 const W = 800;
@@ -66,11 +68,52 @@ const BH = 700;
  * the worst of both. Ink itself would put them level with the headline and make
  * the cell a competition; this sits just under the body copy.
  */
-const LINE = "#46443e";
+const LINE = "#3b3a34";
 /** For the ink tile: paper, dimmed by the tile's own 25%. */
 const ON_INK = "#e8e6de";
 /** For a paper tile: ink, dimmed by the tile's own 14%. */
 const ON_PAPER = "#2a2a26";
+
+/*
+ * The schematics' tones.
+ *
+ * `LINE` above still draws every *structure* — a box is a box and a spine is a
+ * spine — and a tone is spent only on what the drawing is arguing about: where
+ * work travels, where it waits, where it is refused, and which part of the
+ * thing is live.
+ *
+ *   FLOW   the path work takes, and every hand-off
+ *   DATA   records, and the systems that hold them
+ *   HELD   work queued at a mouth, and the share a stage kept
+ *   DROP   work refused — the reject path nobody draws
+ *   CORE   the running core: brass, and the only bright mark in the set
+ *
+ * **These are metals, not colours, and that is the whole rule.** The first pass
+ * at this used a saturated amber / blue / rust / green and it read as poster
+ * paint on a paper-and-ink page — four primaries is a children's book, whatever
+ * the drawing under them says. Variety here comes from *value and temperature*
+ * instead: steel and pewter cool, sand and copper warm, across a real range of
+ * weight, with brass held back for the one live mark in each drawing. Nothing
+ * is above about 40% saturation, so the set reads as machined material and the
+ * page stays paper and ink.
+ *
+ * Two of the drawings use the set as an **index** rather than as a meaning —
+ * swarm's three clusters and integration's four plates — because there the
+ * whole claim is that the things are not the same one, and there is no role to
+ * name. Each says so at its own top. Everywhere else the legend above holds.
+ *
+ * **No signal lime in here.** The brief allows one lime bar per cell and each
+ * of these cells already spends it on the rule above the claim; a second mark
+ * in the drawing beside it breaks that rule and buys nothing. `CORE` is the
+ * brightest thing in a drawing precisely because it is the only one.
+ */
+const FLOW = "#546a75"; // steel blue — the path work takes
+const DATA = "#5f5d55"; // deep pewter — records, and what holds them
+const HELD = "#8a7647"; // bronze — work queued, and a quantity kept
+const DROP = "#7e5042"; // oxidised copper — work refused
+const CORE = "#b08d52"; // brass, always inside a `LINE` edge — the running core
+/** Paper, for knocking a hole in line-work: a port, and the edge under a fill. */
+const PAPER = "#f6f5f1";
 
 function rng(seed) {
   let a = seed >>> 0;
@@ -215,12 +258,23 @@ function swarm() {
     [W * 0.42, H * 0.8],
   ];
 
-  const links = [];
-  const dots = [];
+  /*
+   * One hue per cluster.
+   *
+   * The claim beside this drawing is that these are *narrow* agents — three of
+   * them, doing three different jobs, handing off. In a single tone that is
+   * three identical smudges, and the only word it says is "network". Coloured
+   * per cluster it says there are three and they are not the same one.
+   */
+  const HUES = [FLOW, DATA, HELD];
+
+  const links = HUES.map(() => []);
+  const rings = HUES.map(() => []);
+  const dots = HUES.map(() => []);
   const hubs = [];
 
   const satellites = [];
-  for (const [cx, cy] of centres) {
+  for (const [ci, [cx, cy]] of centres.entries()) {
     const count = 9 + Math.floor(random() * 3);
     const spread = 82 + random() * 30;
     const ring = [];
@@ -229,17 +283,26 @@ function swarm() {
       const rad = spread * (0.6 + random() * 0.55);
       const x = cx + Math.cos(t) * rad;
       const y = cy + Math.sin(t) * rad * 0.9;
-      links.push(line(cx, cy, x, y));
-      dots.push(node(x, y, 5));
+      links[ci].push(line(cx, cy, x, y));
+      dots[ci].push(node(x, y, 5));
       ring.push([x, y]);
     }
     satellites.push(ring);
-    hubs.push(node(cx, cy, 9.5));
+
+    // The hub is the cluster's live core: brass, ringed in the cluster's own
+    // tone. The ring is not an outline, it is what gives a light metal an
+    // edge to sit against — see `CORE`.
+    hubs.push(
+      `<circle cx="${r1(cx)}" cy="${r1(cy)}" r="10" fill="${CORE}" stroke="${HUES[ci]}" stroke-width="3.6"/>`,
+    );
   }
 
   // Bowed, so the handoffs read as traffic rather than structure. Two arcs per
   // pair, bowed opposite ways: a single line between two hubs is a diagram of a
   // wire, and a pair is a diagram of a conversation.
+  //
+  // These are the one thing in the drawing that belongs to no cluster, so they
+  // take `FLOW` — the same hue that carries work in the other three drawings.
   const arcs = [];
   for (let i = 0; i < centres.length; i += 1) {
     const [ax, ay] = centres[i];
@@ -259,25 +322,28 @@ function swarm() {
    * narrow agents talk to each other too, which is the actual claim in the
    * paragraph beside the drawing.
    */
-  const rings = [];
   for (let c = 0; c < centres.length; c += 1) {
     const ring = satellites[c];
     for (let i = 0; i < ring.length; i += 1) {
       if (random() < 0.32) continue;
       const [ax, ay] = ring[i];
       const [bx, by] = ring[(i + 1) % ring.length];
-      rings.push(line(ax, ay, bx, by));
+      rings[c].push(line(ax, ay, bx, by));
     }
   }
 
   return svg(
     "schematic: agent swarms",
-    `<g stroke="${LINE}" fill="none">
-  <path d="${arcs.join("")}" stroke-width="3.4" opacity="0.7"/>
-  <path d="${rings.join("")}" stroke-width="1.5" opacity="0.32"/>
-  <path d="${links.join("")}" stroke-width="2.2" opacity="0.55"/>
-  <g fill="${LINE}" stroke="none" opacity="0.85">${dots.join("")}</g>
-  <g fill="${LINE}" stroke="none" opacity="1">${hubs.join("")}</g>
+    `<g fill="none">
+  <path d="${arcs.join("")}" stroke="${FLOW}" stroke-width="3.4" opacity="0.8"/>
+${HUES.map(
+  (hue, i) => `  <g stroke="${hue}">
+    <path d="${rings[i].join("")}" stroke-width="1.5" opacity="0.42"/>
+    <path d="${links[i].join("")}" stroke-width="2.2" opacity="0.68"/>
+    <g fill="${hue}" stroke="none" opacity="0.92">${dots[i].join("")}</g>
+  </g>`,
+).join("\n")}
+  ${hubs.join("")}
 </g>`,
   );
 }
@@ -293,21 +359,151 @@ function swarm() {
  * about at least one of them. Four blank plates say nothing; HubSpot, Salesforce,
  * the Graph API and Slack say what the sentence beside them means.
  *
- * They are set in a system monospace stack rather than the site's own face. This
- * is painted as a background image, which cannot reach the page's webfonts — a
- * named font here would silently fall back to whatever the machine has, so it
- * asks for the category instead and gets a predictable answer everywhere.
+ * ## The plates carry the real marks
+ *
+ * A second owner call, and the reason is the same one again: a plate reading
+ * "HubSpot" in mono is a drawing of a label, and a plate carrying the sprocket
+ * is a drawing of HubSpot. Set in type it reads as a wireframe of a diagram;
+ * with the marks on it, it reads as the systems themselves.
+ *
+ * **Each mark is the vendor's own file, and this script never draws one.**
+ * Approximating a trademark from memory produces a wrong mark, which looks
+ * amateur exactly where the drawing is trying to look real, and is the one
+ * thing every brand guideline on earth forbids outright. So the marks are
+ * inputs: drop `<slug>.svg` into `scripts/logos/` and it is picked up on the
+ * next `npm run gen:diagrams`. Missing files are not an error — that plate
+ * falls back to its name in type, which is what shipped before this and is
+ * still a perfectly good drawing.
+ *
+ * They are flattened to a single tone on the way in (see `flattenMark`).
+ * Brand colour would put four stickers on a metal drawing, and one-colour is
+ * both the coherent choice and the usage every one of these four explicitly
+ * permits.
+ *
+ * See docs/adr/0008-third-party-marks-in-the-schematics.md, which reverses 0003
+ * for these four files only.
  */
-const SYSTEMS = ["HubSpot", "Salesforce", "Meta Graph API", "Slack"];
+/*
+ * `[slug, name, kind]`.
+ *
+ * `kind` is what the vendor's own file actually contains, and it decides
+ * whether the plate sets the name beside the mark:
+ *
+ *   "glyph"   a bare symbol — the cloud, the hash, the infinity. Nobody is
+ *             obliged to recognise a symbol, so the plate names it.
+ *   "lockup"  the mark with its wordmark already in it. HubSpot publishes its
+ *             logo this way — the sprocket *is* the "o" in "HubSpot" and does
+ *             not come apart — so a name beside it is the word twice.
+ *
+ * Stated per vendor rather than guessed from the file's aspect ratio. A wide
+ * viewBox is evidence of a lockup and not proof of one, and the failure mode
+ * of guessing is a plate that says "Slack Slack" the day Slack ships a
+ * differently-proportioned glyph.
+ */
+const SYSTEMS = [
+  ["hubspot", "HubSpot", "lockup"],
+  ["salesforce", "Salesforce", "glyph"],
+  ["meta", "Meta Graph API", "glyph"],
+  ["slack", "Slack", "glyph"],
+];
+
+/**
+ * The vendor marks, by slug — `{ body, minX, minY, width, height }` — or an
+ * empty map when none are present.
+ *
+ * Populated once before anything is drawn, because `integration()` is sync and
+ * called from a sync loop.
+ */
+let MARKS = new Map();
+
+/**
+ * Strip a mark down to geometry this drawing can tone itself.
+ *
+ * Every paint attribute comes off so the wrapper's `fill` is what lands:
+ * `fill`, `stroke`, the opacities, `class` (which is usually where a brand SVG
+ * keeps its palette), and any `<style>` block. `fill-rule` and `clip-rule`
+ * survive on purpose — they are geometry, not paint, and a mark with a hole in
+ * it (the Slack hash, the HubSpot sprocket) fills solid without them.
+ *
+ * If a mark comes out looking wrong, the file almost certainly paints itself
+ * through a `<style>` block or a gradient. Flatten it in the source file rather
+ * than teaching this regex to parse CSS.
+ */
+function flattenMark(body) {
+  return body
+    .replace(/<\?xml[\s\S]*?\?>/gi, "")
+    .replace(/<!DOCTYPE[\s\S]*?>/gi, "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(title|desc|metadata|style)\b[\s\S]*?<\/\1>/gi, "")
+    .replace(/\s(?:fill|stroke|style|class|opacity|fill-opacity|stroke-opacity)="[^"]*"/gi, "")
+    .replace(/\s(?:fill|stroke|style|class|opacity|fill-opacity|stroke-opacity)='[^']*'/gi, "")
+    .trim();
+}
+
+/** Read whatever marks are present. A missing file is a fallback, not a failure. */
+async function loadMarks() {
+  const marks = new Map();
+
+  for (const [slug] of SYSTEMS) {
+    let raw;
+    try {
+      raw = await readFile(resolve(LOGO_DIR, `${slug}.svg`), "utf8");
+    } catch {
+      continue;
+    }
+
+    const open = /<svg\b([^>]*)>/i.exec(raw);
+    if (!open) {
+      console.warn(`  ! ${slug}.svg — no <svg> element; skipped`);
+      continue;
+    }
+
+    const viewBox = /viewBox="([^"]+)"/i.exec(open[1]);
+    const box = viewBox
+      ? viewBox[1]
+          .trim()
+          .split(/[\s,]+/)
+          .map(Number)
+      : [
+          0,
+          0,
+          Number(/width="([\d.]+)/i.exec(open[1])?.[1]),
+          Number(/height="([\d.]+)/i.exec(open[1])?.[1]),
+        ];
+
+    if (box.length !== 4 || box.some((n) => !Number.isFinite(n)) || box[2] <= 0 || box[3] <= 0) {
+      console.warn(`  ! ${slug}.svg — no usable viewBox; skipped`);
+      continue;
+    }
+
+    const body = flattenMark(raw.slice(open.index + open[0].length, raw.lastIndexOf("</svg>")));
+    if (!body) {
+      console.warn(`  ! ${slug}.svg — empty after flattening; skipped`);
+      continue;
+    }
+
+    marks.set(slug, { body, minX: box[0], minY: box[1], width: box[2], height: box[3] });
+  }
+
+  return marks;
+}
 
 function integration() {
   const random = rng(0x6b12);
   const cx = W * 0.5;
   const cy = H * 0.5;
 
-  // Wide enough for the longest name at a size that survives being painted at
-  // roughly half scale, and tall enough for a header and the record under it.
-  const bw = 216;
+  /*
+   * Wide enough for a glyph, a gap, and the longest name — "Meta Graph API",
+   * 14 characters — at a size that survives being painted at roughly half
+   * scale, and tall enough for a header and the record under it.
+   *
+   * This went 216 → 240 when the marks arrived: the name used the full width
+   * before, and a 30-unit glyph slot in front of it has to come from
+   * somewhere. The runs to the hub lose the same 24 units at each end, which
+   * they can afford — they were 114 units of wire and are now 90.
+   */
+  const bw = 240;
   const bh = 104;
   const hubR = 46;
   const spots = [
@@ -317,15 +513,24 @@ function integration() {
     [W * 0.97 - bw, H * 0.66],
   ];
 
+  /*
+   * A hue per system, and here the four hues are an **index rather than a
+   * meaning** — the only place in the set where they are. This drawing's whole
+   * claim is that the work lands in four different places you already run, and
+   * four wires in one tone say "wired" where four in four say "four". The rule
+   * under each name, the port it leaves through, the run to the hub and the
+   * joint on that run all share the system's colour, so a wire can be followed
+   * back to the plate it came from without tracing it.
+   */
+  const HUES = [HELD, DATA, FLOW, DROP];
+
   const boxes = [];
-  const runs = [];
-  const joints = [];
   const labels = [];
-  const rules = [];
-  const ports = [];
+  const wiring = [];
 
   const fields = [];
   for (const [i, [bx, by]] of spots.entries()) {
+    const hue = HUES[i];
     boxes.push(box(bx, by, bw, bh));
 
     /*
@@ -336,11 +541,61 @@ function integration() {
      * systems holding different things rather than as one shape stamped out
      * four times.
      */
-    labels.push(
-      `<text x="${r1(bx + 16)}" y="${r1(by + 32)}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" ` +
-        `font-size="21" letter-spacing="0.5" fill="${LINE}" fill-opacity="0.92">${SYSTEMS[i]}</text>`,
-    );
-    rules.push(line(bx, by + 44, bx + bw, by + 44));
+    /*
+     * The header: a mark, a name, or both.
+     *
+     * A glyph gets a **fixed slot** rather than being fitted to its own
+     * bounding box — 30 wide by 26 tall, the glyph centred inside it — so that
+     * the names all start on the same x no matter how wide or narrow the
+     * symbol beside them is. Four names on four different indents is the thing
+     * that makes a set of plates look assembled by accident.
+     *
+     * A lockup is fitted optically instead, because it has no name beside it
+     * to line up with: its height budget scales with the inverse root of its
+     * aspect, which holds roughly the *area* steady. Set to one height a wide
+     * lockup reads as a banner next to a square glyph reading as a speck, even
+     * though the number is identical.
+     *
+     * The `translate(-minX -minY)` is what makes a viewBox that does not start
+     * at the origin land on the plate rather than off it.
+     */
+    const [slug, name, kind] = SYSTEMS[i];
+    const mark = MARKS.get(slug);
+
+    const place = (m, scale, x, y) =>
+      `<g fill="${LINE}" fill-opacity="0.92" stroke="none" ` +
+      `transform="translate(${r1(x)} ${r1(y)}) scale(${scale.toFixed(4)}) ` +
+      `translate(${r1(-m.minX)} ${r1(-m.minY)})">${m.body}</g>`;
+
+    const setName = (x, size) =>
+      `<text x="${r1(x)}" y="${r1(by + 30)}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" ` +
+      `font-size="${size}" letter-spacing="0.5" fill="${LINE}" fill-opacity="0.92">${name}</text>`;
+
+    if (mark && kind === "glyph") {
+      const SLOT_W = 30;
+      const SLOT_H = 26;
+      const scale = Math.min(SLOT_H / mark.height, SLOT_W / mark.width);
+      labels.push(
+        place(
+          mark,
+          scale,
+          bx + 16 + (SLOT_W - mark.width * scale) / 2,
+          by + 22 - (mark.height * scale) / 2,
+        ),
+        setName(bx + 16 + SLOT_W + 10, 18),
+      );
+    } else if (mark) {
+      const aspect = mark.width / mark.height;
+      const target = Math.max(18, Math.min(30, 26 * (1.6 / Math.sqrt(aspect))));
+      const scale = Math.min(target / mark.height, (bw - 32) / mark.width);
+      labels.push(place(mark, scale, bx + 16, by + 22 - (mark.height * scale) / 2));
+    } else {
+      // No file for this one yet. The name takes the whole header, which is
+      // what every plate did before the marks existed.
+      labels.push(setName(bx + 16, 21));
+    }
+
+    const rule = line(bx, by + 44, bx + bw, by + 44);
 
     for (let f = 0; f < 3; f += 1) {
       const fy = by + 62 + f * 16;
@@ -358,20 +613,45 @@ function integration() {
 
     // The port the run leaves through: a system has connectors, and a line
     // touching a bare rectangle reads as a line that happens to end there.
-    ports.push(`<rect x="${r1(px - 7)}" y="${r1(py - 7)}" width="14" height="14"/>`);
+    const port = `<rect x="${r1(px - 7)}" y="${r1(py - 7)}" width="14" height="14"/>`;
     const a = Math.atan2(cy - py, cx - px);
     const hx = cx - Math.cos(a) * hubR;
     const hy = cy - Math.sin(a) * hubR;
-    runs.push(line(px, py, hx, hy));
+    const run = line(px, py, hx, hy);
 
     const t = 0.52 + random() * 0.12;
     const jx = px + (hx - px) * t;
     const jy = py + (hy - py) * t;
     const s = 9 + random() * 5;
-    joints.push(
+    const joint =
       `<rect x="${r1(jx - s / 2)}" y="${r1(jy - s / 2)}" width="${r1(s)}" height="${r1(s)}" ` +
-        `transform="rotate(${r1((a * 180) / Math.PI)} ${r1(jx)} ${r1(jy)})"/>`,
-    );
+      `transform="rotate(${r1((a * 180) / Math.PI)} ${r1(jx)} ${r1(jy)})"/>`;
+
+    /*
+     * The bit on the wire.
+     *
+     * A second copy of the run, stroked with a dash 2.5% of its own length and
+     * rounded off at both ends, so it reads as one packet rather than as a
+     * tick. `pathLength="100"` is what makes the four behave identically: it
+     * renormalises every run to 100 units regardless of how long it actually
+     * is, so one dasharray and one keyframe drive all four and a bit crosses a
+     * short wire and a long one in the same time.
+     *
+     * Dash-offset rather than `offset-path`: this has to animate while the
+     * drawing is a CSS `background-image`, where a motion path is far less
+     * reliably supported than a dash is, and the dash costs the compositor a
+     * stroke it was already drawing.
+     */
+    // The port is filled with paper *after* the run is drawn, so the wire stops
+    // at the connector instead of running through it — and the bit slides under
+    // the connector as it arrives rather than stopping short of it.
+    wiring.push(`  <g stroke="${hue}" fill="none">
+    <path d="${run}" stroke-width="3.2" opacity="0.85"/>
+    <path class="bit b${i}" d="${run}" pathLength="100" stroke-width="5.4"/>
+    <path d="${rule}" stroke-width="2.8" opacity="0.85"/>
+    <g stroke-width="3" fill="${PAPER}">${port}</g>
+    <g fill="${hue}" stroke="none">${joint}</g>
+  </g>`);
   }
 
   /*
@@ -405,19 +685,58 @@ function integration() {
     );
   }
 
+  /*
+   * The one animated drawing in the set.
+   *
+   * Four bits leaving the hub, one per system, on slightly different clocks so
+   * they never march in step — traffic rather than a metronome. That is the
+   * whole animation: the drawing says this thing is *running*, which is what
+   * the orbit and the tick ring were already reaching for and could only imply
+   * from a standstill.
+   *
+   * ## Why CSS, in the file
+   *
+   * The schematic is painted as a `background-image`, and an SVG used that way
+   * runs no script at all — so this cannot be driven from `BlockFrame` the way
+   * every other moving thing on the site is. Declarative animation *does* run
+   * there, which makes a stylesheet inside the file the only mechanism
+   * available, and the reason this one asset breaks the "the frame moves
+   * things, blocks do not" rule in docs/brief.md.
+   *
+   * It also buys the thing SMIL could not: `prefers-reduced-motion` is a media
+   * query, so the file can honour it on its own (CLAUDE.md §3.4). Reduced
+   * motion parks each bit part-way along its wire instead of hiding it — a
+   * still frame of the same idea, rather than a drawing with something
+   * conspicuously missing from it.
+   */
+  const bits = SYSTEMS.map(
+    (_, i) =>
+      `  .b${i} { animation-duration: ${(3.4 + i * 0.45).toFixed(2)}s; animation-delay: -${(i * 0.9).toFixed(2)}s; }`,
+  ).join("\n");
+
+  const style = `<style>
+  .bit { stroke-dasharray: 2.5 97.5; stroke-linecap: round; animation-name: bit; animation-timing-function: linear; animation-iteration-count: infinite; }
+  @keyframes bit { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 100; } }
+${bits}
+  @media (prefers-reduced-motion: reduce) {
+    .bit { animation: none; stroke-dashoffset: 62; }
+  }
+</style>`;
+
   return svg(
     "schematic: systems integration",
-    `<g stroke="${LINE}" fill="none">
-  <path d="${runs.join("")}" stroke-width="3.2" opacity="0.8"/>
-  <path d="${orbit.join("")}" stroke-width="2" opacity="0.4"/>
+    `${style}
+<g stroke="${LINE}" fill="none">
   <path d="${fields.join("")}" stroke-width="1.8" opacity="0.45"/>
-  <path d="${rules.join("")}" stroke-width="2.6" opacity="0.7"/>
   <g stroke-width="3.6" opacity="0.9">${boxes.join("")}</g>
-  <g stroke-width="3" opacity="0.9" fill="#f6f5f1">${ports.join("")}</g>
   ${labels.join("")}
-  <path d="${ticks.join("")}" stroke-width="3.4" opacity="0.8" stroke-linecap="butt"/>
-  <circle cx="${r1(cx)}" cy="${r1(cy)}" r="${r1(hubR)}" stroke-width="3.8" opacity="0.95"/>
-  <g fill="${LINE}" stroke="none" opacity="1">${joints.join("")}${node(cx, cy, 11)}</g>
+</g>
+<g fill="none">
+${wiring.join("\n")}
+  <path d="${orbit.join("")}" stroke="${FLOW}" stroke-width="2.2" opacity="0.55"/>
+  <path d="${ticks.join("")}" stroke="${LINE}" stroke-width="3.4" opacity="0.8" stroke-linecap="butt"/>
+  <circle cx="${r1(cx)}" cy="${r1(cy)}" r="${r1(hubR)}" stroke="${LINE}" stroke-width="3.8" opacity="0.95"/>
+  <circle cx="${r1(cx)}" cy="${r1(cy)}" r="13" fill="${CORE}" stroke="${LINE}" stroke-width="3.4"/>
 </g>`,
     `0 ${r1(H * 0.08 - 26)} ${W} ${r1(H * 0.72 + bh + 26 - (H * 0.08 - 26))}`,
   );
@@ -562,8 +881,12 @@ function micro() {
   const cellH = H / rows;
 
   const bodies = [];
-  const feeds = [];
-  const dots = [];
+  const feedIn = [];
+  const feedOut = [];
+  const rules = [];
+  const queue = [];
+  const delivered = [];
+  const lamps = [];
 
   for (let r = 0; r < rows; r += 1) {
     for (let c = 0; c < cols; c += 1) {
@@ -583,36 +906,45 @@ function micro() {
        * stack of rules the unit runs down, and one lamp for its state. That is
        * about as much as a bot doing one task actually has in it, and drawing
        * more would be inventing complexity rather than showing it.
+       *
+       * Colour is what tells the two sides of a unit apart: `HELD` arrives,
+       * `FLOW` leaves. Six identical grey boxes said only "six boxes"; the same
+       * six with a warm mouth and a cool outlet say which way the work goes,
+       * which is the one thing the drawing has to get across.
        */
-      feeds.push(line(cx - w / 2 - 54, cy, cx - w / 2, cy));
-      feeds.push(line(cx + w / 2, cy, cx + w / 2 + 54, cy));
-      dots.push(node(cx + w / 2 + 54, cy, 6));
+      feedIn.push(line(cx - w / 2 - 54, cy, cx - w / 2, cy));
+      feedOut.push(line(cx + w / 2, cy, cx + w / 2 + 54, cy));
+      delivered.push(node(cx + w / 2 + 54, cy, 6.5));
 
       // The queue: three items waiting, the nearest one largest.
       for (let q = 0; q < 3; q += 1) {
-        dots.push(node(cx - w / 2 - 54 - q * 17, cy, 6 - q * 1.4));
+        queue.push(node(cx - w / 2 - 54 - q * 17, cy, 6 - q * 1.4));
       }
 
       // The rule stack, ruled off from the body's left edge.
-      const rows2 = 3;
-      for (let r = 0; r < rows2; r += 1) {
-        const ry = cy - h / 2 + (h / (rows2 + 1)) * (r + 1);
+      const ruleCount = 3;
+      for (let k = 0; k < ruleCount; k += 1) {
+        const ry = cy - h / 2 + (h / (ruleCount + 1)) * (k + 1);
         const rw = 26 + random() * 30;
-        feeds.push(line(cx - w / 2 + 14, ry, cx - w / 2 + 14 + rw, ry));
+        rules.push(line(cx - w / 2 + 14, ry, cx - w / 2 + 14 + rw, ry));
       }
 
       // The lamp: this unit is running.
-      dots.push(node(cx + w / 2 - 16, cy - h / 2 + 15, 5.5));
+      lamps.push(`<circle cx="${r1(cx + w / 2 - 17)}" cy="${r1(cy - h / 2 + 16)}" r="7"/>`);
     }
   }
 
   return svg(
     "schematic: micro agents",
-    `<g stroke="${LINE}" fill="none">
-  <g stroke-width="3.2" opacity="0.85">${bodies.join("")}</g>
-  <path d="${feeds.join("")}" stroke-width="2.2" opacity="0.55"/>
+    `<g fill="none">
+  <g stroke="${LINE}" stroke-width="3.2" opacity="0.9">${bodies.join("")}</g>
+  <path d="${rules.join("")}" stroke="${DATA}" stroke-width="2.4" opacity="0.75"/>
+  <path d="${feedIn.join("")}" stroke="${HELD}" stroke-width="2.4" opacity="0.72"/>
+  <path d="${feedOut.join("")}" stroke="${FLOW}" stroke-width="2.4" opacity="0.78"/>
+  <g fill="${CORE}" stroke="${LINE}" stroke-width="2.6">${lamps.join("")}</g>
 </g>
-<g fill="${LINE}" stroke="none" opacity="0.85">${dots.join("")}</g>`,
+<g fill="${HELD}" stroke="none" opacity="0.85">${queue.join("")}</g>
+<g fill="${FLOW}" stroke="none" opacity="0.9">${delivered.join("")}</g>`,
     // Cropped to the units. `contain` fits the whole viewBox, so the blank third
     // above and below the two rows was blank space the browser reproduced
     // faithfully — the drawing rendered at two thirds the size its box allowed.
@@ -636,14 +968,29 @@ function pipeline() {
 
   const spine = [];
   const gates = [];
+  const meters = [];
   const fans = [];
-  const dots = [];
+  const rejects = [];
+  const fanDots = [];
+  const gateDots = [];
+  const rejectDots = [];
+  const source = [];
+  const sink = [];
 
   spine.push(line(x0, y, x1, y));
 
   for (let i = 0; i <= stages; i += 1) {
     const x = x0 + step * i;
-    dots.push(node(x, y, i === 0 || i === stages ? 11 : 7.5));
+    /*
+     * The two ends are not two more gates, and colour is the cheapest way to
+     * say so: raw work arrives in `HELD` at the left and leaves finished as the
+     * live mark at the right. Read left to right, the drawing now states its
+     * own sentence — in, through, out — where five identical dots stated only
+     * that there were five of something.
+     */
+    if (i === 0) source.push(node(x, y, 11.5));
+    else if (i === stages) sink.push(`<circle cx="${r1(x)}" cy="${r1(y)}" r="12.5"/>`);
+    else gateDots.push(node(x, y, 7.5));
     if (i === stages) break;
 
     // Between each pair of gates the stream splits and rejoins.
@@ -653,14 +1000,16 @@ function pipeline() {
       const spread = (bIndex - (branches - 1) / 2) * (46 + random() * 18);
       if (Math.abs(spread) < 1) continue;
       fans.push(`M${r1(x)} ${r1(y)}Q${r1(mid)} ${r1(y + spread)} ${r1(x + step)} ${r1(y)}`);
-      dots.push(node(mid, y + spread * 0.78, 4.5));
+      fanDots.push(node(mid, y + spread * 0.78, 4.5));
     }
 
     // The gate itself: a narrow upright the stream passes through, with a short
-    // meter beside it — how much of the batch this stage held on to.
+    // meter beside it — how much of the batch this stage held on to. The meter
+    // is the one part of a gate that carries a *quantity*, so it is the part
+    // that takes `HELD`; the upright stays structure.
     gates.push(line(x, y - 44, x, y + 44));
     const fill = 12 + random() * 30;
-    gates.push(line(x + 7, y - 44, x + 7, y - 44 + fill));
+    meters.push(line(x + 7, y - 44, x + 7, y - 44 + fill));
 
     /*
      * The reject path.
@@ -668,23 +1017,32 @@ function pipeline() {
      * Every real pipeline has one and no diagram of a pipeline ever draws it,
      * which is why they all look like plumbing rather than like work. A short
      * fall away from the spine at each gate, ending in a dot: the records this
-     * stage would not pass.
+     * stage would not pass. In `DROP`, because a refusal that looks exactly
+     * like the main line is a refusal the reader walks straight past.
      */
     if (i > 0) {
       const dropY = y + 96 + random() * 26;
-      fans.push(`M${r1(x)} ${r1(y)}Q${r1(x)} ${r1(dropY - 18)} ${r1(x - 26)} ${r1(dropY)}`);
-      dots.push(node(x - 26, dropY, 5));
+      rejects.push(`M${r1(x)} ${r1(y)}Q${r1(x)} ${r1(dropY - 18)} ${r1(x - 26)} ${r1(dropY)}`);
+      rejectDots.push(node(x - 26, dropY, 5.5));
     }
   }
 
   return svg(
     "schematic: ai pipelines",
-    `<g stroke="${LINE}" fill="none">
-  <path d="${fans.join("")}" stroke-width="2.1" opacity="0.5"/>
-  <path d="${spine.join("")}" stroke-width="3.6" opacity="0.85"/>
-  <path d="${gates.join("")}" stroke-width="2.4" opacity="0.55"/>
+    `<g fill="none">
+  <path d="${fans.join("")}" stroke="${FLOW}" stroke-width="2.3" opacity="0.6"/>
+  <path d="${rejects.join("")}" stroke="${DROP}" stroke-width="2.3" opacity="0.72"/>
+  <path d="${spine.join("")}" stroke="${LINE}" stroke-width="3.6" opacity="0.9"/>
+  <path d="${gates.join("")}" stroke="${LINE}" stroke-width="2.4" opacity="0.5"/>
+  <path d="${meters.join("")}" stroke="${HELD}" stroke-width="3.4" opacity="0.9"/>
+  <g fill="${CORE}" stroke="${LINE}" stroke-width="3.2">${sink.join("")}</g>
 </g>
-<g fill="${LINE}" stroke="none" opacity="0.9">${dots.join("")}</g>`,
+<g stroke="none">
+  <g fill="${FLOW}" opacity="0.8">${fanDots.join("")}</g>
+  <g fill="${DROP}" opacity="0.85">${rejectDots.join("")}</g>
+  <g fill="${DATA}" opacity="0.9">${gateDots.join("")}</g>
+  <g fill="${HELD}" opacity="0.95">${source.join("")}</g>
+</g>`,
     // Cropped to the spine plus the reject drops hanging under it.
     `0 ${r1(H * 0.24)} ${W} ${r1(H * 0.46)}`,
   );
@@ -699,6 +1057,13 @@ const FILES = [
   ["build", build],
   ["tune", tune],
 ];
+
+MARKS = await loadMarks();
+console.log(
+  MARKS.size
+    ? `marks: ${[...MARKS.keys()].join(", ")} (${SYSTEMS.length - MARKS.size} falling back to type)`
+    : `marks: none in scripts/logos — every plate falls back to its name in type`,
+);
 
 await mkdir(OUT_DIR, { recursive: true });
 

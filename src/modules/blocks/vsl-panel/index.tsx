@@ -2,6 +2,7 @@ import { Label } from "@/components/ui/Label";
 import { Panel } from "@/components/ui/Panel";
 import { Cell, NextCell } from "@/components/ui/Cell";
 import { FilmFrame } from "@/components/ui/FilmFrame";
+import { FilmComingSoon } from "@/components/ui/FilmComingSoon";
 import type { VslPanelProps } from "./block.config";
 
 /**
@@ -30,6 +31,7 @@ export default function VslPanel({
   body,
   videoLabel,
   src,
+  comingSoon,
   next,
 }: VslPanelProps) {
   return (
@@ -107,7 +109,25 @@ export default function VslPanel({
           label, because an empty player reads as broken.
         */}
         <div className="-mx-gutter aspect-video w-auto min-w-0 overflow-hidden bg-ink md:mx-0 md:w-full md:flex-1">
-          <FilmFrame src={src} label={videoLabel} openLabel="Watch it" />
+          {/*
+            Two components rather than a prop on one.
+
+            `FilmFrame` is a real player with a real transport, and its empty
+            state is for a film that *should* be there. This one is for a film
+            that does not exist yet, which is a different sentence and should not
+            be a branch inside the player — see `FilmComingSoon`. Dropping
+            `comingSoon` from the copy puts the player back.
+          */}
+          {comingSoon ? (
+            <FilmComingSoon
+              label={videoLabel}
+              openLabel="Watch it"
+              heading={comingSoon.heading}
+              body={comingSoon.body}
+            />
+          ) : (
+            <FilmFrame src={src} label={videoLabel} openLabel="Watch it" />
+          )}
         </div>
       </Cell>
 

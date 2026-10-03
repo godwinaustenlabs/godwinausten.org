@@ -10,6 +10,13 @@ const props = {
   body: "The other half of the company, with no revenue target on it.",
   note: "Send us your crazy ideas or work.",
   apply: { label: "Write to us", email: "jobs@godwinausten.org" },
+  /*
+   * Spelled out, because the schema's `.default()` only runs where props are
+   * parsed — which is `ModuleRenderer`, not here. Rendering the component
+   * directly is rendering it downstream of validation, so the test supplies
+   * what validation would have.
+   */
+  print: ["MAKE", "SOMETHING", "CRAZY", "WITH US"],
   next: { index: "06", label: "Talk to us", href: "#contact" },
 };
 

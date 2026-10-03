@@ -11,6 +11,11 @@ import { MAIN_ID, contactBlock } from "@/content/compositions";
  * It sets expectations instead: what to put in the message, what happens after
  * you send it, and how long it takes. The footer block at the bottom carries
  * the addresses themselves, as it does on every route.
+ *
+ * The "where to send it" section is `direct-line` rather than `services-rows`.
+ * The list of three addresses that used to be there is gone with careers: this
+ * page has one address, set as large as the panel allows, with a second way to
+ * reach the same people beside it.
  */
 
 export const metadata: Metadata = {
@@ -21,7 +26,7 @@ export const metadata: Metadata = {
 const contact = composePage("contact", [
   block("header", "page-header", contactCopy.header),
   block("expectations", "prose-sections", contactCopy.expectations, { anchor: "before" }),
-  block("channels", "services-rows", contactCopy.channels, { anchor: "channels" }),
+  block("channels", "direct-line", contactCopy.channels, { anchor: "channels" }),
   contactBlock(),
 ]);
 

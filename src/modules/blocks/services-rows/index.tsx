@@ -452,10 +452,24 @@ function ServiceSections({
           {row.figure ? (
             <div
               aria-hidden="true"
-              /* Fixed box rather than a flex share: the schematics are drawn to
-                 different aspect ratios, and letting each one size its own cell
-                 made four rows that stepped in and out. */
-              className="pointer-events-none h-32 w-full shrink-0 bg-contain bg-center bg-no-repeat md:h-40 md:w-[16rem] lg:w-[20rem]"
+              /*
+                One box shape for all four, and as large as the row can give it.
+                
+                It was a 160x320 thumbnail, which on `/about` — the page someone
+                opens *to read about the services* — made the drawing of each
+                offering the smallest thing in its own row. It is nearly half the
+                row now and several times the area.
+
+                Still one fixed box rather than a flex share, and that part was
+                right the first time: the four are drawn to ratios from 1:1
+                (swarm) to 2.17:1 (pipeline), so letting each size its own cell
+                produced four rows that stepped in and out. Sharing one box at
+                roughly 1.6:1 means the square drawings bind on height and the
+                wide ones bind on width — every schematic touches the box on one
+                pair of edges, which is the most "fills the space" can mean for
+                four different shapes in one column.
+              */
+              className="pointer-events-none h-[clamp(12rem,58vw,20rem)] w-full shrink-0 bg-contain bg-center bg-no-repeat md:h-[clamp(15rem,26vw,24rem)] md:w-[46%]"
               style={{ backgroundImage: `url(${row.figure})` }}
             />
           ) : null}

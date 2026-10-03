@@ -69,8 +69,15 @@ export default function PageHeader({
             hand-rolled pair this replaces had a `preload="none"` video with
             nothing to start it, so a masthead that finally got a `src` would
             have gone black.
+
+            `playOn` is left at its default, which is hover. It used to be
+            `"always"` on the grounds that a reel at the head of a page about one
+            build is the subject of that page — but the reader arriving has not
+            asked to watch anything yet, and a clip that starts itself on three
+            separate routes is the site deciding for them. The still says what is
+            there; pointing at it starts it.
           */}
-          <Reel label={reel.runtime} src={reel.src} playOn="always" />
+          <Reel label={reel.runtime} src={reel.src} poster={reel.poster} />
         </MediaCell>
       ) : null}
 
@@ -84,12 +91,26 @@ export default function PageHeader({
           load rather than as space.
         */
         <div
-          className="grid-cells grid grid-cols-2 md:grid-cols-[repeat(var(--meta-cols),minmax(0,1fr))]"
+          /*
+            One column on the narrowest phones.
+
+            It was two at every width, and a half of a 320px screen is 160px —
+            less than `jobs@godwinausten.org` needs. A mono address is a single
+            unbreakable token, so it did not wrap or clip: it pushed the document
+            27px wider than the viewport, which on a page with fixed chrome means
+            the header and the nav rail stretch with it and the whole site
+            scrolls sideways by 27px. One column below `sm` costs a row of height
+            on the one size that has height to spare.
+          */
+          className="grid-cells grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[repeat(var(--meta-cols),minmax(0,1fr))]"
           style={{ "--meta-cols": meta.length } as React.CSSProperties}
         >
           {meta.map((item) => (
-            <div key={item} className="cell justify-center px-gutter py-3.5">
-              <Label>{item}</Label>
+            <div key={item} className="cell min-w-0 justify-center px-gutter py-3.5">
+              {/* `break-words` is the backstop: it costs nothing until a token
+                  cannot fit at any width, and then it breaks rather than spills.
+                  Meta is edited far more often than this file. */}
+              <Label className="break-words">{item}</Label>
             </div>
           ))}
         </div>

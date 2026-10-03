@@ -16,7 +16,14 @@ export const pageHeaderSchema = z.object({
    * A reel under the masthead, full width. Only the experience pages use it —
    * a page about one build should show the build.
    */
-  reel: z.object({ runtime: z.string(), src: z.string().optional() }).optional(),
+  reel: z
+    .object({
+      runtime: z.string(),
+      src: z.string().optional(),
+      /** The reel's still, held until the pointer arrives. See `Reel`. */
+      poster: z.string().optional(),
+    })
+    .optional(),
   /**
    * A photograph behind the masthead. Kept low-contrast: it is here to give the
    * page a temperature, not to be looked at.

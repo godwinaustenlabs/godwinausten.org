@@ -35,6 +35,20 @@ describe("the media allowlist", () => {
     expect(mediaHref("playbook")).not.toContain(MEDIA_ASSETS.playbook.key);
   });
 
+  it("points the playbook at the object that is actually in the bucket", () => {
+    /**
+     * Pinned because the failure is silent and lands on the one request a
+     * visitor has just paid for with their email address: a key that names no
+     * object falls through to `fallback`, so a rename here ships a placeholder
+     * PDF to every lead rather than erroring anywhere a test would notice.
+     *
+     * The real guide was uploaded to this key on 2026-10-02. Change it only
+     * alongside an upload to the new one.
+     */
+    expect(MEDIA_ASSETS.playbook.key).toBe("playbook/get-your-week-back.pdf");
+    expect(MEDIA_ASSETS.playbook.filename).toBe("Get-Your-Week-Back.pdf");
+  });
+
   it("gives the download-only asset a filename and the streamed ones none", () => {
     // `Content-Disposition` is what makes the guide save instead of opening in
     // a tab; a film must never get one or it downloads instead of playing.
@@ -113,25 +127,59 @@ describe("the public origin", () => {
   const VARIABLE = "NEXT_PUBLIC_MEDIA_BASE_URL";
   const original = process.env[VARIABLE];
 
+  /**
+   * `wrangler types` declares each `vars` entry as the LITERAL value in
+   * wrangler.jsonc, so `process.env.NEXT_PUBLIC_MEDIA_BASE_URL` is typed
+   * `"https://cdn.godwinausten.org"` and nothing else can be assigned to it.
+   *
+   * That is right for production code — it is a fact about the deployment — and
+   * wrong here, where the whole point is to prove the override works. Overriding
+   * it at runtime is exactly what the variable is for (see `mediaOrigin` in
+   * src/server/media.ts: the empty string is the documented kill switch), so the
+   * test sets it through a widened view of `process.env` rather than weakening
+   * the generated type for the app.
+   */
+  const envOverride = process.env as Record<string, string | undefined>;
+
   afterEach(() => {
-    if (original === undefined) delete process.env[VARIABLE];
-    else process.env[VARIABLE] = original;
+    if (original === undefined) delete envOverride[VARIABLE];
+    else envOverride[VARIABLE] = original;
   });
 
   it("points a player at the object, not at the Worker", async () => {
-    process.env[VARIABLE] = "https://cdn.example.test";
+    envOverride[VARIABLE] = "https://cdn.example.test";
 
     // The whole fix in one assertion: what reaches a `<video>` is an origin URL,
     // so the byte path is R2 behind the CDN and the Worker is not in it. A
     // regression here is not cosmetic — it is the Worker running out of
     // resources again. See docs/adr/0007-media-on-a-public-origin.md.
-    const src = await mediaSrc("reel-picasso");
-    expect(src).toBe(`https://cdn.example.test/${MEDIA_ASSETS["reel-picasso"].key}`);
+    const src = await mediaSrc("vsl");
+    expect(src).toBe(`https://cdn.example.test/${MEDIA_ASSETS.vsl.key}`);
     expect(src).not.toContain("/api/media");
   });
 
+  it("prefers a committed file over the bucket, and still skips the Worker", async () => {
+    envOverride[VARIABLE] = "https://cdn.example.test";
+
+    /*
+     * The Rembrandt reel ships in `public/` rather than streaming from R2, on the
+     * owner's instruction — see `local` on that asset for what it actually
+     * bought. This asserts both halves of it: the committed path wins over a
+     * configured origin, and it is still not a Worker route.
+     *
+     * The second half is the one that matters. ADR 0007 is about keeping the
+     * Worker out of the byte path, and Workers Assets does that as surely as R2
+     * behind the CDN does — but `/api/media` would not, and that is the shape a
+     * careless "serve it locally" change takes.
+     */
+    const src = await mediaSrc("reel-picasso");
+    expect(src).toBe("/assets/reels/rembrandt.mp4");
+    expect(src).not.toContain("/api/media");
+    expect(src).not.toContain("cdn.example.test");
+  });
+
   it("does not care how the origin is spelled", async () => {
-    process.env[VARIABLE] = "https://cdn.example.test///";
+    envOverride[VARIABLE] = "https://cdn.example.test///";
     expect(await mediaSrc("vsl")).toBe(`https://cdn.example.test/${MEDIA_ASSETS.vsl.key}`);
   });
 
@@ -139,7 +187,7 @@ describe("the public origin", () => {
     // The kill switch: one empty variable and every asset is served the way it
     // was before the origin existed, with no deploy of new code. Empty and
     // unset must therefore mean different things.
-    process.env[VARIABLE] = "";
+    envOverride[VARIABLE] = "";
     expect(mediaObjectUrl("vsl")).toBeNull();
     expect(await mediaSrc("vsl")).toBe("/api/media/vsl");
   });
@@ -148,7 +196,7 @@ describe("the public origin", () => {
     // `Content-Disposition` is a header the origin would have to carry as object
     // metadata, and one PDF per captured lead is a volume the Worker will never
     // notice. Only the films moved.
-    process.env[VARIABLE] = "https://cdn.example.test";
+    envOverride[VARIABLE] = "https://cdn.example.test";
     expect(mediaHref("playbook", { download: true })).toBe("/api/media/playbook?download=1");
   });
 });

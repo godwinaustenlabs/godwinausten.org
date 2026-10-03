@@ -15,9 +15,6 @@ export const MAIN_ID = "main";
 /** The traced hero figure. See scripts/trace-figure.mjs. */
 export const FIGURE = "/assets/figure.svg";
 
-/** Decorative motif. See scripts/generate-tile-stills.mjs. */
-export const ORBIT = "/assets/tiles/orbit.svg";
-
 /**
  * The contact footer, identical on every route.
  *

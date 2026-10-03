@@ -156,7 +156,32 @@ export function BlockFrame({
             variants,
             initial: "hidden",
             whileInView: "shown",
-            viewport: { once: !motionHints?.repeat, amount: 0.2 },
+            /*
+              `amount: "some"` with a margin, never a fraction of the element.
+
+              This was `amount: 0.2` — reveal once a fifth of the section is on
+              screen — and it is a trap, because that fifth is a fifth of the
+              *element*, not of the viewport. A block taller than five screens
+              can never satisfy it: the most of itself it can ever show is
+              `viewport / height`, and below 20% the reveal simply never fires
+              and the section stays at `opacity: 0` forever.
+
+              `/about`'s charter hit exactly that on a phone — 4856px of content
+              against an 844px viewport is 17%, so the whole section was blank on
+              mobile and correct on desktop, which is the worst shape a bug can
+              have. Any block allowed to run taller than the band is one content
+              edit away from the same thing.
+
+              So the trigger is "any part of it has entered", pushed back by a
+              tenth of the *viewport* so it still arrives a beat after the edge
+              rather than on it. That figure is independent of how tall the block
+              is, which is the whole point.
+            */
+            viewport: {
+              once: !motionHints?.repeat,
+              amount: "some",
+              margin: "0px 0px -10% 0px",
+            },
             transition: { duration: 0.6, delay: motionHints?.delay ?? 0, ease: [0.22, 1, 0.36, 1] },
           }
         : {})}

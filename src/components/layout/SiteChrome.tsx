@@ -90,9 +90,34 @@ export function SiteChrome({ mainId }: { mainId: string }) {
           the cell here instead, and `truncate` guarantees the failure mode is an
           ellipsis rather than a letter sliced down the middle.
         */}
-        <ul className="grid h-full grid-cols-2 gap-px bg-hairline sm:grid-cols-4">
-          {siteCopy.nav.map((item) => (
-            <li key={item.label} className="min-w-0 bg-paper">
+        {/*
+          One row from `sm` up, with a column per link rather than a literal
+          four. The rail was `sm:grid-cols-4` against a list that is now five
+          long, so the fifth link wrapped into a second row that the bar — a
+          fixed `--chrome-bottom` tall — had no height for, and it was cut in
+          half. Derived, adding a route is one line in `siteCopy.nav`.
+        */}
+        <ul
+          className="grid h-full grid-cols-2 gap-px bg-hairline sm:grid-cols-[repeat(var(--nav-cols),minmax(0,1fr))]"
+          style={{ "--nav-cols": siteCopy.nav.length } as React.CSSProperties}
+        >
+          {siteCopy.nav.map((item, i) => (
+            <li
+              key={item.label}
+              /*
+                Below `sm` the rail is two columns and wraps, and an odd number
+                of links leaves the last one alone in a row beside an empty
+                cell — a bare rectangle of seam ground, which reads as something
+                failing to load rather than as space. It takes the whole row
+                instead. Even counts are unaffected, so this is inert until the
+                nav has an odd length.
+              */
+              className={
+                i === siteCopy.nav.length - 1 && siteCopy.nav.length % 2 === 1
+                  ? "col-span-2 min-w-0 bg-paper sm:col-span-1"
+                  : "min-w-0 bg-paper"
+              }
+            >
               <SiteLink
                 href={item.href}
                 className="label flex h-full items-center px-[clamp(0.85rem,3vw,var(--gutter))] text-soft transition-colors hover:text-ink focus-visible:text-ink"
