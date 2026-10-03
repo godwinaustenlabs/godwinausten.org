@@ -190,8 +190,13 @@
      * scroll, including ones it decides to make itself. `scrollToId` asks for
      * smooth explicitly where it wants it, so the global is only a way to get
      * surprised.
+     *
+     * `overscroll-behavior-y: none` turns off pull-to-refresh: a hard pull past
+     * the top of the page was reloading it on mobile. It sits on `body` too
+     * because some browsers treat `body` as the root scroller.
      */
     overflow-anchor: auto;
+    overscroll-behavior-y: none;
   }
 
   html[data-scroll-mode="strip"] {
@@ -199,6 +204,7 @@
   }
 
   body {
+    overscroll-behavior-y: none;
     background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-sans);
