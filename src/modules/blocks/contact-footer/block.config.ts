@@ -7,6 +7,8 @@ export const contactFooterSchema = z.object({
   headline: z.string().min(1),
   body: z.string().min(1),
   channels: z.array(z.object({ label: z.string(), email: z.email() })).min(1),
+  /** Social profiles, shown as logo-only links beside the addresses. */
+  socials: z.array(z.object({ network: z.enum(["instagram", "linkedin"]), href: z.url() })),
   /** Wordmark, set huge and cropped by the panel edge. */
   wordmark: z.string().min(1),
   /** Backdrop behind the cropped wordmark. */

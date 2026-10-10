@@ -11,6 +11,10 @@ const props = {
     { label: "Work with us", email: "hello@godwinausten.org" },
     { label: "Careers", email: "jobs@godwinausten.org" },
   ],
+  socials: [
+    { network: "instagram" as const, href: "https://www.instagram.com/godwinaustenlabs" },
+    { network: "linkedin" as const, href: "https://www.linkedin.com/company/godwinaustenlabs" },
+  ],
   wordmark: "Godwin Austen Labs",
 };
 
@@ -29,6 +33,19 @@ describe("contact-footer", () => {
         "href",
         `mailto:${channel.email}`,
       );
+    }
+  });
+
+  it("links each social profile by logo alone, named for assistive tech", () => {
+    render(<ContactFooter {...props} />);
+    const names = { instagram: "Instagram", linkedin: "LinkedIn" };
+    for (const social of props.socials) {
+      const link = screen.getByRole("link", {
+        name: `Godwin Austen Labs on ${names[social.network]}`,
+      });
+      expect(link).toHaveAttribute("href", social.href);
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      expect(link).toHaveTextContent("");
     }
   });
 

@@ -31,6 +31,7 @@ const siteCopySchema = z.object({
     headline: z.string(),
     body: z.string(),
     channels: z.array(z.object({ label: z.string(), email: z.string() })),
+    socials: z.array(z.object({ network: z.enum(["instagram", "linkedin"]), href: z.string() })),
   }),
 });
 
@@ -55,6 +56,10 @@ export const siteCopy: SiteCopy = siteCopySchema.parse({
     channels: [
       { label: "Work with us", email: site.email.work },
       { label: "Careers", email: site.email.careers },
+    ],
+    socials: [
+      { network: "instagram", href: site.social.instagram },
+      { network: "linkedin", href: site.social.linkedin },
     ],
   },
 } satisfies SiteCopy);

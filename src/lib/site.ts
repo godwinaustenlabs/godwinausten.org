@@ -12,4 +12,8 @@ export const site = {
     work: "hello@godwinausten.org",
     careers: "jobs@godwinausten.org",
   },
+  social: {
+    instagram: "https://www.instagram.com/godwinaustenlabs",
+    linkedin: "https://www.linkedin.com/company/godwinaustenlabs",
+  },
 } as const;
