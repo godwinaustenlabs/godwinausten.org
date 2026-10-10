@@ -143,14 +143,16 @@
    * whole Tailwind spacing scale — so there is a single number upstream of the
    * lot of it, and it is this one.
    *
-   * ## Why the ramp starts where it does
+   * ## Proportional, not a gentle ramp
    *
-   * 90rem (1440px at a default root) is the largest window the layout was
-   * actually designed against, so nothing at or below a laptop moves by a
-   * pixel. From there it climbs to 1.375x at 200rem (3200px) — a 27" display
-   * lands near 1.24x and a 32" near 1.33x. It is deliberately gentler than the
-   * window's own growth: the point is to spend the extra width on type and air
-   * in proportion, not to blow the page up until a paragraph is two words wide.
+   * The page is designed against a 1440x800 window (90rem x 50rem at a default
+   * root). Past that, the root grows in *exact* proportion to the window, so
+   * the page covers the same share of a 32" display as it does of a laptop —
+   * the same composition, just bigger. A gentler ramp was tried first and it
+   * still read as a small page in a lot of paper: the bigger the screen, the
+   * further back people sit, so type that stays the same share of the screen
+   * is type that stays the same size to the eye. Nothing at or below a laptop
+   * moves by a pixel; phones and tablets stay at the visitor's own 1rem.
    *
    * ## Why height is in it at all
    *
@@ -158,8 +160,12 @@
    * (`src/components/ui/Panel.tsx`), and `cell-body` clips. Scale the type off
    * width alone and a 2560x1080 ultrawide — wide, but no taller than a laptop —
    * gets a quarter more type in the same band and loses the bottom of it. So
-   * the two terms are ramped separately and the *smaller* wins: the page only
-   * takes the extra size when there is room for it in both directions.
+   * width and height are each scaled against the design window and the
+   * *smaller* wins: the page grows until it fills one direction, exactly like
+   * an image set to `contain`, and never overflows the other.
+   *
+   * The 2.5rem ceiling is only a backstop for absurd windows (an 8K panel at
+   * 100% scaling); every real monitor lands below it.
    *
    * ## Why `rem` and not `px`
    *
@@ -169,11 +175,7 @@
    * accessible text sizing while looking fine to the person who wrote it.
    */
   :root {
-    font-size: clamp(
-      1rem,
-      min(calc(1rem + (100vw - 90rem) * 0.0034), calc(1rem + (100vh - 50rem) * 0.006)),
-      1.375rem
-    );
+    font-size: clamp(1rem, min(100vw / 90, 100svh / 50), 2.5rem);
   }
 
   html {
