@@ -7,18 +7,14 @@ import { MAIN_ID, contactBlock } from "@/content/compositions";
 /**
  * `/about` — a vertical document.
  *
- * The page opens on what the company is *for* and then says what it sells.
+ * Who we are, and nothing we sell. The charter explains the three parts of the
+ * company — Services, the Labs, the Academy — and ends on the mission and the
+ * vision; the page then closes on what anyone dealing with us can hold us to.
  *
- * It used to open on three tiles — Map, Build, Tune — after oddcommon's
- * `/expertise`, on the argument that a reader arriving on a sub-route wants the
- * shape of the answer before any prose. The owner cut them, and the page is
- * better for it: those three words were a summary of `method` further down the
- * same page, so the masthead was followed immediately by a compressed version of
- * a section the reader had not reached yet. `charter` is the opening now, which
- * answers the question a stranger actually arrives with.
- *
- * `services-rows` appears here and on the home page — the same block placed
- * twice by two compositions, not a component copied.
+ * The offerings and the method used to follow the charter. The owner moved them
+ * to `/services` (2026-10-07): a reader deciding whether we are real should not
+ * have to scroll through a price list to find out, and a reader who came for the
+ * price list should not have to read the charter to reach it.
  */
 
 export const metadata: Metadata = {
@@ -28,19 +24,12 @@ export const metadata: Metadata = {
 
 const about = composePage("about", [
   block("header", "page-header", aboutCopy.header),
-  // The pictures come from the copy module now, like every other asset a page
-  // names. `ASCENT_FIGURE` — the generated wire figure that used to sit here —
-  // is regenerable from `npm run gen:ascent` if it is ever wanted back.
   block("charter", "charter", aboutCopy.charter, { anchor: "who-we-are" }),
-  block(
-    "services",
-    "services-rows",
-    { ...aboutCopy.services, display: "sections" },
-    { anchor: "expertise" },
-  ),
-  block("method", "prose-sections", aboutCopy.method, { anchor: "how-we-work" }),
+  block("expectations", "prose-sections", aboutCopy.expectations, {
+    anchor: "what-to-expect",
+  }),
   block("statement", "about-statement", aboutCopy.statement),
-  contactBlock(),
+  contactBlock({ index: "04" }),
 ]);
 
 export default function AboutPage() {

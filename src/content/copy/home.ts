@@ -253,14 +253,6 @@ export const homeCopy: HomeCopy = homeCopySchema.parse({
     headline: "The part where we convince you.",
     body: "The workflow we mapped, what we built, what we left to a human, and what it costs to run. No slides.",
     videoLabel: "Demo reel",
-    /**
-     * The cut is still being made. Delete this key and the panel goes back to
-     * the real player against whatever is at the VSL's bucket key.
-     */
-    comingSoon: {
-      heading: "The developers are working on it.",
-      body: "The film will be up shortly \u2014 come back in a few days, or skip the video and just book the call. We will walk you through the same thing live.",
-    },
     next: { index: "05", label: "Labs", href: "#labs" },
   },
 

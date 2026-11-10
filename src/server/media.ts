@@ -114,6 +114,43 @@ export const MEDIA_ASSETS = {
      */
     fallback: "/assets/film-placeholder.mp4",
   },
+  /*
+   * The three VSL films — one per audience, chosen in the theatre (owner,
+   * 2026-10-07). Services is for clients, Academy for students, Labs for
+   * interns, volunteers and contractors.
+   *
+   * What sits at these keys today is a generated placeholder per film
+   * (`npm run gen:placeholder-video -- vsl`, uploaded from `media/vsl/`). The
+   * owner replaces each by uploading a real cut to the same key — no deploy.
+   * Same encode rules as the reel below: faststart, `isom`/`avc1`.
+   *
+   * Each has its own stand-in in `public/assets/vsl/` — the same generated
+   * file that was uploaded, so a key that goes missing (with the origin
+   * turned off) still plays the right film's placeholder. One per slot rather
+   * than the VSL's shared one: replacing one audience's cut must not replace
+   * another's (see the test on it). About half a megabyte each.
+   *
+   * `vsl` above is the single-film slot the panel used before. Nothing places
+   * it now; it stays so a one-film panel is a copy change, not a code change.
+   */
+  "vsl-services": {
+    key: "vsl/services.mp4",
+    contentType: "video/mp4",
+    filename: null,
+    fallback: "/assets/vsl/services.mp4",
+  },
+  "vsl-academy": {
+    key: "vsl/academy.mp4",
+    contentType: "video/mp4",
+    filename: null,
+    fallback: "/assets/vsl/academy.mp4",
+  },
+  "vsl-labs": {
+    key: "vsl/labs.mp4",
+    contentType: "video/mp4",
+    filename: null,
+    fallback: "/assets/vsl/labs.mp4",
+  },
   "reel-picasso": {
     key: "reels/rembrandt.mp4",
     contentType: "video/mp4",

@@ -82,7 +82,40 @@ const FILMS = [
     label: "Case-study reel",
     caption: "The case-study reel goes here.",
   },
+  /*
+    The three VSL films, one per audience — added 2026-10-07.
+
+    Each is both the stand-in shipped in `public/` and the file uploaded to the
+    R2 key `MEDIA_ASSETS` names for it (see `media/README.md`). The owner
+    replaces the R2 copy with a real cut at the same key, with no deploy.
+  */
+  {
+    out: "public/assets/vsl/services.mp4",
+    seconds: 20,
+    label: "Services",
+    caption: "The Services film goes here.",
+  },
+  {
+    out: "public/assets/vsl/academy.mp4",
+    seconds: 20,
+    label: "Academy",
+    caption: "The Academy film goes here.",
+  },
+  {
+    out: "public/assets/vsl/labs.mp4",
+    seconds: 20,
+    label: "Labs",
+    caption: "The Labs film goes here.",
+  },
 ];
+
+/**
+ * Optional filter: `npm run gen:placeholder-video -- vsl` re-records only the
+ * films whose output path contains `vsl`. The encode is not byte-reproducible,
+ * so regenerating everything rewrites committed files that did not need to
+ * change.
+ */
+const ONLY = process.argv[2];
 
 /** 720p is the largest the panel ever shows it, and the content is flat. */
 const W = 1280;
@@ -289,7 +322,7 @@ async function main() {
   // and none of the state survives `setContent`, so there is nothing to isolate.
   const browser = await chromium.launch();
   try {
-    for (const film of FILMS) {
+    for (const film of FILMS.filter((f) => !ONLY || f.out.includes(ONLY))) {
       const page = await browser.newPage({ viewport: { width: W, height: H } });
       await page.setContent(
         recorderPage({

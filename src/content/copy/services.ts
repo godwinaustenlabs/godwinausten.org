@@ -1,0 +1,158 @@
+import { z } from "zod";
+
+/**
+ * `/services`.
+ *
+ * What we sell, how an engagement runs, and the short version of both. This
+ * was the back half of `/about` until 2026-10-07, when the owner split it out:
+ * `/about` says who we are, and a reader who wants the price list should not
+ * have to read the charter to reach it.
+ *
+ * The offerings are the same four rows the home page carries, laid out by the
+ * same block in its `sections` display — one place to read them properly.
+ */
+
+const servicesCopySchema = z.object({
+  meta: z.object({ title: z.string(), description: z.string() }),
+  header: z.object({
+    headline: z.string(),
+    lead: z.string(),
+    photo: z.object({ src: z.string(), alt: z.string() }).optional(),
+  }),
+  services: z.object({
+    index: z.string(),
+    eyebrow: z.string(),
+    headline: z.string(),
+    rows: z
+      .array(
+        z.object({
+          index: z.string(),
+          title: z.string(),
+          detail: z.string(),
+          /** Schematic of this offering. See scripts/generate-diagrams.mjs. */
+          figure: z.string(),
+        }),
+      )
+      .min(1),
+    cta: z.object({ label: z.string(), href: z.string() }),
+  }),
+  method: z.object({
+    index: z.string(),
+    eyebrow: z.string(),
+    headline: z.string(),
+    sections: z
+      .array(
+        z.object({
+          index: z.string(),
+          title: z.string(),
+          paragraphs: z.array(z.string()).min(1),
+        }),
+      )
+      .min(1),
+  }),
+  statement: z.object({
+    index: z.string(),
+    eyebrow: z.string(),
+    headline: z.string(),
+    body: z.string(),
+  }),
+});
+
+export type ServicesCopy = z.infer<typeof servicesCopySchema>;
+
+export const servicesCopy: ServicesCopy = servicesCopySchema.parse({
+  meta: {
+    title: "Services",
+    description:
+      "AI systems for sales, service and ops — what we build, and how an engagement runs.",
+  },
+  header: {
+    headline: "Small team. Big appetite for automation.",
+    lead: "We're a handful of engineers who got tired of watching good people do repetitive work. So we build the software that does it instead. No decks, no six-month roadmaps. Just systems that ship.",
+    photo: {
+      src: "/assets/photo/wire-dark.jpg",
+      alt: "A pile of black wires resting on each other",
+    },
+  },
+  services: {
+    index: "01",
+    eyebrow: "What we do",
+    headline: "What we offer.",
+    rows: [
+      {
+        index: "01",
+        title: "Full Agentic AI Systems",
+        figure: "/assets/diagrams/swarm.svg",
+        detail:
+          "We will build you the whole operation: agents that hold context, decide inside your rules, and hand off to each other and to a person. A system, not a chatbot on top of one.",
+      },
+      {
+        index: "02",
+        title: "Micro Agents & Bots for Task Automation",
+        figure: "/assets/diagrams/micro.svg",
+        detail:
+          "We will take one task off your team and have it live in a week. You get one bot that does that job and stops. Cheap to add without a project, simple to remove.",
+      },
+      {
+        index: "03",
+        title: "AI Powered Pipelines",
+        figure: "/assets/diagrams/pipeline.svg",
+        detail:
+          "We will build the line that takes work in at one end and returns it finished: enriched, classified, drafted, routed. The volume nobody wants to look at, handled.",
+      },
+      {
+        index: "04",
+        title: "Custom Solutions for SaaS and Enterprises",
+        figure: "/assets/diagrams/integration.svg",
+        detail:
+          "We will build it inside your product or your stack. You get AI features your customers use, wired through the CRM, helpdesk and compliance path you already run.",
+      },
+    ],
+    cta: { label: "Contact us", href: "/contact" },
+  },
+  method: {
+    index: "02",
+    eyebrow: "How we work",
+    headline: "We ship, then we tune.",
+    sections: [
+      {
+        index: "01",
+        title: "Week one is watching, not building",
+        paragraphs: [
+          "Every engagement starts with us sitting with the work. Not a workshop. The actual work, as it happens, with the people who do it.",
+          "It is the least glamorous week and the one that decides whether the rest is worth anything. The thing a team believes is slowing them down and the thing actually slowing them down are different often enough that we stopped assuming.",
+        ],
+      },
+      {
+        index: "02",
+        title: "Something runs in the first month",
+        paragraphs: [
+          "Not a prototype, not a demo environment. Something narrow, in production, doing real work. It will not be the whole system. It will be the piece that pays for the rest.",
+          "Long build cycles hide bad assumptions. If we have got the shape wrong we would rather find out in week four with something small than in month six with something large.",
+        ],
+      },
+      {
+        index: "03",
+        title: "Then we watch it break",
+        paragraphs: [
+          "The real world always finds something. A customer phrases a question in a way nobody predicted; an integration returns a field that is null on Tuesdays; someone uses the tool in a way the playbook never described.",
+          "That is not failure, it is the second half of the job. The tuning period after launch is where a system stops being impressive and starts being trusted.",
+        ],
+      },
+      {
+        index: "04",
+        title: "We will tell you not to build it",
+        paragraphs: [
+          "Some work should stay with a person. Low volume, high consequence, requires judgement about a specific human being. Automate that and you have saved an hour a week and bought a category of problem you cannot see coming.",
+          "We have talked more than one team out of the project they came to us with. It costs us the engagement and it is still the right call, because the alternative is a system nobody uses and a reference we cannot give.",
+        ],
+      },
+    ],
+  },
+  statement: {
+    index: "03",
+    eyebrow: "The short version",
+    headline: "No decks. No discovery phase that costs more than the build.",
+    body: "We're engineers, not a consultancy with an engineering department. The first thing you get from us is a map of your own workflow you did not have before, and the second is something running.",
+  },
+} satisfies ServicesCopy);

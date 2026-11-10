@@ -32,7 +32,7 @@ export function contactBlock(options: { index?: string } = {}) {
        * The running index is per-composition, not per-block.
        *
        * `siteCopy.contact` carries `05` because that is where it lands on the
-       * sub-routes. The home page has one more section in front of it, so it
+       * sub-routes. The home page has more sections in front of it, so it
        * needs `06` there — and renaming it in the shared copy would misnumber
        * every other route that renders the same block.
        */

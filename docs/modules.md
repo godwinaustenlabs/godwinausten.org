@@ -543,26 +543,42 @@ compatible with Server Components.
 
 ## Current state
 
-Fifteen blocks, placed across five routes:
+Fifteen blocks, placed across six routes:
 
-| Block                | `/` | `/work` | `/about` | `/careers` | `/contact` |
-| -------------------- | :-: | :-----: | :------: | :--------: | :--------: |
-| `hero-scribble`      |  ●  |         |          |            |            |
-| `experience-feature` |  ●  |         |          |            |            |
-| `figure-plates`      |  ●  |         |          |            |            |
-| `index-list`         |     |    ●    |          |            |            |
-| `charter`            |     |         |    ●     |            |            |
-| `services-rows`      |  ●  |         |    ●     |            |            |
-| `lead-magnet`        |  ●  |         |          |            |            |
-| `vsl-panel`          |  ●  |         |          |            |            |
-| `mark-field`         |  ●  |         |          |     ●      |            |
-| `figure-statement`   |     |         |          |     ●      |            |
-| `open-roles`         |     |         |          |     ●      |            |
-| `direct-line`        |     |         |          |            |     ●      |
-| `page-header`        |     |    ●    |    ●     |     ●      |     ●      |
-| `prose-sections`     |     |    ●    |    ●     |            |     ●      |
-| `about-statement`    |     |    ●    |    ●     |            |            |
-| `contact-footer`     |  ●  |    ●    |    ●     |     ●      |     ●      |
+| Block                | `/` | `/work` | `/services` | `/about` | `/careers` | `/contact` |
+| -------------------- | :-: | :-----: | :---------: | :------: | :--------: | :--------: |
+| `hero-scribble`      |  ●  |         |             |          |            |            |
+| `experience-feature` |  ●  |         |             |          |            |            |
+| `figure-plates`      |  ●  |         |             |          |            |            |
+| `index-list`         |     |    ●    |             |          |            |            |
+| `charter`            |     |         |             |    ●     |            |            |
+| `services-rows`      |  ●  |         |      ●      |          |            |            |
+| `lead-magnet`        |  ●  |         |             |          |            |            |
+| `vsl-panel`          |  ●  |         |             |          |            |            |
+| `mark-field`         |  ●  |         |             |          |     ●      |            |
+| `figure-statement`   |     |         |             |          |     ●      |            |
+| `open-roles`         |     |         |             |          |     ●      |            |
+| `direct-line`        |     |         |             |          |            |     ●      |
+| `page-header`        |     |    ●    |      ●      |    ●     |     ●      |     ●      |
+| `prose-sections`     |     |    ●    |      ●      |    ●     |            |     ●      |
+| `about-statement`    |     |    ●    |      ●      |    ●     |            |            |
+| `contact-footer`     |  ●  |    ●    |      ●      |    ●     |     ●      |     ●      |
+
+`mission-vision` used to be here: the mission and the vision set large on ink,
+with the three parts of the company under them, on `/` and then `/about`. The
+owner cut it from both (2026-10-07) — the mission and vision are already the
+last two lit sections of `charter`, and saying them twice was extra UI. Placed
+nowhere, it was deleted rather than left registered; `git` has it.
+
+`vsl-panel` plays the single VSL film (`vsl` in `src/server/media.ts`). When
+opened, the theatre launches directly into the film with its full transport
+(play/pause, skips, mute, and a non-linear progress scrubber that moves
+comparatively faster in the beginning than at the end to give the perception
+of a short, fast-moving film).
+
+`services-rows` moved from `/about` to `/services` (owner, 2026-10-07) with no
+change to the block or its `sections` display — `/about` now says who we are,
+and the offerings, the method and the short-version statement went with it.
 
 `prose-sections`, `open-roles` and `charter` are the three blocks allowed to be
 taller than the band. All three only ever appear on a vertical sub-route, where a

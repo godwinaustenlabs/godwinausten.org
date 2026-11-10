@@ -47,7 +47,34 @@ import { cn } from "@/lib/utils";
  * already the right answer to it. Sharing one piece of state between the two
  * states is the point: a frame that has discovered there is no film must not
  * open a theatre that goes looking for it again.
+ *
+ * ## Non-linear progress scrubber
+ *
+ * The scrubber moves comparatively faster in the beginning than at the end
+ * (`s = u^0.65`). This gives the visitor the psychological impression that the
+ * film is brief and advances rapidly through its runtime.
  */
+
+/**
+ * Exponent for warping linear playback time into slider progress.
+ *
+ * `gamma < 1` yields a concave-down curve where the rate of change is high
+ * near `0` and tapers towards `1`.
+ */
+export const SCRUBBER_GAMMA = 0.65;
+
+export function timeToSliderProgress(currentTime: number, duration: number): number {
+  if (!Number.isFinite(duration) || duration <= 0 || currentTime <= 0) return 0;
+  const linear = Math.min(Math.max(currentTime / duration, 0), 1);
+  return Math.pow(linear, SCRUBBER_GAMMA);
+}
+
+export function sliderProgressToTime(sliderProgress: number, duration: number): number {
+  if (!Number.isFinite(duration) || duration <= 0 || sliderProgress <= 0) return 0;
+  const clamped = Math.min(Math.max(sliderProgress, 0), 1);
+  return Math.min(Math.pow(clamped, 1 / SCRUBBER_GAMMA) * duration, duration);
+}
+
 export function FilmFrame({
   src: given,
   label,
@@ -201,8 +228,12 @@ function Theatre({
   const seekBy = (delta: number) => {
     const el = video.current;
     if (!el) return;
-    el.currentTime = Math.min(Math.max(el.currentTime + delta, 0), el.duration || 0);
+    const next = Math.min(Math.max(el.currentTime + delta, 0), el.duration || 0);
+    el.currentTime = next;
+    setTime(next);
   };
+
+  const sliderProgress = duration > 0 ? timeToSliderProgress(time, duration) : 0;
 
   return (
     <div
@@ -303,21 +334,23 @@ function Theatre({
           <input
             type="range"
             min={0}
-            max={duration || 0}
-            step={0.1}
-            value={time}
+            max={1}
+            step={0.001}
+            value={sliderProgress}
             disabled={!src || !duration}
             aria-label="Seek"
+            aria-valuetext={duration ? `${clock(time)} of ${clock(duration)}` : undefined}
             onChange={(e) => {
               const el = video.current;
-              if (el) el.currentTime = Number(e.target.value);
+              if (!el || !duration) return;
+              const nextTime = sliderProgressToTime(Number(e.target.value), duration);
+              el.currentTime = nextTime;
+              setTime(nextTime);
             }}
             // The track, the thumb and the hit target are in `globals.css` —
             // a range input cannot be styled from utilities alone, because the
             // thumb only exists behind a vendor pseudo-element.
-            style={
-              { "--played": `${duration ? (time / duration) * 100 : 0}%` } as React.CSSProperties
-            }
+            style={{ "--played": `${(sliderProgress * 100).toFixed(2)}%` } as React.CSSProperties}
             className="scrubber min-w-24 grow disabled:opacity-40"
           />
 

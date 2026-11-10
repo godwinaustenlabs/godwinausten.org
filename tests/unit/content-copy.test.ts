@@ -5,6 +5,7 @@ import { workCopy } from "@/content/copy/work";
 import { aboutCopy } from "@/content/copy/about";
 import { contactCopy } from "@/content/copy/contact";
 import { careersCopy } from "@/content/copy/careers";
+import { servicesCopy } from "@/content/copy/services";
 import { blockRegistry } from "@/modules";
 
 /**
@@ -39,7 +40,15 @@ function allStrings(value: unknown, out: string[] = []): string[] {
   return out;
 }
 
-const strings = allStrings([homeCopy, siteCopy, workCopy, aboutCopy, contactCopy, careersCopy]);
+const strings = allStrings([
+  homeCopy,
+  siteCopy,
+  workCopy,
+  aboutCopy,
+  servicesCopy,
+  contactCopy,
+  careersCopy,
+]);
 
 /** The same copy with the proper names taken out, for the vocabulary ban only. */
 const prose = strings.map((s) => NAMES.reduce((acc, name) => acc.split(name).join(""), s));
@@ -67,7 +76,8 @@ describe("site copy", () => {
     const routes: Record<string, string[]> = {
       "/": ["experience", "expertise", "playbook", "watch", "contact", "top"],
       "/work": ["experience", "how", "contact", "top"],
-      "/about": ["who-we-are", "expertise", "how-we-work", "contact", "top"],
+      "/services": ["expertise", "how-we-work", "contact", "top"],
+      "/about": ["who-we-are", "what-to-expect", "contact", "top"],
       "/contact": ["before", "channels", "contact", "top"],
       "/careers": ["what-we-look-for", "roles", "contact", "top"],
     };
@@ -107,7 +117,13 @@ describe("site copy", () => {
   it("hands every panel off to the one after it", () => {
     // The connective tissue. A reader is never at the foot of a section
     // wondering whether the page is over, and the indices run in order.
-    const chain = [homeCopy.services, homeCopy.experience, homeCopy.magnet, homeCopy.vsl];
+    const chain = [
+      homeCopy.services,
+      homeCopy.experience,
+      homeCopy.magnet,
+      homeCopy.vsl,
+      homeCopy.mark,
+    ];
     for (const [i, section] of chain.entries()) {
       const following = chain[i + 1];
       expect(Number(section.next.index), section.eyebrow).toBe(Number(section.index) + 1);

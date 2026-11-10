@@ -41,6 +41,7 @@ export const siteCopy: SiteCopy = siteCopySchema.parse({
   wordmark: "Godwin Austen Labs",
   nav: [
     { label: "Work", href: "/work" },
+    { label: "Services", href: "/services" },
     { label: "About", href: "/about" },
     { label: "Playbook", href: "/#playbook" },
     { label: "Careers", href: "/careers" },

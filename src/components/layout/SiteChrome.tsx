@@ -121,10 +121,8 @@ export function SiteChrome({ mainId }: { mainId: string }) {
           {siteCopy.nav.map((item, i) => (
             <li
               key={item.label}
-              className="min-w-0 bg-paper [grid-column:span_var(--nav-span)] sm:[grid-column:auto]"
-              style={
-                { "--nav-span": i < navTop ? navBottom : navTop } as React.CSSProperties
-              }
+              className="[grid-column:span_var(--nav-span)] min-w-0 bg-paper sm:[grid-column:auto]"
+              style={{ "--nav-span": i < navTop ? navBottom : navTop } as React.CSSProperties}
             >
               <SiteLink
                 href={item.href}

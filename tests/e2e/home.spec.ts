@@ -67,7 +67,7 @@ test.describe("home — the funnel", () => {
   });
 
   test("makes no percentage claims on any route", async ({ page }) => {
-    for (const path of ["/", "/work", "/about", "/careers", "/contact"]) {
+    for (const path of ["/", "/work", "/services", "/about", "/careers", "/contact"]) {
       await page.goto(path);
       const text = (await page.locator("body").innerText()).replace(/\s+/g, " ");
       expect(text, path).not.toMatch(/[+-]?\d+(\.\d+)?\s*%/);
@@ -75,7 +75,7 @@ test.describe("home — the funnel", () => {
   });
 
   test("gives every route exactly one h1", async ({ page }) => {
-    for (const path of ["/", "/work", "/about", "/careers", "/contact"]) {
+    for (const path of ["/", "/work", "/services", "/about", "/careers", "/contact"]) {
       await page.goto(path);
       await expect(page.getByRole("heading", { level: 1 }), path).toHaveCount(1);
     }
@@ -219,7 +219,7 @@ test.describe("sub-routes", () => {
   test.use({ viewport: DESKTOP });
 
   test("are vertical documents, not filmstrips", async ({ page }) => {
-    for (const path of ["/work", "/about", "/careers", "/contact"]) {
+    for (const path of ["/work", "/services", "/about", "/careers", "/contact"]) {
       await page.goto(path);
       // Only the home page travels sideways. A page with real depth of content
       // wants to be read at the reader's pace.
@@ -241,7 +241,8 @@ test.describe("sub-routes", () => {
 
     for (const [label, url, heading] of [
       ["Work", /\/work$/, "Systems in production."],
-      ["About", /\/about$/, "Small team. Big appetite for automation."],
+      ["Services", /\/services$/, "Small team. Big appetite for automation."],
+      ["About", /\/about$/, "A company, a laboratory and a school."],
       // Careers left `/contact` and became a route of its own — the rail is the
       // only way to it that is not a link inside another page's prose.
       ["Careers", /\/careers$/, "We hire rarely. We read everything."],
@@ -471,6 +472,14 @@ test.describe("the film", () => {
     await expect.poll(() => at(film)).toBeCloseTo(low, 1);
   });
 
+  test("streams the single VSL film from its key", async ({ page }) => {
+    const film = await openTheatre(page);
+    const src = await film.evaluate((el: HTMLVideoElement) => el.currentSrc);
+    expect(src).toContain("vsl/main.mp4");
+    await expect(page.getByRole("dialog")).toHaveAccessibleName(/Demo reel/);
+    await page.getByRole("button", { name: "Close" }).click();
+  });
+
   test("the scrubber seeks where it is clicked", async ({ page }) => {
     const film = await openTheatre(page);
     const seek = page.getByRole("slider", { name: "Seek" });
@@ -489,6 +498,8 @@ test.describe("the film", () => {
     await page.mouse.click(box.x + box.width * 0.6, box.y + box.height / 2);
 
     const duration = await film.evaluate((el: HTMLVideoElement) => el.duration);
-    await expect.poll(() => at(film)).toBeCloseTo(duration * 0.6, 0);
+    // Non-linear progress (gamma = 0.65): slider position 0.6 maps to 0.6^(1/0.65) * duration
+    const expectedTime = Math.pow(0.6, 1 / 0.65) * duration;
+    await expect.poll(() => at(film)).toBeCloseTo(expectedTime, 0);
   });
 });

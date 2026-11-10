@@ -14,6 +14,19 @@ Synthesised from `docs/inspiration/raw/GODWIN-AUSTEN-LABS-BUILD-PROMPT.md`
 Godwin Austen Labs builds custom AI agents for enterprise sales, support and ops
 teams. Pakistan. Est. 2024.
 
+That is the part that is sold. The company is three parts — **Services** (what
+we build for clients), **the Labs** (where the research happens) and **the
+Academy** (where it is taught to the next generation, free) — and `/about` says
+so, in the charter. The mission and the vision, as the owner set them on
+2026-10-07, are the charter's last two lit sections (`src/content/copy/about.ts`),
+and they are stated nowhere else — a block setting them large at the top of
+`/about` and on `/` was tried and cut as extra UI:
+
+- **Mission:** be a centre of research and innovation, and bring that centre back
+  inside ourselves rather than waiting for it to arrive from somewhere else.
+- **Vision:** redefine the systems we inherited — how innovation happens, how
+  knowledge is taught, and what any of it is for.
+
 The site it replaces was dark, jargon-heavy and metric-obsessed — "sub-10ms
 latency", "agentic infrastructure". The new one reads like a **creative studio**,
 not a SaaS pitch deck. A visitor should leave believing these are engineers with
@@ -157,16 +170,17 @@ being empty is the failure mode this test exists to catch.
 | `/`            | Landing + VSL funnel. **One scrolling page**, anchor-linked. The filmstrip. | Shipped                |
 | `/work`        | The index — a list, not a grid, with `client:` and `services:` per row.     | Shipped                |
 | `/work/[slug]` | One experience in full, generated from `src/content/work/experiences.ts`.   | Shipped — one entry    |
-| `/about`       | Who we are, the charter, what we offer, how we work.                        | Shipped                |
+| `/services`    | What we offer, how we work, the short version.                              | Shipped                |
+| `/about`       | The charter (three parts, mission, vision), what to expect from us.         | Shipped                |
 | `/careers`     | The stance, the board, and the invitation to write anyway.                  | Shipped                |
 | `/contact`     | What to send, what happens next, and where to send it.                      | Shipped                |
 | `/vsl`         | Not designed. Folder holds a `.gitkeep`.                                    | Not started            |
 | `/privacy`     | Not designed. Folder holds a `.gitkeep`.                                    | Required before launch |
 | `/terms`       | Not designed. Folder holds a `.gitkeep`.                                    | Required before launch |
 
-The nav rail carries five items: Work, About, Playbook, Careers, Contact.
-Playbook is the one anchor among them (`/#playbook`, the lead magnet); the other
-four are real routes. This row replaced the original plan of folding everything
+The nav rail carries six items: Work, Services, About, Playbook, Careers,
+Contact. Playbook is the one anchor among them (`/#playbook`, the lead magnet);
+the other five are real routes. This row replaced the original plan of folding everything
 into anchors on the home page — the sub-routes are detailed vertical documents
 now, and the filmstrip is home-only.
 
@@ -177,24 +191,24 @@ decision. The two pages now say one thing each.
 
 ## Block inventory
 
-| Block id             | Purpose                                                          | Appears on          |
-| -------------------- | ---------------------------------------------------------------- | ------------------- |
-| `hero-scribble`      | Hero — headline crossing the traced figure                       | `/`                 |
-| `services-rows`      | What we offer — a cell per offering, held head on the strip      | `/`, `/about`       |
-| `experience-feature` | Proof — a claim and one experience card                          | `/`                 |
-| `figure-plates`      | The breath — three photographs on ink, and one line              | `/`                 |
-| `lead-magnet`        | The ask — the opt-in and the download                            | `/`                 |
-| `vsl-panel`          | The film, with its own transport                                 | `/`                 |
-| `mark-field`         | The overprinted plate, a claim, and an address                   | `/`, `/careers`     |
-| `index-list`         | The work index — a list with a record per row                    | `/work`             |
-| `charter`            | Who we are — the ambition, explained, with three lit commitments | `/about`            |
-| `figure-statement`   | A claim beside the traced figure, mirrored, tilted, overprinted  | `/careers`          |
-| `open-roles`         | The board — a posting in full, and a state for an empty one      | `/careers`          |
-| `direct-line`        | The address set large, and a second way to reach it              | `/contact`          |
-| `page-header`        | The masthead for a sub-route                                     | every sub-route     |
-| `prose-sections`     | Numbered prose — the workhorse of the vertical routes            | sub-routes          |
-| `about-statement`    | A statement on ink — the seam block                              | `/about`, `/work/*` |
-| `contact-footer`     | Contact, the cropped wordmark, the addresses                     | every route         |
+| Block id             | Purpose                                                          | Appears on       |
+| -------------------- | ---------------------------------------------------------------- | ---------------- |
+| `hero-scribble`      | Hero — headline crossing the traced figure                       | `/`              |
+| `services-rows`      | What we offer — a cell per offering, held head on the strip      | `/`, `/services` |
+| `experience-feature` | Proof — a claim and one experience card                          | `/`              |
+| `figure-plates`      | The breath — three photographs on ink, and one line              | `/`              |
+| `lead-magnet`        | The ask — the opt-in and the download                            | `/`              |
+| `vsl-panel`          | The film, with its own transport                                 | `/`              |
+| `mark-field`         | The overprinted plate, a claim, and an address                   | `/`, `/careers`  |
+| `index-list`         | The work index — a list with a record per row                    | `/work`          |
+| `charter`            | Who we are — the ambition, explained, with three lit commitments | `/about`         |
+| `figure-statement`   | A claim beside the traced figure, mirrored, tilted, overprinted  | `/careers`       |
+| `open-roles`         | The board — a posting in full, and a state for an empty one      | `/careers`       |
+| `direct-line`        | The address set large, and a second way to reach it              | `/contact`       |
+| `page-header`        | The masthead for a sub-route                                     | every sub-route  |
+| `prose-sections`     | Numbered prose — the workhorse of the vertical routes            | sub-routes       |
+| `about-statement`    | A statement on ink — the seam block                              | sub-routes       |
+| `contact-footer`     | Contact, the cropped wordmark, the addresses                     | every route      |
 
 ## Non-negotiables
 

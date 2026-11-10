@@ -4,9 +4,20 @@ import { z } from "zod";
  * `/about`.
  *
  * The page someone opens when they are deciding whether we are real. So it
- * answers that: who we are, how we work, what we refuse, and what it is like to
- * hire us. Prose rather than a manifesto — a page of adjectives about
- * ourselves would prove the opposite of what it claims.
+ * answers that: what we are for, the three parts the company is divided into,
+ * and what anyone dealing with us can hold us to. Prose rather than a
+ * manifesto — a page of adjectives about ourselves would prove the opposite of
+ * what it claims.
+ *
+ * **What we sell is not on this page.** It was, until 2026-10-07: the
+ * offerings and the method made up the back half of `/about`, so the page said
+ * who we are and then turned into a price list. They are `/services` now, with
+ * `src/content/copy/services.ts` behind them.
+ *
+ * The mission and the vision are the last two lit sections of the charter.
+ * They were also set large in a block of their own at the top of the page,
+ * and on `/`; the owner cut both (2026-10-07) — said once, in the charter, is
+ * enough.
  */
 
 const aboutCopySchema = z.object({
@@ -17,17 +28,10 @@ const aboutCopySchema = z.object({
     photo: z.object({ src: z.string(), alt: z.string() }).optional(),
   }),
   /**
-   * Who we are — the ambition, and what it commits us to.
-   *
-   * The one section on the site that states where this is going rather than
-   * what it does this quarter. It sits between the three tiles and the
-   * offerings on purpose: a reader who has just been told *how* we work is the
-   * one most likely to wonder what for, and the answer to that has to land
-   * before the price list does.
+   * Who we are — the three parts explained, and what they commit us to.
    *
    * Three of the sections are `spotlight: true` — the horizon, the vision and
-   * the mission. Those were a row of three cards under the prose and are now
-   * part of it: see the note in `src/modules/blocks/charter/index.tsx`.
+   * the mission: see the note in `src/modules/blocks/charter/index.tsx`.
    */
   charter: z.object({
     index: z.string(),
@@ -50,24 +54,8 @@ const aboutCopySchema = z.object({
       )
       .min(1),
   }),
-  services: z.object({
-    index: z.string(),
-    eyebrow: z.string(),
-    headline: z.string(),
-    rows: z
-      .array(
-        z.object({
-          index: z.string(),
-          title: z.string(),
-          detail: z.string(),
-          /** Schematic of this offering. See scripts/generate-diagrams.mjs. */
-          figure: z.string(),
-        }),
-      )
-      .min(1),
-    cta: z.object({ label: z.string(), href: z.string() }),
-  }),
-  method: z.object({
+  /** What anyone dealing with us — client, peer or student — can hold us to. */
+  expectations: z.object({
     index: z.string(),
     eyebrow: z.string(),
     headline: z.string(),
@@ -94,15 +82,15 @@ export type AboutCopy = z.infer<typeof aboutCopySchema>;
 export const aboutCopy: AboutCopy = aboutCopySchema.parse({
   meta: {
     title: "About",
-    description: "A small engineering team in Pakistan building AI systems that ship.",
+    description:
+      "Godwin Austen is a company, a laboratory and a school: Services, the Labs and the Academy.",
   },
   header: {
-    headline: "Small team. Big appetite for automation.",
-    lead: "We're a handful of engineers who got tired of watching good people do repetitive work. So we build the software that does it instead. No decks, no six-month roadmaps. Just systems that ship.",
-    photo: {
-      src: "/assets/photo/wire-dark.jpg",
-      alt: "A pile of black wires resting on each other",
-    },
+    headline: "A company, a laboratory and a school.",
+    lead: "Godwin Austen is three things under one name. Services builds AI systems for the teams who hire us. The Labs is where the research happens. The Academy teaches what we find to the next generation, free. This page is who we are; what we sell has a page of its own.",
+    // No photograph. The wire picture went to `/services` with the headline it
+    // was chosen for, and the charter below opens on the globe — a second
+    // picture a screen above it would be two openings.
   },
   charter: {
     index: "01",
@@ -111,35 +99,36 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
     figure: "/assets/plates/globe.jpg",
     backdrop: "/assets/plates/hands.png",
     lead: [
-      "Godwin Austen Labs is three things at once, and it is worth saying plainly which is which. We are a company: we build AI systems for clients whose work costs them more time than it should, and they pay us for it. We are a laboratory: a standing part of every week goes on things nobody ordered. And we are a school.",
-      "Most companies in this industry are only the first of those. The other two are why the first is any good.",
+      "Most companies in this industry are only a company: they build what was specified, bill for it, and learn nothing they were not told. We are that, and we are a laboratory, and we are a school, and it is worth saying plainly which is which.",
+      "Services is the part people pay for. The Labs and the Academy are why it is any good.",
     ],
     sections: [
       {
         index: "01",
-        title: "The laboratory is not a marketing department",
-        pull: "The work with no client attached to it is the work that finds the ceiling.",
+        title: "Services — the part that pays for the week",
+        pull: "You are not buying hours. You are buying the range to know what is possible.",
         paragraphs: [
-          "A standing part of every week goes on work with no client attached to it: an idea taken apart to see what it is made of, a technique pushed until it breaks, a thing built to find out whether it can be built at all. Most of it has no customer and never will.",
-          "A fraction becomes the work we sell the following year. The rest is how we find out where the ceiling actually sits, as opposed to where the industry has quietly agreed to put it. A company that only builds what has already been specified never learns anything it was not told, and in a field moving this fast that is the same as standing still.",
+          "We build AI systems for teams whose work costs them more time than it should: your workflow, mapped properly, automated with the sharpest thing that will survive contact with your actual data — and with the parts that should stay human left alone, which is most of the skill.",
+          "When a client describes a problem, the useful question is not whether we have done it before. It is whether we know where the current limit sits and how far their problem is from it. That is a laboratory question, and it is the reason the other two parts exist.",
         ],
       },
       {
         index: "02",
-        title: "What that buys the people who hire us",
-        pull: "You are not buying hours. You are buying the range to know what is possible.",
+        title: "The Labs — where the research happens",
+        pull: "The work with no client attached to it is the work that finds the ceiling.",
         paragraphs: [
-          "Range, mostly. When a client describes a problem, the useful question is not whether we have done it before — it is whether we know what the current limit is and how far their problem sits from it. That is a laboratory question, and the teams who cannot answer it end up quoting for the thing they already know how to build.",
-          "So the work we sell is unglamorous on purpose and ambitious where it counts: your workflow, mapped properly, automated with the sharpest thing that will survive contact with your actual data — and with the parts that should stay human left alone, which is most of the skill.",
+          "A standing part of every week goes on work with no client attached to it: an idea taken apart to see what it is made of, a technique pushed until it breaks, a thing built to find out whether it can be built at all. Most of it has no customer and never will.",
+          "A fraction becomes the work we sell the following year. The rest is how we find out where the ceiling actually sits, as opposed to where the industry has quietly agreed to put it. In a field moving this fast, a company that only builds what it was asked for is standing still.",
         ],
       },
       {
         index: "03",
-        title: "Godwin Austen Academy",
-        pull: "Teaching it away is not charity. It is the only way the standard moves.",
+        title: "The Academy — where it is taught, free",
+        pull: "A system built to the slowest pace in the room holds everyone to it. We build to the highest.",
         paragraphs: [
-          "The method leaves this building. The Academy is where it goes to our peers, and to students who are hungrier than the syllabus they were handed — the ones already building things nobody assigned them.",
-          "We do not charge for the part that should be free. A method one company holds raises that company. A method a generation holds raises the standard everyone has to meet, ourselves included, and that is the trade we would rather have.",
+          "Most education today is run as a business, and a business has to scale. So the system is set to the level of the least capable person in it, and everyone else is held there too — the curious, the bored, and the ones who were already ahead.",
+          "The Academy works the other way round. Each person is taken to the highest limit they can reach, not the lowest one everyone can share: sharper thinking, and the judgement and self-awareness to use it well. Raising both the IQ and the EQ of this generation is how the centre of research and innovation ends up inside us rather than somewhere else.",
+          "What the Labs finds out goes there first, and it costs nothing. A method one company holds raises that company. A method a generation holds raises the standard everyone has to meet, ourselves included.",
         ],
       },
       {
@@ -155,105 +144,65 @@ export const aboutCopy: AboutCopy = aboutCopySchema.parse({
       {
         index: "05",
         spotlight: true,
-        title: "Vision — a generation that does not wait for permission",
-        pull: "A country gets the ceiling its sharpest people will accept.",
+        title: "Vision — redefine the systems we inherited",
+        pull: "A generation gets the ceiling its sharpest people will accept.",
         paragraphs: [
-          "People who take on difficult, unproven, unglamorous work because it is interesting rather than because somebody signed it off. Who publish what they learned. Who raise what everyone else treats as an acceptable standard simply by working above it in the open.",
-          "A country gets the ceiling its sharpest people are willing to accept. We would rather be part of the generation that refuses the one it was handed and goes to find a higher one.",
+          "How innovation happens, how knowledge is taught, and what any of it is for were all decided before we arrived, mostly somewhere else, and mostly for someone else. None of it is a law of nature. All of it can be built again by people willing to do the work in the open.",
+          "That is the generation we want to be part of: one that takes on difficult, unproven work because it is interesting rather than because somebody signed it off, publishes what it learned, and raises the standard simply by working above it.",
         ],
       },
       {
         index: "06",
         spotlight: true,
-        title: "Mission — give the week back, then say how",
-        pull: "Returning the week is half the job. Saying how is the other half.",
+        title: "Mission — bring the centre back inside",
+        pull: "Research is not something that happens elsewhere and arrives here late.",
         paragraphs: [
-          "Take the work that costs a good team its week and return the week. Then explain exactly how it was done: to the client, to our peers, and to the Academy.",
-          "That second half is the part most of this industry leaves out, and it is the only reason the first half is worth anything beyond the company it was done for.",
+          "For most of the people we grew up with, the centre of research and innovation was somewhere else: a lab abroad, a company abroad, a paper you read a year after it mattered. Our mission is to be that centre — and to put it back where it belongs, inside ourselves, rather than wait for it to arrive.",
+          "Part of that is replacing the education system we were handed with a more refined one — one that raises people to their limit instead of lowering them to the average. That is what the three parts are for: Services pays for it, the Labs does it, and the Academy makes sure it does not stop with us.",
         ],
       },
     ],
   },
-
-  services: {
+  expectations: {
     index: "02",
-    eyebrow: "What we do",
-    headline: "What we offer.",
-    rows: [
-      {
-        index: "01",
-        title: "Full Agentic AI Systems",
-        figure: "/assets/diagrams/swarm.svg",
-        detail:
-          "We will build you the whole operation: agents that hold context, decide inside your rules, and hand off to each other and to a person. A system, not a chatbot on top of one.",
-      },
-      {
-        index: "02",
-        title: "Micro Agents & Bots for Task Automation",
-        figure: "/assets/diagrams/micro.svg",
-        detail:
-          "We will take one task off your team and have it live in a week. You get one bot that does that job and stops. Cheap to add without a project, simple to remove.",
-      },
-      {
-        index: "03",
-        title: "AI Powered Pipelines",
-        figure: "/assets/diagrams/pipeline.svg",
-        detail:
-          "We will build the line that takes work in at one end and returns it finished: enriched, classified, drafted, routed. The volume nobody wants to look at, handled.",
-      },
-      {
-        index: "04",
-        title: "Custom Solutions for SaaS and Enterprises",
-        figure: "/assets/diagrams/integration.svg",
-        detail:
-          "We will build it inside your product or your stack. You get AI features your customers use, wired through the CRM, helpdesk and compliance path you already run.",
-      },
-    ],
-    cta: { label: "Contact us", href: "/contact" },
-  },
-  method: {
-    index: "03",
-    eyebrow: "How we work",
-    headline: "We ship, then we tune.",
+    eyebrow: "What to expect from us",
+    headline: "What you can hold us to.",
     sections: [
       {
         index: "01",
-        title: "Week one is watching, not building",
+        title: "Something running, not something presented",
         paragraphs: [
-          "Every engagement starts with us sitting with the work. Not a workshop. The actual work, as it happens, with the people who do it.",
-          "It is the least glamorous week and the one that decides whether the rest is worth anything. The thing a team believes is slowing them down and the thing actually slowing them down are different often enough that we stopped assuming.",
+          "If you hire us, the first thing you get is a map of your own workflow you did not have before, and the second is something in production. Not a deck and not a demo environment.",
+          "And if the honest answer is that it should not be automated, you will hear that from us first — including when it costs us the engagement.",
         ],
       },
       {
         index: "02",
-        title: "Something runs in the first month",
+        title: "What we found, said plainly",
         paragraphs: [
-          "Not a prototype, not a demo environment. Something narrow, in production, doing real work. It will not be the whole system. It will be the piece that pays for the rest.",
-          "Long build cycles hide bad assumptions. If we have got the shape wrong we would rather find out in week four with something small than in month six with something large.",
+          "The Labs publishes what it learns, including what did not work. A result nobody else can read is a result nobody else can check, and we would rather be corrected in public than be right in private.",
         ],
       },
       {
         index: "03",
-        title: "Then we watch it break",
+        title: "The method, given away",
         paragraphs: [
-          "The real world always finds something. A customer phrases a question in a way nobody predicted; an integration returns a field that is null on Tuesdays; someone uses the tool in a way the playbook never described.",
-          "That is not failure, it is the second half of the job. The tuning period after launch is where a system stops being impressive and starts being trusted.",
+          "Anything the Academy teaches is free. There is no paid tier behind it and no course that turns out to be a sales funnel at the end. If you are hungry and building something, that is the whole of the entry requirement.",
         ],
       },
       {
         index: "04",
-        title: "We will tell you not to build it",
+        title: "People left where people belong",
         paragraphs: [
-          "Some work should stay with a person. Low volume, high consequence, requires judgement about a specific human being. Automate that and you have saved an hour a week and bought a category of problem you cannot see coming.",
-          "We have talked more than one team out of the project they came to us with. It costs us the engagement and it is still the right call, because the alternative is a system nobody uses and a reference we cannot give.",
+          "Across all three, the same rule: the systems stop where judgement starts and hand over with the context attached. Nothing we make is worth anything if the answer to who it freed up, and for what, is nobody.",
         ],
       },
     ],
   },
   statement: {
-    index: "04",
+    index: "03",
     eyebrow: "The short version",
-    headline: "No decks. No discovery phase that costs more than the build.",
-    body: "We're engineers, not a consultancy with an engineering department. The first thing you get from us is a map of your own workflow you did not have before, and the second is something running.",
+    headline: "Each part is why the other two are any good.",
+    body: "Services pays for the week. The Labs finds out where the ceiling actually is. The Academy makes sure what we learn does not stay with us. Take any one of them away and the other two get worse.",
   },
 } satisfies AboutCopy);
